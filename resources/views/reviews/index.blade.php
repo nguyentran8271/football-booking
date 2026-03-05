@@ -1,0 +1,285 @@
+@extends('layouts.app')
+
+@section('title', 'Đánh giá từ khách hàng')
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/reviews.css') }}">
+@endpush
+
+@section('content')
+<!-- Hero Banner -->
+<section class="reviews-hero" style="background-image: url('{{ App\Models\SiteSetting::get('reviews_banner') ? asset('storage/' . App\Models\SiteSetting::get('reviews_banner')) : '' }}');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>{{ App\Models\SiteSetting::get('reviews_title') ?: 'Đánh Giá Từ Khách Hàng' }}</h1>
+        <p>{{ App\Models\SiteSetting::get('reviews_description') ?: 'Chia sẻ trải nghiệm thực tế từ cộng đồng người chơi' }}</p>
+    </div>
+</section>
+
+<!-- Tổng quan đánh giá -->
+<section class="section">
+    <div class="container">
+        <div class="review-overview">
+            <div class="overview-main">
+                <div class="rating-score">
+                    <div class="score-number">{{ number_format($averageRating, 1) }}</div>
+                    <div class="score-stars">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= floor($averageRating))
+                                <span class="star filled">★</span>
+                            @elseif($i - 0.5 <= $averageRating)
+                                <span class="star half">★</span>
+                            @else
+                                <span class="star">★</span>
+                            @endif
+                        @endfor
+                    </div>
+                    <div class="score-text">{{ number_format($totalReviews) }} lượt đánh giá</div>
+                </div>
+            </div>
+
+            <div class="overview-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Khách hàng hài lòng</span>
+                    <span class="stat-value">{{ $satisfactionRate }}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tổng đánh giá</span>
+                    <span class="stat-value">{{ number_format($totalReviews) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đánh giá chi tiết -->
+        <div class="detailed-ratings">
+            <h3>Đánh giá chi tiết về website</h3>
+            <div class="rating-bars">
+                <div class="rating-bar-item">
+                    <span class="rating-label">Giao diện & Thiết kế</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: {{ ($detailedRatings['field_quality'] / 5) * 100 }}%"></div>
+                    </div>
+                    <span class="rating-value">{{ number_format($detailedRatings['field_quality'], 1) }}</span>
+                </div>
+                <div class="rating-bar-item">
+                    <span class="rating-label">Tính năng đặt sân</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: {{ ($detailedRatings['lighting'] / 5) * 100 }}%"></div>
+                    </div>
+                    <span class="rating-value">{{ number_format($detailedRatings['lighting'], 1) }}</span>
+                </div>
+                <div class="rating-bar-item">
+                    <span class="rating-label">Tốc độ tải trang</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: {{ ($detailedRatings['hygiene'] / 5) * 100 }}%"></div>
+                    </div>
+                    <span class="rating-value">{{ number_format($detailedRatings['hygiene'], 1) }}</span>
+                </div>
+                <div class="rating-bar-item">
+                    <span class="rating-label">Hỗ trợ khách hàng</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: {{ ($detailedRatings['staff'] / 5) * 100 }}%"></div>
+                    </div>
+                    <span class="rating-value">{{ number_format($detailedRatings['staff'], 1) }}</span>
+                </div>
+                <div class="rating-bar-item">
+                    <span class="rating-label">Dễ sử dụng</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: {{ ($detailedRatings['price'] / 5) * 100 }}%"></div>
+                    </div>
+                    <span class="rating-value">{{ number_format($detailedRatings['price'], 1) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="review-filters">
+            <form method="GET" action="{{ route('reviews.index') }}" id="filterForm">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label>Lọc theo số sao:</label>
+                        <div class="star-filters">
+                            <button type="button" class="filter-btn {{ !request('rating') ? 'active' : '' }}" onclick="filterByStar('')">
+                                Tất cả
+                            </button>
+                            @for($i = 5; $i >= 1; $i--)
+                            <button type="button" class="filter-btn {{ request('rating') == $i ? 'active' : '' }}" onclick="filterByStar({{ $i }})">
+                                {{ $i }} Sao
+                            </button>
+                            @endfor
+                        </div>
+                        <input type="hidden" name="rating" id="ratingFilter" value="{{ request('rating') }}">
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Sắp xếp:</label>
+                        <select name="sort" class="filter-select" onchange="this.form.submit()">
+                            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Mới nhất</option>
+                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Cũ nhất</option>
+                            <option value="highest" {{ request('sort') == 'highest' ? 'selected' : '' }}>Điểm cao nhất</option>
+                            <option value="lowest" {{ request('sort') == 'lowest' ? 'selected' : '' }}>Điểm thấp nhất</option>
+                            <option value="helpful" {{ request('sort') == 'helpful' ? 'selected' : '' }}>Hữu ích nhất</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>
+                            <input type="checkbox" name="with_images" value="1" {{ request('with_images') ? 'checked' : '' }} onchange="this.form.submit()">
+                            Có hình ảnh
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Danh sách đánh giá -->
+        <div class="reviews-grid" id="reviewsGrid">
+            @foreach($reviews->take(4) as $review)
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">
+                            {{ strtoupper(substr($review->user->name, 0, 1)) }}
+                        </div>
+                        <div class="reviewer-details">
+                            <h4 class="reviewer-name">{{ $review->user->name }}</h4>
+                            <span class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        @for($i = 1; $i <= 5; $i++)
+                            <span class="star {{ $i <= $review->rating ? 'filled' : '' }}">★</span>
+                        @endfor
+                    </div>
+                </div>
+
+                <div class="review-content">
+                    <p>{{ $review->comment }}</p>
+                </div>
+
+                @if($review->images && count($review->images) > 0)
+                <div class="review-images">
+                    @foreach($review->images as $image)
+                    <img src="{{ asset('storage/' . $image) }}" alt="Review image" class="review-image">
+                    @endforeach
+                </div>
+                @endif
+
+                <div class="review-actions">
+                    <button type="button" class="btn-helpful" onclick="markHelpful({{ $review->id }}, this)">
+                        Hữu ích (<span class="helpful-count">{{ $review->helpful_count }}</span>)
+                    </button>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <!-- Hidden reviews for load more -->
+        <div class="hidden-reviews" style="display: none;">
+            @foreach($reviews->skip(4) as $review)
+            <div class="review-card hidden-review">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">
+                            {{ strtoupper(substr($review->user->name, 0, 1)) }}
+                        </div>
+                        <div class="reviewer-details">
+                            <h4 class="reviewer-name">{{ $review->user->name }}</h4>
+                            <span class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        @for($i = 1; $i <= 5; $i++)
+                            <span class="star {{ $i <= $review->rating ? 'filled' : '' }}">★</span>
+                        @endfor
+                    </div>
+                </div>
+
+                <div class="review-content">
+                    <p>{{ $review->comment }}</p>
+                </div>
+
+                @if($review->images && count($review->images) > 0)
+                <div class="review-images">
+                    @foreach($review->images as $image)
+                    <img src="{{ asset('storage/' . $image) }}" alt="Review image" class="review-image">
+                    @endforeach
+                </div>
+                @endif
+
+                <div class="review-actions">
+                    <button type="button" class="btn-helpful" onclick="markHelpful({{ $review->id }}, this)">
+                        Hữu ích (<span class="helpful-count">{{ $review->helpful_count }}</span>)
+                    </button>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        @if($reviews->count() > 4)
+        <div class="load-more-container">
+            <button type="button" class="btn btn-primary btn-load-more" id="loadMoreBtn">
+                Xem thêm đánh giá
+            </button>
+        </div>
+        @endif
+    </div>
+</section>
+
+@push('scripts')
+<script src="{{ asset('js/reviews-animations.js') }}"></script>
+<script>
+let currentIndex = 0;
+const hiddenReviews = document.querySelectorAll('.hidden-review');
+const reviewsGrid = document.getElementById('reviewsGrid');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function() {
+        // Load 2 reviews at a time
+        for (let i = 0; i < 2 && currentIndex < hiddenReviews.length; i++) {
+            const review = hiddenReviews[currentIndex];
+            review.style.display = 'block';
+            reviewsGrid.appendChild(review);
+
+            // Trigger animation for newly added reviews
+            setTimeout(() => {
+                review.classList.add('reveal');
+            }, 50);
+
+            currentIndex++;
+        }
+
+        // Hide button if no more reviews
+        if (currentIndex >= hiddenReviews.length) {
+            loadMoreBtn.style.display = 'none';
+        }
+    });
+}
+
+function filterByStar(rating) {
+    document.getElementById('ratingFilter').value = rating;
+    document.getElementById('filterForm').submit();
+}
+
+function markHelpful(reviewId, button) {
+    fetch(`/reviews/${reviewId}/helpful`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.querySelector('.helpful-count').textContent = data.helpful_count;
+            button.disabled = true;
+            button.style.opacity = '0.6';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+@endpush
+@endsection

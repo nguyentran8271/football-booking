@@ -1,0 +1,85 @@
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        padding: 10px 0;
+        gap: 10px;
+    }
+
+    /* Hide logo and slogan on mobile */
+    .logo,
+    .slogan,
+    .mobile-menu-toggle {
+        display: none;
+    }
+
+    /* Show nav menu in a row */
+    .nav-menu {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        width: 100%;
+        justify-content: space-around;
+        padding: 0;
+        margin: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-menu li {
+        flex-shrink: 0;
+    }
+
+    .nav-menu a {
+        font-size: 13px;
+        white-space: nowrap;
+        padding: 8px 5px;
+        display: block;
+    }
+
+    /* Show auth buttons in second row */
+    .auth-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .auth-buttons .btn {
+        font-size: 12px;
+        padding: 8px 18px;
+        flex: 1;
+        max-width: 130px;
+        text-align: center;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-buttons form {
+        display: flex;
+        flex: 1;
+        max-width: 130px;
+    }
+
+    .auth-buttons form .btn {
+        width: 100%;
+        flex: 1;
+    }
+
+    .hero-content h1 {
+        font-size: 32px;
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .fields-grid,
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "css.validate": false,
+    "scss.validate": false,
+    "less.validate": false,
+    "javascript.validate.enable": false,
+    "typescript.validate.enable": false,
+    "html.validate.scripts": false,
+    "html.validate.styles": false,
+    "[blade]": {
+        "editor.defaultFormatter": null,
+        "css.validate": false,
+        "javascript.validate.enable": false
+    },
+    "files.associations": {
+        "*.blade.php": "blade"
+    },
+    "emmet.includeLanguages": {
+        "blade": "html"
+    },
+    "blade.format.enable": false,
+    "php.validate.enable": true,
+    "php.validate.run": "onType",
+    "intelephense.diagnostics.enable": false,
+    "phpcs.enable": false,
+    "phpstan.enabled": false
+}

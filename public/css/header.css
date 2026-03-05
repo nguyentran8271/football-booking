@@ -1,0 +1,113 @@
+/* Header */
+.header {
+    background: linear-gradient(135deg, #2e7d32 0%, #43a047 50%, #66bb6a 100%);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.logo img {
+    height: 100px;
+}
+
+.slogan {
+    font-size: 14px;
+    color: #fff;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.nav-menu a {
+    color: #fff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-menu a:hover {
+    color: #e8f5e9;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: stretch;
+}
+
+.auth-buttons .btn {
+    min-width: 120px;
+    width: 120px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+}
+
+.auth-buttons form {
+    display: flex;
+    min-width: 120px;
+    width: 120px;
+}
+
+.auth-buttons form .btn {
+    width: 100%;
+    min-width: auto;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #333;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.mobile-menu-toggle:hover {
+    color: #28a745;
+}
+
+/* Style cho nút đăng nhập trong header */
+.header .auth-buttons .btn-outline {
+    color: #fff;
+    border-color: #fff;
+    background: transparent;
+}
+
+.header .auth-buttons .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: #fff;
+}
+
+.header .auth-buttons .btn-primary {
+    background: #fff;
+    color: #2e7d32;
+    border: 2px solid #fff;
+}
+
+.header .auth-buttons .btn-primary:hover {
+    background: #f1f8f4;
+    color: #1b5e20;
+    border-color: #fff;
+}

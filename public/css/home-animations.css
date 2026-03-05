@@ -1,0 +1,130 @@
+/* Fade In Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Initial Hidden State */
+.fade-in-element {
+    opacity: 0 !important;
+    transform: translateY(100px) !important;
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out !important;
+}
+
+/* Visible State */
+.fade-in-element.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Hero Animation - Always visible */
+.hero-content h1 {
+    animation: fadeInUp 1s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+.hero-content p {
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.hero-content .btn {
+    animation: fadeInUp 1s ease-out 1s forwards;
+    opacity: 0;
+}
+
+/* Section Titles - Hiện trước với animation rõ ràng */
+.section-title {
+    opacity: 0 !important;
+    transform: translateY(80px) !important;
+    transition: opacity 1s ease-out, transform 1s ease-out !important;
+}
+
+.section-title.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Stats, Cards, Fields - Scroll Reveal - Animation RÕ RÀNG */
+.stat-card,
+.info-card,
+.field-card,
+.about-card,
+.stat-item,
+.featured-post,
+.post-item {
+    opacity: 0 !important;
+    transform: translateY(100px) !important;
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out !important;
+}
+
+.stat-card.visible,
+.info-card.visible,
+.field-card.visible,
+.about-card.visible,
+.stat-item.visible,
+.featured-post.visible,
+.post-item.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Stagger Delays - Title hiện trước (0s), cards hiện sau 1s */
+.stat-card.visible:nth-child(1),
+.stat-card.visible:nth-child(2),
+.stat-card.visible:nth-child(3),
+.stat-card.visible:nth-child(4) {
+    transition-delay: 1s !important;
+}
+
+.info-card.visible:nth-child(1),
+.info-card.visible:nth-child(2),
+.info-card.visible:nth-child(3) {
+    transition-delay: 1s !important;
+}
+
+.field-card.visible:nth-child(1),
+.field-card.visible:nth-child(2),
+.field-card.visible:nth-child(3),
+.field-card.visible:nth-child(4) {
+    transition-delay: 1s !important;
+}
+
+.about-card.visible:nth-child(1),
+.about-card.visible:nth-child(2),
+.about-card.visible:nth-child(3) {
+    transition-delay: 1s !important;
+}
+
+.stat-item.visible:nth-child(1),
+.stat-item.visible:nth-child(2),
+.stat-item.visible:nth-child(3),
+.stat-item.visible:nth-child(4) {
+    transition-delay: 1s !important;
+}
+
+.featured-post.visible {
+    transition-delay: 1s !important;
+}
+
+.post-item.visible:nth-child(1),
+.post-item.visible:nth-child(2),
+.post-item.visible:nth-child(3),
+.post-item.visible:nth-child(4),
+.post-item.visible:nth-child(5) {
+    transition-delay: 1s !important;
+}
+
+/* Hover Effects - Không dùng !important để không conflict */
+.stat-card.visible:hover,
+.info-card.visible:hover,
+.field-card.visible:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease;
+}

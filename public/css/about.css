@@ -1,0 +1,255 @@
+/* Hero Section for About Page */
+.hero {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.hero-slide.active {
+    opacity: 1;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    z-index: 10;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* About Sections */
+.about-section {
+    margin-bottom: 80px;
+}
+
+.about-section:last-child {
+    margin-bottom: 0;
+}
+
+.about-section-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-section-image {
+    width: 100%;
+    opacity: 0;
+    transition: all 0.8s ease-out;
+}
+
+.about-section-image img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.about-section-text {
+    width: 100%;
+    padding: 20px;
+    opacity: 0;
+    transition: all 0.8s ease-out;
+    transition-delay: 0.3s;
+}
+
+.about-section-text h2 {
+    font-size: 42px;
+    margin-bottom: 30px;
+    color: #1a5c2e;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.about-section-text .content {
+    font-size: 18px;
+    line-height: 1.9;
+    color: #1a5c2e;
+    white-space: pre-line;
+}
+
+/* Animation states for image-left layout */
+.about-section.image-left .about-section-image {
+    transform: translateX(-100px);
+}
+
+.about-section.image-left .about-section-text {
+    transform: translateX(100px);
+}
+
+.about-section.image-left.reveal .about-section-image,
+.about-section.image-left.reveal .about-section-text {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Animation states for image-right layout */
+.about-section.image-right .about-section-image {
+    transform: translateX(100px);
+}
+
+.about-section.image-right .about-section-text {
+    transform: translateX(-100px);
+}
+
+.about-section.image-right.reveal .about-section-image,
+.about-section.image-right.reveal .about-section-text {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Layout: Image Right */
+.about-section.image-right .about-section-image {
+    order: 2;
+}
+
+.about-section.image-right .about-section-text {
+    order: 1;
+}
+
+/* Layout: Image Left (default) */
+.about-section.image-left .about-section-image {
+    order: 1;
+}
+
+.about-section.image-left .about-section-text {
+    order: 2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .about-section-content {
+        grid-template-columns: 1fr;
+        padding: 30px;
+        gap: 30px;
+    }
+
+    .about-section.image-right .about-section-image,
+    .about-section.image-left .about-section-image {
+        order: 1 !important;
+    }
+
+    .about-section.image-right .about-section-text,
+    .about-section.image-left .about-section-text {
+        order: 2 !important;
+    }
+
+    .about-section-image img {
+        height: 300px;
+    }
+
+    .about-section-text h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .about-section-text .content {
+        font-size: 15px;
+    }
+
+    /* Mobile animations - simpler */
+    .about-section.image-left .about-section-image,
+    .about-section.image-right .about-section-image {
+        transform: translateY(30px);
+    }
+
+    .about-section.image-left .about-section-text,
+    .about-section.image-right .about-section-text {
+        transform: translateY(30px);
+    }
+
+    .about-section.reveal .about-section-image,
+    .about-section.reveal .about-section-text {
+        transform: translateY(0);
+    }
+}
+
+/* CTA Section Wrapper - Full Width */
+.cta-section-wrapper {
+    background: linear-gradient(135deg, #28a745 0%, #1a5c2e 100%);
+    padding: 80px 0;
+    margin-top: 80px;
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 42px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.cta-description {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 35px;
+    opacity: 0.95;
+}
+
+.cta-section .btn {
+    background: #fff;
+    color: #28a745;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 40px;
+    border-radius: 50px;
+    border: none;
+    transition: all 0.3s;
+}
+
+.cta-section .btn:hover {
+    background: #f8f9fa;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+    .cta-section-wrapper {
+        padding: 60px 20px;
+        margin-top: 60px;
+    }
+
+    .cta-title {
+        font-size: 32px;
+    }
+
+    .cta-description {
+        font-size: 16px;
+    }
+
+    .cta-section .btn {
+        font-size: 16px;
+        padding: 12px 30px;
+    }
+}
+
+
