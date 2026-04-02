@@ -137,3 +137,59 @@ textarea.form-control {
     color: #fff;
     border-color: #28a745;
 }
+
+/* Custom pagination (admin) */
+.custom-pagination {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination-list {
+    display: flex;
+    list-style: none;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination-list .page-item .page-link {
+    display: inline-block;
+    padding: 7px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.pagination-list .page-item .page-link:hover {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+.pagination-list .page-item.active .page-link {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+    font-weight: 600;
+}
+
+.pagination-list .page-item.disabled .page-link {
+    color: #aaa;
+    cursor: not-allowed;
+    background: #f5f5f5;
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}

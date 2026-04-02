@@ -14,12 +14,10 @@ class TournamentController extends Controller
         $query = Tournament::with(['field', 'teams'])
             ->where('status', '!=', 'finished');
 
-        // Tìm kiếm theo tên giải
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Tìm kiếm theo tên sân
         if ($request->filled('field_name')) {
             $query->whereHas('field', function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->field_name . '%');
@@ -86,17 +84,14 @@ class TournamentController extends Controller
 
     private function canRegister(Tournament $tournament)
     {
-        // Kiểm tra trạng thái
         if ($tournament->status != 'upcoming') {
             return false;
         }
 
-        // Kiểm tra hạn đăng ký
         if ($tournament->registration_deadline && now()->gt($tournament->registration_deadline)) {
             return false;
         }
 
-        // Kiểm tra số đội đã đủ
         $approvedTeams = $tournament->teams()->where('status', 'approved')->count();
         if ($approvedTeams >= $tournament->max_teams) {
             return false;

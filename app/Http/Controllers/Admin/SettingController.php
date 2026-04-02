@@ -9,18 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
-    /**
-     * Trang cài đặt website
-     */
     public function index()
     {
         $aboutSections = \App\Models\AboutSection::orderBy('order')->get();
         return view('admin.settings.index', compact('aboutSections'));
     }
 
-    /**
-     * Cập nhật cài đặt
-     */
     public function update(Request $request)
     {
         $validated = $request->validate([
@@ -31,17 +25,23 @@ class SettingController extends Controller
             'site_hotline' => 'nullable|string|max:20',
             'site_address' => 'nullable|string',
             'site_description' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'auth_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'auth_background' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'login_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'login_background' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'register_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'register_background' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'hero_title' => 'nullable|string|max:255',
             'hero_description' => 'nullable|string|max:255',
             'about_title' => 'nullable|string|max:255',
             'about_description' => 'nullable|string',
             'hero_banners' => 'nullable|array|max:5',
-            'hero_banners.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'fields_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'about_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'reviews_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'owner_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'hero_banners.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+            'fields_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'about_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'reviews_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'owner_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'fields_title' => 'nullable|string|max:255',
             'fields_description' => 'nullable|string|max:255',
             'about_page_title' => 'nullable|string|max:255',
@@ -70,7 +70,6 @@ class SettingController extends Controller
 
         $uploadedFiles = [];
 
-        // Xử lý Cards
         if ($request->has('cards')) {
             foreach ($request->cards as $cardId => $cardData) {
                 $card = \App\Models\HomeCard::find($cardId);
@@ -83,7 +82,6 @@ class SettingController extends Controller
             }
         }
 
-        // Xử lý Stats
         if ($request->has('stats')) {
             foreach ($request->stats as $statId => $statData) {
                 $stat = \App\Models\HomeStat::find($statId);
@@ -96,7 +94,6 @@ class SettingController extends Controller
             }
         }
 
-        // Xử lý Featured Fields
         if ($request->has('fields')) {
             foreach ($request->fields as $fieldId => $fieldData) {
                 $field = \App\Models\FeaturedField::find($fieldId);
@@ -111,7 +108,6 @@ class SettingController extends Controller
             }
         }
 
-        // Xử lý About Sections
         if ($request->has('sections')) {
             foreach ($request->sections as $sectionId => $sectionData) {
                 $section = \App\Models\AboutSection::find($sectionId);
@@ -125,14 +121,12 @@ class SettingController extends Controller
             }
         }
 
-        // Xử lý xóa banner trước
         if ($request->has('remove_banners') && $request->remove_banners) {
             $existingBanners = SiteSetting::get('hero_banners');
             $bannerArray = $existingBanners ? json_decode($existingBanners, true) : [];
 
             $removeIndexes = json_decode($request->remove_banners, true);
             if (is_array($removeIndexes)) {
-                // Sắp xếp giảm dần để xóa từ cuối lên đầu
                 rsort($removeIndexes);
                 foreach ($removeIndexes as $index) {
                     if (isset($bannerArray[$index])) {
@@ -145,12 +139,10 @@ class SettingController extends Controller
             }
         }
 
-        // Xử lý thêm hero banners mới (nhiều ảnh)
         if ($request->hasFile('hero_banners')) {
             $existingBanners = SiteSetting::get('hero_banners');
             $bannerArray = $existingBanners ? json_decode($existingBanners, true) : [];
 
-            // Thêm banner mới vào danh sách hiện có
             foreach ($request->file('hero_banners') as $file) {
                 if (count($bannerArray) < 5) {
                     $path = $file->store('settings/banners', 'public');
@@ -163,14 +155,11 @@ class SettingController extends Controller
         }
 
         foreach ($validated as $key => $value) {
-            // Skip arrays đã xử lý
             if (in_array($key, ['cards', 'stats', 'fields', 'sections'])) {
                 continue;
             }
 
-            // Xử lý upload ảnh đơn
-            if (in_array($key, ['logo', 'fields_banner', 'about_banner', 'reviews_banner', 'owner_banner']) && $request->hasFile($key)) {
-                // Xóa ảnh cũ
+            if (in_array($key, ['logo', 'auth_logo', 'auth_background', 'login_logo', 'login_background', 'register_logo', 'register_background', 'fields_banner', 'about_banner', 'reviews_banner', 'owner_banner']) && $request->hasFile($key)) {
                 $oldImage = SiteSetting::get($key);
                 if ($oldImage) {
                     Storage::disk('public')->delete($oldImage);
@@ -192,15 +181,13 @@ class SettingController extends Controller
         return back()->with('success', $message);
     }
 
-    // Owner Stats
     public function storeOwnerStat(Request $request)
     {
         $validated = $request->validate([
             'number' => 'required|string|max:50',
-            'label' => 'required|string|max:255',
+            'label'  => 'required|string|max:255',
         ]);
 
-        // Auto set order to max + 1
         $maxOrder = \App\Models\OwnerStat::max('order') ?? 0;
         $validated['order'] = $maxOrder + 1;
 
@@ -236,20 +223,18 @@ class SettingController extends Controller
         return back()->with('success', 'Đã xóa stat thành công!');
     }
 
-    // Owner Benefits
     public function storeOwnerBenefit(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('owner-benefits', 'public');
         }
 
-        // Auto set order to max + 1
         $maxOrder = \App\Models\OwnerBenefit::max('order') ?? 0;
         $validated['order'] = $maxOrder + 1;
 
@@ -293,7 +278,6 @@ class SettingController extends Controller
         return back()->with('success', 'Đã xóa benefit thành công!');
     }
 
-    // Owner Steps
     public function storeOwnerStep(Request $request)
     {
         $validated = $request->validate([
@@ -330,13 +314,12 @@ class SettingController extends Controller
         return back()->with('success', 'Đã xóa bước thành công!');
     }
 
-    // Owner Sections
     public function storeOwnerSection(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'title'          => 'required|string|max:255',
+            'content'        => 'required|string',
+            'image'          => 'nullable|image|max:2048',
             'image_position' => 'required|in:left,right',
         ]);
 
@@ -344,7 +327,6 @@ class SettingController extends Controller
             $validated['image'] = $request->file('image')->store('owner-sections', 'public');
         }
 
-        // Auto set order to max + 1
         $maxOrder = \App\Models\OwnerSection::max('order') ?? 0;
         $validated['order'] = $maxOrder + 1;
 

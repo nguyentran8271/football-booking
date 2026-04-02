@@ -132,6 +132,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
         <!-- Bộ lọc -->
         <form method="GET" action="{{ route('owner.bookings.index') }}" class="filter-section">
             <div class="filter-group">
@@ -183,7 +187,7 @@
                             <td>{{ $booking->field->name }}</td>
                             <td>{{ \Carbon\Carbon::parse($booking->date)->format('d/m/Y') }}</td>
                             <td>
-                                <span style="background: #e3f2fd; padding: 5px 10px; border-radius: 5px; font-weight: 600; color: #1976d2;">
+                                <span style="background: #e3f2fd; padding: 5px 10px; border-radius: 5px; font-weight: 600; color: #1976d2; white-space: nowrap;">
                                     Ca {{ $booking->shift }}
                                 </span>
                             </td>
@@ -201,16 +205,20 @@
                             <td>
                                 <div class="action-buttons">
                                     @if($booking->status == 'pending')
-                                        <form action="{{ route('owner.bookings.confirm', $booking->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Xác nhận đặt sân này?')">✅ Xác nhận</button>
-                                        </form>
-                                        <form action="{{ route('owner.bookings.cancel', $booking->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hủy đặt sân này?')">❌ Hủy</button>
-                                        </form>
+                                        @if(\Carbon\Carbon::parse($booking->date)->isPast())
+                                            <span style="color: #999; font-size: 13px;">Đã hết hạn</span>
+                                        @else
+                                            <form action="{{ route('owner.bookings.confirm', $booking->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Xác nhận đặt sân này?')">✅ Xác nhận</button>
+                                            </form>
+                                            <form action="{{ route('owner.bookings.cancel', $booking->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hủy đặt sân này?')">❌ Hủy</button>
+                                            </form>
+                                        @endif
                                     @else
                                         <span style="color: #999;">-</span>
                                     @endif

@@ -134,7 +134,7 @@
     <div class="container">
         <div class="header-section">
             <h1>Quản Lý Sân</h1>
-            <a href="{{ route('owner.fields.create') }}" class="btn btn-primary">➕ Thêm sân mới</a>
+            <a href="{{ route('owner.fields.create') }}" class="btn btn-primary">Thêm sân mới</a>
         </div>
 
         @if(session('success'))
@@ -167,22 +167,22 @@
                         <td><strong>{{ number_format($field->price_per_hour) }}đ</strong></td>
                         <td>
                             @if($field->status == 'active')
-                                <span class="status-badge status-active">✓ Hoạt động</span>
+                                <span class="status-badge status-active">Hoạt động</span>
                             @else
-                                <span class="status-badge status-inactive">✕ Tạm ngưng</span>
+                                <span class="status-badge status-inactive">Tạm ngưng</span>
                             @endif
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <a href="{{ route('owner.fields.edit', $field->id) }}" class="btn btn-sm btn-secondary">
-                                    ✏️ Sửa
+                                <a href="{{ route('owner.fields.edit', $field->id) }}" class="btn btn-sm btn-secondary" style="height: 34px; display: inline-flex; align-items: center;">
+                                    Sửa
                                 </a>
                                 <form action="{{ route('owner.fields.destroy', $field->id) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
+                                    <button type="submit" class="btn btn-sm btn-danger" style="height: 34px;"
                                             onclick="return confirm('Xóa sân {{ $field->name }}?')">
-                                        🗑️ Xóa
+                                        Xóa
                                     </button>
                                 </form>
                             </div>
@@ -217,10 +217,10 @@
         @else
         <div class="fields-table-wrapper">
             <div class="empty-state">
-                <h3>🏟️ Chưa có sân nào</h3>
+                <h3>Chưa có sân nào</h3>
                 <p>Bắt đầu bằng cách thêm sân đầu tiên của bạn</p>
                 <a href="{{ route('owner.fields.create') }}" class="btn btn-primary" style="margin-top: 20px;">
-                    ➕ Thêm sân đầu tiên
+                    Thêm sân đầu tiên
                 </a>
             </div>
         </div>

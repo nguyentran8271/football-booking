@@ -36,13 +36,13 @@
                         </td>
                         <td>{{ $post->created_at->format('d/m/Y') }}</td>
                         <td>
-                            <div style="display: flex; gap: 5px;">
-                                <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-secondary">Sửa</a>
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-secondary" style="padding: 6px 16px; line-height: 1.5;">Sửa</a>
                                 <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST"
-                                      onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?')">
+                                      onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?')" style="margin:0;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                    <button type="submit" class="btn btn-danger" style="padding: 6px 16px; line-height: 1.5;">Xóa</button>
                                 </form>
                             </div>
                         </td>
@@ -52,8 +52,8 @@
             </table>
         </div>
 
-        <div class="pagination">
-            {{ $posts->links() }}
+        <div style="margin-top: 20px;">
+            {{ $posts->links('vendor.pagination.custom') }}
         </div>
         @else
         <div class="card">

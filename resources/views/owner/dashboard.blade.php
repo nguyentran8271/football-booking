@@ -33,12 +33,21 @@
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    overflow: hidden;
+    padding: 0;
 }
 
-.stat-icon.blue { background: #e3f2fd; }
-.stat-icon.green { background: #e8f5e9; }
-.stat-icon.orange { background: #fff3e0; }
-.stat-icon.purple { background: #f3e5f5; }
+.stat-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.stat-icon.blue { background: white; }
+.stat-icon.green { background: white; }
+.stat-icon.orange { background: white; }
+.stat-icon.purple { background: white; }
 
 .stat-info h3 {
     font-size: 28px;
@@ -141,7 +150,7 @@
         <!-- Thống kê -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon blue">📅</div>
+                <div class="stat-icon blue"><img src="{{ asset('images/lich.png') }}" alt="Lịch"></div>
                 <div class="stat-info">
                     <h3>{{ $stats['bookings_today'] }}</h3>
                     <p>Lượt đặt hôm nay</p>
@@ -149,7 +158,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon green">💰</div>
+                <div class="stat-icon green"><img src="{{ asset('images/doanhthu.png') }}" alt="Doanh thu"></div>
                 <div class="stat-info">
                     <h3>{{ number_format($stats['revenue_today']) }}đ</h3>
                     <p>Doanh thu hôm nay</p>
@@ -157,7 +166,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon orange">📆</div>
+                <div class="stat-icon orange"><img src="{{ asset('images/tongluotdatthangnay.png') }}" alt="Tổng lượt đặt"></div>
                 <div class="stat-info">
                     <h3>{{ $stats['bookings_month'] }}</h3>
                     <p>Tổng lượt đặt tháng này</p>
@@ -165,7 +174,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon purple">🏟</div>
+                <div class="stat-icon purple"><img src="{{ asset('images/iconsanbong.png') }}" alt="Sân bóng"></div>
                 <div class="stat-info">
                     <h3>{{ $stats['active_fields'] }}</h3>
                     <p>Sân đang hoạt động</p>
@@ -175,10 +184,10 @@
 
         <!-- Thao tác nhanh -->
         <div class="quick-actions">
-            <a href="{{ route('owner.fields.create') }}" class="btn btn-primary">Thêm sân mới</a>
-            <a href="{{ route('owner.bookings.index') }}" class="btn btn-secondary">Quản lý lịch đặt</a>
-            <a href="{{ route('owner.fields.index') }}" class="btn btn-secondary">Quản lý sân</a>
-            <a href="{{ route('owner.tournaments.index') }}" class="btn btn-secondary" style="background: #28a745; color: white;">Quản lý giải đấu</a>
+            <a href="{{ route('owner.fields.create') }}" class="btn {{ request()->routeIs('owner.fields.create') ? 'btn-primary' : 'btn-secondary' }}">Thêm sân mới</a>
+            <a href="{{ route('owner.bookings.index') }}" class="btn {{ request()->routeIs('owner.bookings.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý lịch đặt</a>
+            <a href="{{ route('owner.fields.index') }}" class="btn {{ request()->routeIs('owner.fields.index') ? 'btn-primary' : 'btn-secondary' }}">Quản lý sân</a>
+            <a href="{{ route('owner.tournaments.index') }}" class="btn {{ request()->routeIs('owner.tournaments.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý giải đấu</a>
         </div>
 
         <!-- Thông báo -->
@@ -197,7 +206,32 @@
 
         <!-- Biểu đồ doanh thu -->
         <div class="dashboard-section">
-            <h2>📊 Doanh thu 7 ngày gần đây</h2>
+            <h2>📊 Doanh thu theo khoảng thời gian</h2>
+
+            <form method="GET" action="{{ route('owner.dashboard') }}" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Từ ngày</label>
+                    <input type="date" name="date_from" value="{{ request('date_from', $dateFrom->format('Y-m-d')) }}" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Đến ngày</label>
+                    <input type="date" name="date_to" value="{{ request('date_to', $dateTo->format('Y-m-d')) }}" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="height: 38px; padding: 0 20px;">Lọc</button>
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="height: 38px; padding: 0 20px; display: inline-flex; align-items: center;">Reset</a>
+            </form>
+
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div style="background: #e8f5e9; padding: 15px 25px; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <div style="font-size: 13px; color: #555;">Doanh thu khoảng này</div>
+                    <div style="font-size: 22px; font-weight: 700; color: #28a745;">{{ number_format($stats['revenue_range']) }}đ</div>
+                </div>
+                <div style="background: #e3f2fd; padding: 15px 25px; border-radius: 8px; border-left: 4px solid #1976d2;">
+                    <div style="font-size: 13px; color: #555;">Lượt đặt khoảng này</div>
+                    <div style="font-size: 22px; font-weight: 700; color: #1976d2;">{{ $stats['bookings_range'] }}</div>
+                </div>
+            </div>
+
             <div class="chart-container">
                 <canvas id="revenueChart"></canvas>
             </div>
@@ -257,43 +291,84 @@
 
 @push('scripts')
 <script>
-// Biểu đồ doanh thu
 const ctx = document.getElementById('revenueChart').getContext('2d');
 const revenueData = JSON.parse('{!! addslashes(json_encode($revenueChart)) !!}');
 
-const labels = revenueData.map(item => item.date);
-const data = revenueData.map(item => item.total);
+const labels = revenueData.map(item => {
+    const d = new Date(item.date);
+    return (d.getDate()).toString().padStart(2,'0') + '/' + (d.getMonth()+1).toString().padStart(2,'0');
+});
+const revenueValues = revenueData.map(item => item.total);
+const countValues = revenueData.map(item => item.count);
 
 new Chart(ctx, {
-    type: 'line',
     data: {
         labels: labels,
-        datasets: [{
-            label: 'Doanh thu (VNĐ)',
-            data: data,
-            borderColor: '#28a745',
-            backgroundColor: 'rgba(40, 167, 69, 0.1)',
-            tension: 0.4,
-            fill: true
-        }]
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Lượt đặt',
+                data: countValues,
+                backgroundColor: 'rgba(25, 118, 210, 0.25)',
+                borderColor: '#1976d2',
+                borderWidth: 1.5,
+                borderRadius: 4,
+                barThickness: 40,
+                yAxisID: 'yCount',
+                order: 2,
+            },
+            {
+                type: 'line',
+                label: 'Doanh thu (VNĐ)',
+                data: revenueValues,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.08)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointBackgroundColor: '#28a745',
+                yAxisID: 'yRevenue',
+                order: 1,
+            }
+        ]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
         plugins: {
-            legend: {
-                display: true,
-                position: 'top'
+            legend: { display: true, position: 'top' },
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        if (ctx.dataset.yAxisID === 'yRevenue') {
+                            return ' Doanh thu: ' + ctx.parsed.y.toLocaleString() + 'đ';
+                        }
+                        return ' Lượt đặt: ' + ctx.parsed.y;
+                    }
+                }
             }
         },
         scales: {
-            y: {
+            yRevenue: {
+                type: 'linear',
+                position: 'left',
                 beginAtZero: true,
                 ticks: {
-                    callback: function(value) {
-                        return value.toLocaleString() + 'đ';
-                    }
-                }
+                    callback: v => v.toLocaleString() + 'đ',
+                    color: '#28a745'
+                },
+                grid: { color: 'rgba(0,0,0,0.05)' }
+            },
+            yCount: {
+                type: 'linear',
+                position: 'right',
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    color: '#1976d2'
+                },
+                grid: { drawOnChartArea: false }
             }
         }
     }

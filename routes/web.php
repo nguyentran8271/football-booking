@@ -26,6 +26,8 @@ use App\Http\Controllers\Owner\TournamentController as OwnerTournamentController
 
 // Trang công khai
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/tin-tuc/load-more', [HomeController::class, 'loadMorePosts'])->name('posts.load-more');
+Route::get('/tin-tuc/{id}', [\App\Http\Controllers\PostController::class, 'show'])->name('posts.show');
 Route::get('/gioi-thieu', [HomeController::class, 'about'])->name('about');
 Route::get('/chinh-sach', [HomeController::class, 'policy'])->name('policy');
 Route::get('/danh-cho-chu-san', [HomeController::class, 'forOwners'])->name('for-owners');
@@ -52,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Gửi đánh giá
     Route::post('/danh-gia', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // Đăng ký làm chủ sân
+    Route::post('/dang-ky-chu-san', [\App\Http\Controllers\OwnerRequestController::class, 'store'])->name('owner-request.store');
 
     // Đăng ký giải đấu
     Route::get('/giai-dau/{id}/dang-ky', [TournamentController::class, 'register'])->name('tournaments.register');
@@ -82,12 +87,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Quản lý users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
     Route::post('/users/{id}/convert-to-owner', [AdminUserController::class, 'convertToOwner'])->name('users.convert-to-owner');
     Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
     // Quản lý owners
     Route::get('/owners', [AdminUserController::class, 'owners'])->name('owners.index');
+    Route::get('/owners/{id}', [AdminUserController::class, 'ownerShow'])->name('owners.show');
     Route::post('/owners/{id}/approve', [AdminUserController::class, 'approveOwner'])->name('owners.approve');
+    Route::post('/owners/{id}/reject', [AdminUserController::class, 'rejectOwner'])->name('owners.reject');
 
     // Quản lý sân
     Route::get('/fields', [AdminFieldController::class, 'index'])->name('fields.index');
@@ -98,6 +106,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/bookings/{id}', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
 
     // Quản lý bài viết
+    Route::post('/posts/upload-image', [AdminPostController::class, 'uploadImage'])->name('posts.upload-image');
     Route::resource('posts', AdminPostController::class);
 
     // Quản lý đánh giá

@@ -69,6 +69,52 @@
                         <input type="file" name="logo" class="form-control" accept="image/*">
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">Logo trang đăng nhập</label>
+                        @php $loginLogo = App\Models\SiteSetting::get('login_logo'); @endphp
+                        @if($loginLogo)
+                        <div style="margin-bottom: 10px;">
+                            <img src="{{ asset('storage/' . $loginLogo) }}" alt="Login Logo" style="max-height: 80px;">
+                        </div>
+                        @endif
+                        <input type="file" name="login_logo" class="form-control" accept="image/*">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ảnh nền trang đăng nhập</label>
+                        @php $loginBg = App\Models\SiteSetting::get('login_background'); @endphp
+                        @if($loginBg)
+                        <div style="margin-bottom: 10px;">
+                            <img src="{{ asset('storage/' . $loginBg) }}" alt="Login Background" style="max-width: 300px; border-radius: 10px;">
+                        </div>
+                        @endif
+                        <input type="file" name="login_background" class="form-control" accept="image/*">
+                        <small>Khuyến nghị: 1920x1080px</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Logo trang đăng ký</label>
+                        @php $registerLogo = App\Models\SiteSetting::get('register_logo'); @endphp
+                        @if($registerLogo)
+                        <div style="margin-bottom: 10px;">
+                            <img src="{{ asset('storage/' . $registerLogo) }}" alt="Register Logo" style="max-height: 80px;">
+                        </div>
+                        @endif
+                        <input type="file" name="register_logo" class="form-control" accept="image/*">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ảnh nền trang đăng ký</label>
+                        @php $registerBg = App\Models\SiteSetting::get('register_background'); @endphp
+                        @if($registerBg)
+                        <div style="margin-bottom: 10px;">
+                            <img src="{{ asset('storage/' . $registerBg) }}" alt="Register Background" style="max-width: 300px; border-radius: 10px;">
+                        </div>
+                        @endif
+                        <input type="file" name="register_background" class="form-control" accept="image/*">
+                        <small>Khuyến nghị: 1920x1080px</small>
+                    </div>
+
                     <h3 style="margin-top: 30px; margin-bottom: 20px;">Thông tin liên hệ</h3>
 
                     <div class="form-group">
@@ -295,6 +341,10 @@
                         <button type="button" class="btn btn-primary" onclick="addField()">Lưu</button>
                         <button type="button" class="btn btn-secondary" onclick="hideAddFieldForm()">Hủy</button>
                     </div>
+
+                    <h3 style="margin-top: 40px; margin-bottom: 20px; border-top: 2px solid #ddd; padding-top: 30px;">Tin tức & Bài viết</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Quản lý các bài viết tin tức hiển thị trên trang chủ.</p>
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Quản lý Bài viết</a>
                 </div>
             </div>
 

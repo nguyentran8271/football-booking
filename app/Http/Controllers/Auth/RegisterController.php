@@ -20,8 +20,14 @@ class RegisterController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|regex:/^[0-9]{10}$/',
+            'phone' => 'required|string|regex:/^[0-9]{10}$/|unique:users',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'email.unique' => 'Email này đã được sử dụng, vui lòng dùng email khác.',
+            'phone.unique' => 'Số điện thoại này đã được đăng ký, vui lòng dùng số khác.',
+            'phone.regex'  => 'Số điện thoại phải đúng 10 chữ số.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
         ]);
 
         $user = User::create([

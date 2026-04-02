@@ -20,16 +20,14 @@ class HomeContentController extends Controller
         return view('admin.home-content.index', compact('cards', 'stats', 'featuredFields'));
     }
 
-    // Cards methods
     public function storeCard(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
         ]);
 
         $data = $request->all();
-        // Tự động lấy order cao nhất + 1 để item mới lên đầu
         $maxOrder = HomeCard::max('order') ?? -1;
         $data['order'] = $maxOrder + 1;
 
@@ -62,7 +60,6 @@ class HomeContentController extends Controller
         return redirect()->back()->with('success', 'Card đã được xóa thành công!');
     }
 
-    // Stats methods
     public function storeStat(Request $request)
     {
         $request->validate([
@@ -71,7 +68,6 @@ class HomeContentController extends Controller
         ]);
 
         $data = $request->all();
-        // Tự động lấy order cao nhất + 1
         $maxOrder = HomeStat::max('order') ?? -1;
         $data['order'] = $maxOrder + 1;
 
@@ -104,25 +100,22 @@ class HomeContentController extends Controller
         return redirect()->back()->with('success', 'Số liệu đã được xóa thành công!');
     }
 
-    // Featured Fields methods
     public function storeField(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:1',
-            'hotline' => 'nullable|string|max:20',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'price'       => 'required|numeric|min:1',
+            'hotline'     => 'nullable|string|max:20',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->all();
-        // Tự động lấy order cao nhất + 1
         $maxOrder = FeaturedField::max('order') ?? -1;
         $data['order'] = $maxOrder + 1;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('featured-fields', 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = $request->file('image')->store('featured-fields', 'public');
         }
 
         FeaturedField::create($data);
@@ -145,12 +138,10 @@ class HomeContentController extends Controller
         $data['order'] = $request->input('order', $field->order);
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
             if ($field->image) {
                 Storage::disk('public')->delete($field->image);
             }
-            $imagePath = $request->file('image')->store('featured-fields', 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = $request->file('image')->store('featured-fields', 'public');
         }
 
         $field->update($data);
@@ -162,7 +153,6 @@ class HomeContentController extends Controller
     {
         $field = FeaturedField::findOrFail($id);
 
-        // Delete image if exists
         if ($field->image) {
             Storage::disk('public')->delete($field->image);
         }
@@ -172,7 +162,6 @@ class HomeContentController extends Controller
         return redirect()->back()->with('success', 'Sân nổi bật đã được xóa thành công!');
     }
 
-    // About Sections methods
     public function storeAboutSection(Request $request)
     {
         $request->validate([

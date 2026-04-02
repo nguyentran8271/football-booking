@@ -32,6 +32,18 @@
         <p>{{ App\Models\SiteSetting::get('hero_description', 'Tìm và đặt sân bóng chất lượng gần bạn') }}</p>
         <a href="{{ route('fields.index') }}" class="btn btn-primary">Đặt sân ngay</a>
     </div>
+
+    @php $totalBanners = !empty($bannerArray) ? count($bannerArray) : 1; @endphp
+    @if($totalBanners > 1)
+    <button class="hero-arrow prev" id="hero-prev">&#8249;</button>
+    <button class="hero-arrow next" id="hero-next">&#8250;</button>
+
+    <div class="hero-dots" id="hero-dots">
+        @for($i = 0; $i < $totalBanners; $i++)
+        <button class="hero-dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}"></button>
+        @endfor
+    </div>
+    @endif
 </section>
 
 <!-- About Section -->
@@ -213,43 +225,43 @@
 @endif
 
 <!-- News Section -->
-<section class="section" style="background: #f8f9fa;">
+<section class="section news-section" style="background: #f8f9fa;">
     <div class="container">
         <h2 class="section-title">Tin Tức Bóng Đá</h2>
+
+        <!-- Filter tabs -->
+        <div class="news-filter-tabs">
+            <button class="news-tab active" data-category="all" data-url="{{ route('posts.load-more') }}">Tất cả</button>
+            <button class="news-tab" data-category="trong_nuoc" data-url="{{ route('posts.load-more') }}">Trong nước</button>
+            <button class="news-tab" data-category="ngoai_nuoc" data-url="{{ route('posts.load-more') }}">Ngoài nước</button>
+        </div>
 
         <div class="news-layout">
             @if($posts->isNotEmpty())
                 <!-- Bài viết nổi bật (bên trái) -->
-                <div class="featured-post">
+                <div class="featured-post" id="featured-post-area" style="cursor:pointer;">
                     @php $featuredPost = $posts->first(); @endphp
-                    <div class="featured-badge">TIN TỨC</div>
-                    <h3 class="featured-title">{{ $featuredPost->title }}</h3>
-
-                    @if($featuredPost->image)
-                    <div class="featured-image-wrapper">
-                        <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="featured-image">
-                    </div>
-                    @endif
-
-                    <p class="featured-excerpt">{{ Str::limit(strip_tags($featuredPost->content), 200) }}</p>
-                    <a href="#" class="read-more-link">Đọc thêm →</a>
+                    @include('partials.featured-post', ['featuredPost' => $featuredPost])
                 </div>
 
                 <!-- Danh sách bài viết (bên phải) -->
                 <div class="posts-list">
-                    @foreach($posts->skip(1)->take(5) as $post)
-                    <div class="post-item">
-                        @if($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="post-thumb">
-                        @endif
-                        <div class="post-info">
-                            <h4 class="post-item-title">{{ $post->title }}</h4>
-                            <span class="post-date">{{ $post->created_at->format('d/m/Y') }}</span>
-                        </div>
+                    <div id="posts-container">
+                        @foreach($posts->skip(1)->take(5) as $post)
+                        @include('partials.post-item', ['post' => $post])
+                        @endforeach
                     </div>
-                    @endforeach
 
-                    <a href="#" class="view-all-btn">Xem thêm</a>
+                    <div style="text-align: right; margin-top: 10px;">
+                        <button id="load-more-btn"
+                                class="load-more-center-btn"
+                                data-offset="6"
+                                data-category="all"
+                                data-url="{{ route('posts.load-more') }}"
+                                @if($totalPosts <= 6) style="display:none" @endif>
+                            Xem thêm
+                        </button>
+                    </div>
                 </div>
             @endif
         </div>
@@ -261,18 +273,113 @@
 <script src="{{ asset('js/scroll-reveal.js') }}"></script>
 <script src="{{ asset('js/counter-animation.js') }}"></script>
 <script>
-// Auto slide hero banners
 document.addEventListener('DOMContentLoaded', function() {
-    const slides = document.querySelectorAll('.hero-slide');
-    if (slides.length > 1) {
-        let currentSlide = 0;
 
-        setInterval(function() {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 4000); // Chuyển sau 4 giây
+    // ── Hero Slider ──────────────────────────────────────
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots   = document.querySelectorAll('.hero-dot');
+    var prevBtn = document.getElementById('hero-prev');
+    var nextBtn = document.getElementById('hero-next');
+    var currentSlide = 0;
+    var autoTimer = null;
+
+    function goTo(index) {
+        slides[currentSlide].classList.remove('active');
+        if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
+        currentSlide = (index + slides.length) % slides.length;
+        slides[currentSlide].classList.add('active');
+        if (dots[currentSlide]) dots[currentSlide].classList.add('active');
     }
+
+    function startAuto() {
+        autoTimer = setInterval(function() { goTo(currentSlide + 1); }, 4000);
+    }
+
+    function resetAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+    }
+
+    if (slides.length > 1) {
+        if (nextBtn) nextBtn.addEventListener('click', function() { goTo(currentSlide + 1); resetAuto(); });
+        if (prevBtn) prevBtn.addEventListener('click', function() { goTo(currentSlide - 1); resetAuto(); });
+        dots.forEach(function(dot) {
+            dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index)); resetAuto(); });
+        });
+        startAuto();
+    }
+
+    // ── Load more posts ───────────────────────────────────
+    var loadMoreBtn = document.getElementById('load-more-btn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            var btn = this;
+            var offset = parseInt(btn.dataset.offset);
+            var url = btn.dataset.url;
+            var category = btn.dataset.category || 'all';
+
+            btn.textContent = 'Đang tải...';
+            btn.disabled = true;
+
+            fetch(url + '?offset=' + offset + '&category=' + category)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    var container = document.getElementById('posts-container');
+                    container.insertAdjacentHTML('beforeend', data.html);
+                    if (window.observeNewPosts) window.observeNewPosts(container);
+                    btn.dataset.offset = data.nextOffset;
+                    if (data.hasMore) {
+                        btn.textContent = 'Xem thêm';
+                        btn.disabled = false;
+                    } else {
+                        btn.style.display = 'none';
+                    }
+                })
+                .catch(function() {
+                    btn.textContent = 'Xem thêm';
+                    btn.disabled = false;
+                });
+        });
+    }
+
+    // ── Filter tabs ───────────────────────────────────────
+    document.querySelectorAll('.news-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.news-tab').forEach(function(t) { t.classList.remove('active'); });
+            this.classList.add('active');
+
+            var category = this.dataset.category;
+            var url = this.dataset.url;
+            var btn = document.getElementById('load-more-btn');
+
+            btn.dataset.category = category;
+            btn.dataset.offset = '6';
+
+            fetch(url + '?offset=0&limit=6&category=' + category)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    var featuredArea = document.getElementById('featured-post-area');
+                    if (data.featured) {
+                        featuredArea.innerHTML = data.featured;
+                        featuredArea.classList.add('visible');
+                    } else {
+                        featuredArea.innerHTML = '<p style="color:#999;padding:20px 0;">Không có bài viết.</p>';
+                    }
+                    var container = document.getElementById('posts-container');
+                    container.innerHTML = data.html || '';
+                    if (window.observeNewPosts) window.observeNewPosts(container);
+                    if (data.hasMore) {
+                        btn.style.display = 'inline-block';
+                        btn.textContent = 'Xem thêm';
+                        btn.disabled = false;
+                    } else {
+                        btn.style.display = 'none';
+                    }
+                })
+                .catch(function(err) { console.error('Filter error:', err); });
+        });
+    });
+
 });
 </script>
 @endpush

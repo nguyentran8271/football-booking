@@ -92,6 +92,98 @@
             </div>
         </div>
 
+        <!-- Form đánh giá trải nghiệm web -->
+        @auth
+        @if($hasWebReviewed)
+        <div style="margin-bottom: 30px; padding: 15px 20px; background: #e8f5e9; border-radius: 10px; color: #2e7d32; text-align: center;">
+            Bạn đã gửi đánh giá trải nghiệm. Cảm ơn bạn!
+        </div>
+        @else
+        <div class="card" style="margin-bottom: 40px; padding: 30px;">
+            <h3 style="margin-bottom: 20px;">✍️ Chia sẻ trải nghiệm của bạn</h3>
+            @if(session('success'))
+            <div style="padding: 12px 16px; background: #e8f5e9; border-radius: 8px; color: #2e7d32; margin-bottom: 16px;">
+                {{ session('success') }}
+            </div>
+            @endif
+            <form action="{{ route('reviews.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="type" value="web">
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 6px;">Đánh giá tổng thể <span style="color:red">*</span></label>
+                    <select name="rating" class="form-control" required style="max-width: 300px;">
+                        <option value="5">⭐⭐⭐⭐⭐ Xuất sắc</option>
+                        <option value="4">⭐⭐⭐⭐ Tốt</option>
+                        <option value="3" selected>⭐⭐⭐ Trung bình</option>
+                        <option value="2">⭐⭐ Kém</option>
+                        <option value="1">⭐ Rất kém</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">Giao diện & Thiết kế</label>
+                        <select name="field_quality_rating" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}">{{ $i }} sao</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">Tính năng đặt sân</label>
+                        <select name="lighting_rating" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}">{{ $i }} sao</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">Tốc độ tải trang</label>
+                        <select name="hygiene_rating" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}">{{ $i }} sao</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">Hỗ trợ khách hàng</label>
+                        <select name="staff_rating" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}">{{ $i }} sao</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">Dễ sử dụng</label>
+                        <select name="price_rating" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}">{{ $i }} sao</option>
+                            @endfor
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 6px;">Nhận xét</label>
+                    <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm sử dụng website của bạn..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+            </form>
+        </div>
+        @endif
+        @else
+        <div style="margin-bottom: 30px; padding: 15px 20px; background: #f8f9fa; border-radius: 10px; color: #666; text-align: center;">
+            <a href="{{ route('login') }}" style="color: var(--primary-color); font-weight: 600;">Đăng nhập</a> để chia sẻ trải nghiệm của bạn.
+        </div>
+        @endauth
+
         <!-- Bộ lọc -->
         <div class="review-filters">
             <form method="GET" action="{{ route('reviews.index') }}" id="filterForm">

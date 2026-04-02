@@ -74,7 +74,7 @@
 
 .empty-state {
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 20px;
 }
 </style>
 @endpush
@@ -82,7 +82,7 @@
 @section('content')
 <div class="history-container">
     <div class="container">
-        <h1 style="margin-bottom: 30px;">📋 Lịch Sử Đặt Sân</h1>
+        <h1 style="margin-bottom: 30px; margin-top: 40px;">Lịch Sử Đặt Sân</h1>
 
         @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -172,10 +172,10 @@
         @else
         <div class="bookings-table-wrapper">
             <div class="empty-state">
-                <h3>📭 Chưa có lịch đặt sân nào</h3>
-                <p>Hãy bắt đầu đặt sân để trải nghiệm dịch vụ của chúng tôi</p>
-                <a href="{{ route('fields.index') }}" class="btn btn-primary" style="margin-top: 20px;">
-                    🏟️ Xem danh sách sân
+                <h3>Chưa có lịch đặt sân nào</h3>
+                <p style="margin-bottom: 30px;">Hãy bắt đầu đặt sân để trải nghiệm dịch vụ của chúng tôi</p>
+                <a href="{{ route('fields.index') }}" class="btn btn-primary" style="display: inline-block;">
+                    Xem danh sách sân
                 </a>
             </div>
         </div>

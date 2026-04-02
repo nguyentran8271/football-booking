@@ -23,6 +23,13 @@ class User extends Authenticatable
         'phone',
         'password',
         'role',
+        'owner_request',
+        'owner_request_note',
+        'id_card_image',
+        'id_card_back_image',
+        'id_card_selfie_image',
+        'tax_number',
+        'business_license_image',
     ];
 
     /**

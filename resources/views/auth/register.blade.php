@@ -4,13 +4,16 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+<link rel="stylesheet" href="{{ asset('css/falling-effect.css') }}">
 @endpush
 
 @section('content')
-<div class="auth-page">
+<div class="auth-page" @php $registerBg = App\Models\SiteSetting::get('register_background'); @endphp
+    @if($registerBg) style="background-image: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('{{ asset('storage/' . $registerBg) }}'); background-size: cover; background-position: center;" @endif>
     <div class="auth-card">
         <div class="auth-logo">
-            <img src="{{ asset('images/football-logo.png') }}" alt="Logo">
+            @php $registerLogo = App\Models\SiteSetting::get('register_logo') ?? App\Models\SiteSetting::get('logo'); @endphp
+            <img src="{{ $registerLogo ? asset('storage/' . $registerLogo) : asset('images/football-logo.png') }}" alt="Logo">
         </div>
 
         <h1 class="card-title">Đăng Ký</h1>
@@ -64,3 +67,8 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>document.getElementById('falling-canvas').style.display = 'block';</script>
+<script src="{{ asset('js/falling-effect.js') }}"></script>
+@endpush

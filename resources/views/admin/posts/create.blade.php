@@ -2,6 +2,15 @@
 
 @section('title', 'Thêm bài viết')
 
+@push('styles')
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+#quill-editor { height: 400px; background: #fff; }
+.ql-toolbar { border-radius: 8px 8px 0 0; }
+.ql-container { border-radius: 0 0 8px 8px; font-size: 15px; }
+</style>
+@endpush
+
 @section('content')
 <section class="section">
     <div class="container">
@@ -17,7 +26,7 @@
             @endif
 
             <div class="card">
-                <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="post-form" action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="form-group">
@@ -35,11 +44,12 @@
 
                     <div class="form-group">
                         <label class="form-label">Nội dung *</label>
-                        <textarea name="content" class="form-control" rows="10" required>{{ old('content') }}</textarea>
+                        <div id="quill-editor">{!! old('content') !!}</div>
+                        <textarea name="content" id="content-hidden" style="display:none;">{{ old('content') }}</textarea>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Hình ảnh</label>
+                        <label class="form-label">Hình ảnh thumbnail</label>
                         <input type="file" name="image" class="form-control" accept="image/*">
                     </div>
 
@@ -53,3 +63,51 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+var quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['link', 'image'],
+            ['clean']
+        ]
+    }
+});
+
+document.getElementById('post-form').addEventListener('submit', function(e) {
+    var content = quill.root.innerHTML.trim();
+    if (content === '<p><br></p>' || content === '') {
+        e.preventDefault();
+        alert('Vui lòng nhập nội dung bài viết!');
+        return;
+    }
+    document.getElementById('content-hidden').value = content;
+});
+
+quill.getModule('toolbar').addHandler('image', function() {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+    input.onchange = function() {
+        var file = input.files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('_token', '{{ csrf_token() }}');
+        fetch('{{ route('admin.posts.upload-image') }}', { method: 'POST', body: formData })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var range = quill.getSelection();
+                quill.insertEmbed(range.index, 'image', data.location);
+            });
+    };
+});
+</script>
+@endpush

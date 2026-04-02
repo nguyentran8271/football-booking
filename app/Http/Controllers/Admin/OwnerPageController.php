@@ -22,7 +22,6 @@ class OwnerPageController extends Controller
         return view('admin.owner-page.index', compact('stats', 'benefits', 'steps', 'sections'));
     }
 
-    // Stats
     public function storeStat(Request $request)
     {
         $validated = $request->validate([
@@ -77,7 +76,6 @@ class OwnerPageController extends Controller
         return back()->with('success', 'Đã xóa stat thành công!');
     }
 
-    // Benefits
     public function storeBenefit(Request $request)
     {
         $validated = $request->validate([
@@ -132,7 +130,6 @@ class OwnerPageController extends Controller
         return back()->with('success', 'Đã xóa benefit thành công!');
     }
 
-    // Steps
     public function storeStep(Request $request)
     {
         $validated = $request->validate([
@@ -169,7 +166,6 @@ class OwnerPageController extends Controller
         return back()->with('success', 'Đã xóa bước thành công!');
     }
 
-    // Sections
     public function storeSection(Request $request)
     {
         $validated = $request->validate([

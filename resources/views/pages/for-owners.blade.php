@@ -113,10 +113,30 @@
         <div class="cta-content">
             <h2>Sẵn Sàng Phát Triển Doanh Nghiệp?</h2>
             <p>Tham gia cùng hàng trăm chủ sân đang thành công trên nền tảng của chúng tôi</p>
+
             @guest
-            <a href="{{ route('register') }}" class="btn btn-cta">Đăng ký miễn phí ngay</a>
+                <a href="{{ route('register') }}" class="btn btn-cta">Đăng ký miễn phí ngay</a>
             @else
-            <a href="{{ route('owner.dashboard') }}" class="btn btn-cta">Vào trang quản lý</a>
+                @if(auth()->user()->role === 'owner' || auth()->user()->role === 'admin')
+                    <a href="{{ route('owner.dashboard') }}" class="btn btn-cta">Vào trang quản lý</a>
+                @elseif(auth()->user()->owner_request === 'pending')
+                    <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:20px 30px; display:inline-block;">
+                        <p style="margin:0; font-size:16px;">⏳ Đơn đăng ký của bạn đang chờ duyệt</p>
+                    </div>
+                @elseif(auth()->user()->owner_request === 'rejected')
+                    <div style="background:rgba(255,100,100,0.2); border-radius:12px; padding:16px 24px; margin-bottom:16px; display:inline-block;">
+                        <p style="margin:0; font-size:14px;">❌ Đơn đăng ký trước đã bị từ chối. Bạn có thể gửi lại.</p>
+                    </div>
+                    <button onclick="document.getElementById('owner-request-form').style.display='block'; this.style.display='none';" class="btn btn-cta">Đăng ký làm chủ sân</button>
+                    <div id="owner-request-form" style="display:none; margin-top:20px; background:rgba(255,255,255,0.15); border-radius:12px; padding:24px; max-width:500px; margin-left:auto; margin-right:auto;">
+                        @include('partials.owner-request-form')
+                    </div>
+                @else
+                    <button onclick="document.getElementById('owner-request-form').style.display='block'; this.style.display='none';" class="btn btn-cta">Đăng ký làm chủ sân</button>
+                    <div id="owner-request-form" style="display:none; margin-top:20px; background:rgba(255,255,255,0.15); border-radius:12px; padding:24px; max-width:500px; margin-left:auto; margin-right:auto;">
+                        @include('partials.owner-request-form')
+                    </div>
+                @endif
             @endguest
         </div>
     </div>

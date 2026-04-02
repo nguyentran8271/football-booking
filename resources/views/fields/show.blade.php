@@ -64,9 +64,15 @@
 
             @auth
             <!-- Review Form -->
+            @if($hasReviewed)
+            <div style="margin-bottom: 30px; padding: 15px 20px; background: #e8f5e9; border-radius: 10px; color: #2e7d32;">
+                ✅ Bạn đã đánh giá sân này rồi.
+            </div>
+            @elseif($hasBooked)
             <form action="{{ route('reviews.store') }}" method="POST" style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
                 @csrf
                 <input type="hidden" name="field_id" value="{{ $field->id }}">
+                <input type="hidden" name="type" value="field">
 
                 <div class="form-group">
                     <label class="form-label">Đánh giá của bạn</label>
@@ -81,11 +87,21 @@
 
                 <div class="form-group">
                     <label class="form-label">Nhận xét</label>
-                    <textarea name="comment" class="form-control" rows="3"></textarea>
+                    <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm của bạn về sân này..."></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
             </form>
+            @else
+            <div style="margin-bottom: 30px; padding: 15px 20px; background: #fff3e0; border-radius: 10px; color: #e65100;">
+                ⚠️ Bạn cần đặt và hoàn thành lịch tại sân này mới có thể đánh giá.
+                <a href="{{ route('bookings.create', $field->id) }}" style="color: #e65100; font-weight: 600; margin-left: 8px;">Đặt sân ngay →</a>
+            </div>
+            @endif
+            @else
+            <div style="margin-bottom: 30px; padding: 15px 20px; background: #f8f9fa; border-radius: 10px; color: #666;">
+                <a href="{{ route('login') }}" style="color: var(--primary-color); font-weight: 600;">Đăng nhập</a> để đánh giá sân này.
+            </div>
             @endauth
 
             <!-- Reviews List -->

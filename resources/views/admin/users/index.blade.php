@@ -33,16 +33,18 @@
                         <td>{{ $user->phone ?? 'N/A' }}</td>
                         <td>{{ $user->created_at->format('d/m/Y') }}</td>
                         <td>
-                            <form action="{{ route('admin.users.convert-to-owner', $user->id) }}" method="POST" style="display: inline-block; margin-right: 5px;">
-                                @csrf
-                                <button type="submit" class="btn btn-success" onclick="return confirm('Chuyển user này thành owner?')">Chuyển Owner</button>
-                            </form>
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline-block;"
-                                  onsubmit="return confirm('Bạn có chắc muốn xóa user này?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Xóa</button>
-                            </form>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-primary" style="padding:5px 14px; font-size:13px; height:34px; line-height:24px;">Xem</a>
+                                <form action="{{ route('admin.users.convert-to-owner', $user->id) }}" method="POST" style="margin:0;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-secondary" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;" onclick="return confirm('Chuyển user này thành owner?')">Chuyển Owner</button>
+                                </form>
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Bạn có chắc muốn xóa user này?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;">Xóa</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @endforeach

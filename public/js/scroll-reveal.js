@@ -1,32 +1,38 @@
 // Scroll Reveal Animation
 document.addEventListener('DOMContentLoaded', function() {
-    // Lấy tất cả các phần tử cần animate (chỉ trang chủ)
-    const elements = document.querySelectorAll('.stat-card, .info-card, .field-card, .section-title, .about-card, .stat-item, .featured-post, .post-item');
-
-    // Intersection Observer options
     const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.2 // Hiện khi 20% phần tử vào viewport
+        threshold: 0.1
     };
 
-    // Callback khi phần tử vào viewport
     const callback = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Thêm class 'visible' để trigger animation
                 entry.target.classList.add('visible');
-                // Unobserve để animation chỉ chạy 1 lần
                 observer.unobserve(entry.target);
             }
         });
     };
 
-    // Tạo observer
     const observer = new IntersectionObserver(callback, options);
 
-    // Observe tất cả các phần tử
-    elements.forEach(element => {
-        observer.observe(element);
-    });
+    function observeElements(scope) {
+        var selector = '.stat-card, .info-card, .field-card, .section-title, .about-card, .stat-item, .featured-post, .post-item';
+        var elements = (scope || document).querySelectorAll(selector);
+        elements.forEach(function(el) {
+            observer.observe(el);
+        });
+    }
+
+    // Observe lần đầu
+    observeElements(document);
+
+    // Expose để gọi sau khi inject AJAX
+    window.observeNewPosts = function(container) {
+        var items = container.querySelectorAll('.post-item');
+        items.forEach(function(el) {
+            el.classList.add('visible'); // Thêm thẳng visible vì đã trong viewport
+        });
+    };
 });

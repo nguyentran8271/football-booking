@@ -1,0 +1,16 @@
+graph TD
+    A[1.0 Quản lý người dùng] --> B[1.1 Đăng ký tài khoản]
+    A --> C[1.2 Đăng nhập]
+    A --> D[1.3 Quản lý phân quyền]
+
+    B --> B1[1.1.1 Nhập thông tin]
+    B --> B2[1.1.2 Xác thực dữ liệu]
+    B --> B3[1.1.3 Tạo tài khoản]
+
+    C --> C1[1.2.1 Xác thực email/password]
+    C --> C2[1.2.2 Phân quyền theo role]
+
+    D --> D1[1.3.1 Xem danh sách users]
+    D --> D2[1.3.2 Chuyển user thành owner]
+    D --> D3[1.3.3 Xem danh sách owners]
+    D --> D4[1.3.4 Xóa user/owner]

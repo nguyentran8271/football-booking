@@ -12,22 +12,17 @@ class BookingController extends Controller
     {
         $fieldIds = auth()->user()->fields()->pluck('id');
 
-        $query = Booking::with(['user', 'field'])
-            ->whereIn('field_id', $fieldIds);
+        $query = Booking::with(['user', 'field'])->whereIn('field_id', $fieldIds);
 
-        // Lọc theo trạng thái
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
 
-        // Lọc theo ngày
         if ($request->has('date') && $request->date != '') {
             $query->whereDate('date', $request->date);
         }
 
-        $bookings = $query->orderBy('date', 'desc')
-            ->orderBy('shift', 'desc')
-            ->paginate(20);
+        $bookings = $query->orderBy('date', 'desc')->orderBy('shift', 'desc')->paginate(20);
 
         return view('owner.bookings.index', compact('bookings'));
     }
@@ -36,10 +31,13 @@ class BookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
 
-        // Kiểm tra quyền
         $fieldIds = auth()->user()->fields()->pluck('id');
         if (!$fieldIds->contains($booking->field_id)) {
             abort(403, 'Bạn không có quyền thao tác booking này');
+        }
+
+        if (\Carbon\Carbon::parse($booking->date)->isPast()) {
+            return back()->with('error', 'Không thể xác nhận booking đã qua ngày đặt sân.');
         }
 
         $booking->update(['status' => 'approved']);
@@ -51,7 +49,6 @@ class BookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
 
-        // Kiểm tra quyền
         $fieldIds = auth()->user()->fields()->pluck('id');
         if (!$fieldIds->contains($booking->field_id)) {
             abort(403, 'Bạn không có quyền thao tác booking này');
