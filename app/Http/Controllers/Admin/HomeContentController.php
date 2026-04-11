@@ -27,13 +27,14 @@ class HomeContentController extends Controller
             'description' => 'required|string',
         ]);
 
-        $data = $request->all();
         $maxOrder = HomeCard::max('order') ?? -1;
-        $data['order'] = $maxOrder + 1;
+        HomeCard::create([
+            'title'       => $request->title,
+            'description' => $request->description,
+            'order'       => $maxOrder + 1,
+        ]);
 
-        HomeCard::create($data);
-
-        return redirect()->back()->with('success', 'Card đã được thêm thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function updateCard(Request $request, $id)
@@ -44,20 +45,15 @@ class HomeContentController extends Controller
         ]);
 
         $card = HomeCard::findOrFail($id);
-        $data = $request->all();
-        $data['order'] = $request->input('order', $card->order);
+        $card->update(['title' => $request->title, 'description' => $request->description]);
 
-        $card->update($data);
-
-        return redirect()->back()->with('success', 'Card đã được cập nhật thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function deleteCard($id)
     {
-        $card = HomeCard::findOrFail($id);
-        $card->delete();
-
-        return redirect()->back()->with('success', 'Card đã được xóa thành công!');
+        HomeCard::findOrFail($id)->delete();
+        return response()->json(['success' => true]);
     }
 
     public function storeStat(Request $request)
@@ -96,10 +92,8 @@ class HomeContentController extends Controller
 
     public function deleteStat($id)
     {
-        $stat = HomeStat::findOrFail($id);
-        $stat->delete();
-
-        return redirect()->back()->with('success', 'Số liệu đã được xóa thành công!');
+        HomeStat::findOrFail($id)->delete();
+        return response()->json(['success' => true]);
     }
 
     public function storeField(Request $request)
@@ -109,11 +103,11 @@ class HomeContentController extends Controller
             'description' => 'required|string',
             'price'       => 'required|numeric|min:1',
             'hotline'     => 'nullable|string|max:20',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
-        $data = $request->all();
         $maxOrder = FeaturedField::max('order') ?? -1;
+        $data = $request->only(['title', 'description', 'price', 'hotline']);
         $data['order'] = $maxOrder + 1;
 
         if ($request->hasFile('image')) {
@@ -121,23 +115,21 @@ class HomeContentController extends Controller
         }
 
         FeaturedField::create($data);
-
-        return redirect()->back()->with('success', 'Sân nổi bật đã được thêm thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function updateField(Request $request, $id)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:1',
-            'hotline' => 'nullable|string|max:20',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'price'       => 'required|numeric|min:1',
+            'hotline'     => 'nullable|string|max:20',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $field = FeaturedField::findOrFail($id);
-        $data = $request->all();
-        $data['order'] = $request->input('order', $field->order);
+        $data = $request->only(['title', 'description', 'price', 'hotline']);
 
         if ($request->hasFile('image')) {
             UploadService::delete($field->image);
@@ -145,31 +137,28 @@ class HomeContentController extends Controller
         }
 
         $field->update($data);
-
-        return redirect()->back()->with('success', 'Sân nổi bật đã được cập nhật thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function deleteField($id)
     {
         $field = FeaturedField::findOrFail($id);
-
         UploadService::delete($field->image);
         $field->delete();
-
-        return redirect()->back()->with('success', 'Sân nổi bật đã được xóa thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function storeAboutSection(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'   => 'required|string|max:255',
             'content' => 'required|string',
-            'layout' => 'required|in:image-left,image-right',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'layout'  => 'required|in:image-left,image-right',
+            'image'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
-        $data = $request->all();
         $maxOrder = \App\Models\AboutSection::max('order') ?? -1;
+        $data = $request->only(['title', 'content', 'layout']);
         $data['order'] = $maxOrder + 1;
 
         if ($request->hasFile('image')) {
@@ -177,8 +166,7 @@ class HomeContentController extends Controller
         }
 
         \App\Models\AboutSection::create($data);
-
-        return redirect()->back()->with('success', 'Section đã được thêm thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function updateAboutSection(Request $request, $id)
@@ -209,10 +197,8 @@ class HomeContentController extends Controller
     public function deleteAboutSection($id)
     {
         $section = \App\Models\AboutSection::findOrFail($id);
-
         UploadService::delete($section->image);
         $section->delete();
-
-        return redirect()->back()->with('success', 'Section đã được xóa thành công!');
+        return response()->json(['success' => true]);
     }
 }
