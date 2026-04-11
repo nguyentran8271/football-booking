@@ -846,6 +846,11 @@ function addStat() {
     const value = document.getElementById('new-stat-value').value;
     const title = document.getElementById('new-stat-title').value;
 
+    if (!value || !title) {
+        alert('Vui lòng điền đầy đủ thông tin!');
+        return;
+    }
+
     fetch('{{ route("admin.home-content.stats.store") }}', {
         method: 'POST',
         headers: {
@@ -853,7 +858,10 @@ function addStat() {
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
         body: JSON.stringify({ value, title })
-    }).then(() => location.reload());
+    }).then(r => r.json()).then(data => {
+        if (data.success) location.reload();
+        else alert('Lỗi: ' + (data.message || 'Không thể lưu'));
+    }).catch(e => alert('Lỗi kết nối: ' + e));
 }
 
 function updateStat(id) {
