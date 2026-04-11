@@ -858,10 +858,15 @@ function addStat() {
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
         body: JSON.stringify({ value, title })
-    }).then(r => r.json()).then(data => {
+    }).then(r => {
+        if (!r.ok) {
+            return r.text().then(t => { throw new Error('HTTP ' + r.status + ': ' + t.substring(0, 200)); });
+        }
+        return r.json();
+    }).then(data => {
         if (data.success) location.reload();
         else alert('Lỗi: ' + (data.message || 'Không thể lưu'));
-    }).catch(e => alert('Lỗi kết nối: ' + e));
+    }).catch(e => alert('Lỗi: ' + e.message));
 }
 
 function updateStat(id) {
