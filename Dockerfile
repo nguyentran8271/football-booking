@@ -26,14 +26,9 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configure Apache to serve from /public
-RUN echo '<VirtualHost *:80>\n\
-    DocumentRoot /var/www/html/public\n\
-    <Directory /var/www/html/public>\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+# Configure Apache VirtualHost
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default
 
 # Entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
