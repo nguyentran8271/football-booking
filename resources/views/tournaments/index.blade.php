@@ -275,7 +275,7 @@
             @foreach($tournaments as $tournament)
             <div class="tournament-card">
                 @if($tournament->banner)
-                <img src="{{ asset('storage/' . $tournament->banner) }}" alt="{{ $tournament->name }}" class="tournament-banner">
+                <img src="{{ storage_url($tournament->banner) }}" alt="{{ $tournament->name }}" class="tournament-banner">
                 @else
                 <div class="tournament-banner"></div>
                 @endif

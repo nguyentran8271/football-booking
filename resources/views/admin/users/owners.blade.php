@@ -57,8 +57,8 @@
                                 <div style="display:flex; flex-direction:column; gap:4px;">
                                     @foreach(['id_card_image' => 'Trước', 'id_card_back_image' => 'Sau', 'id_card_selfie_image' => 'Mặt+CCCD'] as $field => $label)
                                         @if($user->$field)
-                                        <a href="{{ asset('storage/' . $user->$field) }}" target="_blank" style="font-size:11px; color:#007bff;">
-                                            <img src="{{ asset('storage/' . $user->$field) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px; display:block;">
+                                        <a href="{{ storage_url($user->$field) }}" target="_blank" style="font-size:11px; color:#007bff;">
+                                            <img src="{{ storage_url($user->$field) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px; display:block;">
                                             {{ $label }}
                                         </a>
                                         @endif
@@ -71,8 +71,8 @@
                         <td style="font-size:13px;">{{ $user->tax_number ?: '—' }}</td>
                         <td>
                             @if($user->business_license_image)
-                            <a href="{{ asset('storage/' . $user->business_license_image) }}" target="_blank">
-                                <img src="{{ asset('storage/' . $user->business_license_image) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px;">
+                            <a href="{{ storage_url($user->business_license_image) }}" target="_blank">
+                                <img src="{{ storage_url($user->business_license_image) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px;">
                             </a>
                             @else
                             <span style="color:#999; font-size:13px;">Không có</span>
@@ -130,8 +130,8 @@
                                 <div style="display:flex; flex-direction:column; gap:4px;">
                                     @foreach(['id_card_image' => 'Trước', 'id_card_back_image' => 'Sau', 'id_card_selfie_image' => 'Mặt+CCCD'] as $field => $label)
                                         @if($owner->$field)
-                                        <a href="{{ asset('storage/' . $owner->$field) }}" target="_blank" style="font-size:11px; color:#007bff;">
-                                            <img src="{{ asset('storage/' . $owner->$field) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px; display:block;">
+                                        <a href="{{ storage_url($owner->$field) }}" target="_blank" style="font-size:11px; color:#007bff;">
+                                            <img src="{{ storage_url($owner->$field) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px; display:block;">
                                             {{ $label }}
                                         </a>
                                         @endif
@@ -144,8 +144,8 @@
                         <td style="font-size:13px;">{{ $owner->tax_number ?: '—' }}</td>
                         <td>
                             @if($owner->business_license_image)
-                            <a href="{{ asset('storage/' . $owner->business_license_image) }}" target="_blank">
-                                <img src="{{ asset('storage/' . $owner->business_license_image) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px;">
+                            <a href="{{ storage_url($owner->business_license_image) }}" target="_blank">
+                                <img src="{{ storage_url($owner->business_license_image) }}" style="width:56px; height:36px; object-fit:cover; border-radius:3px;">
                             </a>
                             @else
                             <span style="color:#999; font-size:13px;">—</span>

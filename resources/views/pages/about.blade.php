@@ -18,7 +18,7 @@
         $aboutBanner = App\Models\SiteSetting::get('about_banner');
         $aboutPageTitle = App\Models\SiteSetting::get('about_page_title') ?: 'Giới Thiệu';
     @endphp
-    <img src="{{ $aboutBanner ? asset('storage/' . $aboutBanner) : asset('images/about-banner.jpg') }}" alt="Giới thiệu" class="hero-slide active">
+    <img src="{{ $aboutBanner ? storage_url($aboutBanner) : asset('images/about-banner.jpg') }}" alt="Giới thiệu" class="hero-slide active">
     <div class="hero-content">
         <h1 style="color: #1a5c2e;">{{ $aboutPageTitle }}</h1>
     </div>
@@ -31,7 +31,7 @@
             <div class="about-section {{ $section->layout }}">
                 <div class="about-section-content">
                     <div class="about-section-image">
-                        <img src="{{ $section->image ? asset('storage/' . $section->image) : asset('images/default-about.jpg') }}" alt="{{ $section->title }}">
+                        <img src="{{ $section->image ? storage_url($section->image) : asset('images/default-about.jpg') }}" alt="{{ $section->title }}">
                     </div>
                     <div class="about-section-text">
                         <h2>{{ $section->title }}</h2>

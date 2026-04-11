@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\HomeCard;
 use App\Models\HomeStat;
 use App\Models\FeaturedField;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class HomeContentController extends Controller
 {
@@ -115,7 +115,7 @@ class HomeContentController extends Controller
         $data['order'] = $maxOrder + 1;
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('featured-fields', 'public');
+            $data['image'] = UploadService::upload($request->file('image'), 'featured-fields');
         }
 
         FeaturedField::create($data);
@@ -138,10 +138,8 @@ class HomeContentController extends Controller
         $data['order'] = $request->input('order', $field->order);
 
         if ($request->hasFile('image')) {
-            if ($field->image) {
-                Storage::disk('public')->delete($field->image);
-            }
-            $data['image'] = $request->file('image')->store('featured-fields', 'public');
+            UploadService::delete($field->image);
+            $data['image'] = UploadService::upload($request->file('image'), 'featured-fields');
         }
 
         $field->update($data);
@@ -153,10 +151,7 @@ class HomeContentController extends Controller
     {
         $field = FeaturedField::findOrFail($id);
 
-        if ($field->image) {
-            Storage::disk('public')->delete($field->image);
-        }
-
+        UploadService::delete($field->image);
         $field->delete();
 
         return redirect()->back()->with('success', 'Sân nổi bật đã được xóa thành công!');
@@ -176,8 +171,7 @@ class HomeContentController extends Controller
         $data['order'] = $maxOrder + 1;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('about-sections', 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = UploadService::upload($request->file('image'), 'about-sections');
         }
 
         \App\Models\AboutSection::create($data);
@@ -201,11 +195,8 @@ class HomeContentController extends Controller
         $section->layout = $validated['layout'];
 
         if ($request->hasFile('image')) {
-            if ($section->image) {
-                Storage::disk('public')->delete($section->image);
-            }
-            $imagePath = $request->file('image')->store('about-sections', 'public');
-            $section->image = $imagePath;
+            UploadService::delete($section->image);
+            $section->image = UploadService::upload($request->file('image'), 'about-sections');
         }
 
         $section->save();
@@ -217,10 +208,7 @@ class HomeContentController extends Controller
     {
         $section = \App\Models\AboutSection::findOrFail($id);
 
-        if ($section->image) {
-            Storage::disk('public')->delete($section->image);
-        }
-
+        UploadService::delete($section->image);
         $section->delete();
 
         return redirect()->back()->with('success', 'Section đã được xóa thành công!');

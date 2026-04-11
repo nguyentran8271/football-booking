@@ -190,7 +190,7 @@ textarea.form-control {
                     <label class="form-label">Ảnh banner giải đấu</label>
                     @if($tournament->banner)
                     <div style="margin-bottom: 10px;">
-                        <img src="{{ asset('storage/' . $tournament->banner) }}" alt="Current banner" class="current-banner">
+                        <img src="{{ storage_url($tournament->banner) }}" alt="Current banner" class="current-banner">
                         <p style="font-size: 13px; color: #666; margin-top: 5px;">Banner hiện tại</p>
                     </div>
                     @endif

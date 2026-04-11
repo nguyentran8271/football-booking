@@ -8,7 +8,7 @@
 
 @section('content')
 <!-- Hero Banner -->
-<section class="reviews-hero" style="background-image: url('{{ App\Models\SiteSetting::get('reviews_banner') ? asset('storage/' . App\Models\SiteSetting::get('reviews_banner')) : '' }}');">
+<section class="reviews-hero" style="background-image: url('{{ App\Models\SiteSetting::get('reviews_banner') ? storage_url(App\Models\SiteSetting::get('reviews_banner')) : '' }}');">
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1>{{ App\Models\SiteSetting::get('reviews_title') ?: 'Đánh Giá Từ Khách Hàng' }}</h1>
@@ -305,7 +305,7 @@
                 @if($review->images && count($review->images) > 0)
                 <div class="review-images">
                     @foreach($review->images as $image)
-                    <img src="{{ asset('storage/' . $image) }}" alt="Review image" class="review-image">
+                    <img src="{{ storage_url($image) }}" alt="Review image" class="review-image">
                     @endforeach
                 </div>
                 @endif
@@ -347,7 +347,7 @@
                 @if($review->images && count($review->images) > 0)
                 <div class="review-images">
                     @foreach($review->images as $image)
-                    <img src="{{ asset('storage/' . $image) }}" alt="Review image" class="review-image">
+                    <img src="{{ storage_url($image) }}" alt="Review image" class="review-image">
                     @endforeach
                 </div>
                 @endif

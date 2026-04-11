@@ -4,7 +4,7 @@
 
     @if($featuredPost->image)
     <div class="featured-image-wrapper">
-        <img src="{{ asset('storage/' . $featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="featured-image">
+        <img src="{{ storage_url($featuredPost->image) }}" alt="{{ $featuredPost->title }}" class="featured-image">
     </div>
     @endif
 

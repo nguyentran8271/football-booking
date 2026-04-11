@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Models\Tournament;
 use App\Models\Field;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class TournamentController extends Controller
 {
@@ -47,7 +47,7 @@ class TournamentController extends Controller
         $validated['owner_id'] = auth()->id();
 
         if ($request->hasFile('banner')) {
-            $validated['banner'] = $request->file('banner')->store('tournaments', 'public');
+            $validated['banner'] = UploadService::upload($request->file('banner'), 'tournaments');
         }
 
         Tournament::create($validated);
@@ -95,10 +95,8 @@ class TournamentController extends Controller
         ]);
 
         if ($request->hasFile('banner')) {
-            if ($tournament->banner) {
-                Storage::disk('public')->delete($tournament->banner);
-            }
-            $validated['banner'] = $request->file('banner')->store('tournaments', 'public');
+            UploadService::delete($tournament->banner);
+            $validated['banner'] = UploadService::upload($request->file('banner'), 'tournaments');
         }
 
         $tournament->update($validated);
@@ -111,10 +109,7 @@ class TournamentController extends Controller
     {
         $tournament = Tournament::where('owner_id', auth()->id())->findOrFail($id);
 
-        if ($tournament->banner) {
-            Storage::disk('public')->delete($tournament->banner);
-        }
-
+        UploadService::delete($tournament->banner);
         $tournament->delete();
 
         return redirect()->route('owner.tournaments.index')

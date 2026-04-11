@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\UploadService;
 
 class OwnerRequestController extends Controller
 {
@@ -37,7 +38,7 @@ class OwnerRequestController extends Controller
 
         foreach (['id_card_image', 'id_card_back_image', 'id_card_selfie_image', 'business_license_image'] as $field) {
             if ($request->hasFile($field)) {
-                $data[$field] = $request->file($field)->store('id-cards', 'public');
+                $data[$field] = UploadService::upload($request->file($field), 'id-cards');
             }
         }
 

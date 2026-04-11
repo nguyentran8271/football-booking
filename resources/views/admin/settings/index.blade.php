@@ -63,7 +63,7 @@
                         @php $logo = App\Models\SiteSetting::get('logo'); @endphp
                         @if($logo)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $logo) }}" alt="Logo" style="max-height: 80px;">
+                            <img src="{{ storage_url($logo) }}" alt="Logo" style="max-height: 80px;">
                         </div>
                         @endif
                         <input type="file" name="logo" class="form-control" accept="image/*">
@@ -74,7 +74,7 @@
                         @php $loginLogo = App\Models\SiteSetting::get('login_logo'); @endphp
                         @if($loginLogo)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $loginLogo) }}" alt="Login Logo" style="max-height: 80px;">
+                            <img src="{{ storage_url($loginLogo) }}" alt="Login Logo" style="max-height: 80px;">
                         </div>
                         @endif
                         <input type="file" name="login_logo" class="form-control" accept="image/*">
@@ -85,7 +85,7 @@
                         @php $loginBg = App\Models\SiteSetting::get('login_background'); @endphp
                         @if($loginBg)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $loginBg) }}" alt="Login Background" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($loginBg) }}" alt="Login Background" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="login_background" class="form-control" accept="image/*">
@@ -97,7 +97,7 @@
                         @php $registerLogo = App\Models\SiteSetting::get('register_logo'); @endphp
                         @if($registerLogo)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $registerLogo) }}" alt="Register Logo" style="max-height: 80px;">
+                            <img src="{{ storage_url($registerLogo) }}" alt="Register Logo" style="max-height: 80px;">
                         </div>
                         @endif
                         <input type="file" name="register_logo" class="form-control" accept="image/*">
@@ -108,7 +108,7 @@
                         @php $registerBg = App\Models\SiteSetting::get('register_background'); @endphp
                         @if($registerBg)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $registerBg) }}" alt="Register Background" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($registerBg) }}" alt="Register Background" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="register_background" class="form-control" accept="image/*">
@@ -171,7 +171,7 @@
                         <div style="margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
                             @foreach($bannerArray as $index => $banner)
                             <div style="position: relative;">
-                                <img src="{{ asset('storage/' . $banner) }}" alt="Banner {{ $index + 1 }}" style="max-width: 200px; border-radius: 10px;">
+                                <img src="{{ storage_url($banner) }}" alt="Banner {{ $index + 1 }}" style="max-width: 200px; border-radius: 10px;">
                                 <button type="button" onclick="removeBanner({{ $index }})" style="position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer;">×</button>
                             </div>
                             @endforeach
@@ -372,7 +372,7 @@
                         @php $fieldsBanner = App\Models\SiteSetting::get('fields_banner'); @endphp
                         @if($fieldsBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $fieldsBanner) }}" alt="Fields Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($fieldsBanner) }}" alt="Fields Banner" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="fields_banner" class="form-control" accept="image/*">
@@ -398,7 +398,7 @@
                         @php $aboutBanner = App\Models\SiteSetting::get('about_banner'); @endphp
                         @if($aboutBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $aboutBanner) }}" alt="About Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($aboutBanner) }}" alt="About Banner" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="about_banner" class="form-control" accept="image/*">
@@ -416,7 +416,7 @@
                         <div class="card" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa;">
                             @if($section->image)
                             <div style="margin-bottom: 10px;">
-                                <img src="{{ asset('storage/' . $section->image) }}" alt="{{ $section->title }}" style="max-width: 200px; border-radius: 10px;">
+                                <img src="{{ storage_url($section->image) }}" alt="{{ $section->title }}" style="max-width: 200px; border-radius: 10px;">
                             </div>
                             @endif
                             <div class="form-group">
@@ -497,7 +497,7 @@
                         @php $reviewsBanner = App\Models\SiteSetting::get('reviews_banner'); @endphp
                         @if($reviewsBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $reviewsBanner) }}" alt="Reviews Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($reviewsBanner) }}" alt="Reviews Banner" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="reviews_banner" class="form-control" accept="image/*">
@@ -531,7 +531,7 @@
                         @php $ownerBanner = App\Models\SiteSetting::get('owner_banner'); @endphp
                         @if($ownerBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $ownerBanner) }}" alt="Owner Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($ownerBanner) }}" alt="Owner Banner" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="owner_banner" class="form-control" accept="image/*">
@@ -608,7 +608,7 @@
                                     <tr>
                                         <td>
                                             @if($benefit->image)
-                                            <img src="{{ asset('storage/' . $benefit->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <img src="{{ storage_url($benefit->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
                                             @else
                                             <span class="text-muted">Không có ảnh</span>
                                             @endif
@@ -707,7 +707,7 @@
                                     <tr>
                                         <td>
                                             @if($section->image)
-                                            <img src="{{ asset('storage/' . $section->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <img src="{{ storage_url($section->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
                                             @else
                                             <span class="text-muted">Không có ảnh</span>
                                             @endif

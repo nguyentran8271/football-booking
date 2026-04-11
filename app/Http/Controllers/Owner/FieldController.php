@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Field;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,7 +44,7 @@ class FieldController extends Controller
         $validated['owner_id'] = auth()->id();
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('fields', 'public');
+            $validated['image'] = UploadService::upload($request->file('image'), 'fields');
         }
 
         Field::create($validated);
@@ -75,9 +76,9 @@ class FieldController extends Controller
 
         if ($request->hasFile('image')) {
             if ($field->image) {
-                Storage::disk('public')->delete($field->image);
+                UploadService::delete($field->image);
             }
-            $validated['image'] = $request->file('image')->store('fields', 'public');
+            $validated['image'] = UploadService::upload($request->file('image'), 'fields');
         }
 
         $field->update($validated);
@@ -90,8 +91,8 @@ class FieldController extends Controller
         $field = Field::where('owner_id', auth()->id())->findOrFail($id);
 
         if ($field->image) {
-            Storage::disk('public')->delete($field->image);
-        }
+                UploadService::delete($field->image);
+            }
 
         $field->delete();
 

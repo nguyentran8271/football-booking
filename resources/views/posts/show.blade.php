@@ -21,7 +21,7 @@
     </a>
 
     @if($post->image)
-    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}"
+    <img src="{{ storage_url($post->image) }}" alt="{{ $post->title }}"
          style="width:100%; max-height:420px; object-fit:cover; border-radius:12px; margin-bottom:28px;">
     @endif
 

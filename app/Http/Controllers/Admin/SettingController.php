@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -130,7 +131,7 @@ class SettingController extends Controller
                 rsort($removeIndexes);
                 foreach ($removeIndexes as $index) {
                     if (isset($bannerArray[$index])) {
-                        Storage::disk('public')->delete($bannerArray[$index]);
+                        UploadService::delete($bannerArray[$index]);
                         unset($bannerArray[$index]);
                     }
                 }
@@ -145,7 +146,7 @@ class SettingController extends Controller
 
             foreach ($request->file('hero_banners') as $file) {
                 if (count($bannerArray) < 5) {
-                    $path = $file->store('settings/banners', 'public');
+                    $path = UploadService::upload($file, 'settings/banners');
                     $bannerArray[] = $path;
                 }
             }
@@ -161,10 +162,8 @@ class SettingController extends Controller
 
             if (in_array($key, ['logo', 'auth_logo', 'auth_background', 'login_logo', 'login_background', 'register_logo', 'register_background', 'fields_banner', 'about_banner', 'reviews_banner', 'owner_banner']) && $request->hasFile($key)) {
                 $oldImage = SiteSetting::get($key);
-                if ($oldImage) {
-                    Storage::disk('public')->delete($oldImage);
-                }
-                $value = $request->file($key)->store('settings', 'public');
+                UploadService::delete($oldImage);
+                $value = UploadService::upload($request->file($key), 'settings');
                 $uploadedFiles[] = $key;
             }
 
@@ -215,10 +214,8 @@ class SettingController extends Controller
         $stat = \App\Models\OwnerStat::findOrFail($id);
 
         if ($stat->image) {
-            Storage::disk('public')->delete($stat->image);
+            UploadService::delete($stat->image);
         }
-
-        $stat->delete();
 
         return back()->with('success', 'Đã xóa stat thành công!');
     }
@@ -232,7 +229,7 @@ class SettingController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('owner-benefits', 'public');
+            $validated['image'] = UploadService::upload($request->file('image'), 'owner-benefits');
         }
 
         $maxOrder = \App\Models\OwnerBenefit::max('order') ?? 0;
@@ -254,10 +251,8 @@ class SettingController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($benefit->image) {
-                Storage::disk('public')->delete($benefit->image);
-            }
-            $validated['image'] = $request->file('image')->store('owner-benefits', 'public');
+            UploadService::delete($benefit->image);
+            $validated['image'] = UploadService::upload($request->file('image'), 'owner-benefits');
         }
 
         $benefit->update($validated);
@@ -270,7 +265,7 @@ class SettingController extends Controller
         $benefit = \App\Models\OwnerBenefit::findOrFail($id);
 
         if ($benefit->image) {
-            Storage::disk('public')->delete($benefit->image);
+            UploadService::delete($benefit->image);
         }
 
         $benefit->delete();
@@ -324,7 +319,7 @@ class SettingController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('owner-sections', 'public');
+            $validated['image'] = UploadService::upload($request->file('image'), 'owner-sections');
         }
 
         $maxOrder = \App\Models\OwnerSection::max('order') ?? 0;
@@ -347,10 +342,8 @@ class SettingController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($section->image) {
-                Storage::disk('public')->delete($section->image);
-            }
-            $validated['image'] = $request->file('image')->store('owner-sections', 'public');
+            UploadService::delete($section->image);
+            $validated['image'] = UploadService::upload($request->file('image'), 'owner-sections');
         }
 
         $section->update($validated);
@@ -363,7 +356,7 @@ class SettingController extends Controller
         $section = \App\Models\OwnerSection::findOrFail($id);
 
         if ($section->image) {
-            Storage::disk('public')->delete($section->image);
+            UploadService::delete($section->image);
         }
 
         $section->delete();

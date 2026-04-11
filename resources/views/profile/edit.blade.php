@@ -85,8 +85,8 @@
                     <div>
                         <label class="form-label" style="font-size:13px;">{{ $label }}</label>
                         @if($user->$field)
-                        <a href="{{ asset('storage/' . $user->$field) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $user->$field) }}" alt="{{ $label }}" style="width:100%; border-radius:8px; border:1px solid #eee; margin-bottom:8px; display:block;">
+                        <a href="{{ storage_url($user->$field) }}" target="_blank">
+                            <img src="{{ storage_url($user->$field) }}" alt="{{ $label }}" style="width:100%; border-radius:8px; border:1px solid #eee; margin-bottom:8px; display:block;">
                         </a>
                         @else
                         <div style="width:100%; height:100px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#999; font-size:13px; margin-bottom:8px;">Chưa có ảnh</div>

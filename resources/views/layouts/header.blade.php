@@ -7,7 +7,7 @@
                     $siteName = App\Models\SiteSetting::get('site_name', 'Đặt Sân Bóng');
                 @endphp
                 @if($logo)
-                    <img src="{{ asset('storage/' . $logo) }}" alt="{{ $siteName }}">
+                    <img src="{{ storage_url($logo) }}" alt="{{ $siteName }}">
                 @else
                     {{ $siteName }}
                 @endif

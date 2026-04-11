@@ -49,7 +49,7 @@
                         <tr>
                             <td>
                                 @if($stat->image)
-                                <img src="{{ asset('storage/' . $stat->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img src="{{ storage_url($stat->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                 <span class="text-muted">Không có ảnh</span>
                                 @endif
@@ -106,7 +106,7 @@
                         <tr>
                             <td>
                                 @if($benefit->image)
-                                <img src="{{ asset('storage/' . $benefit->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img src="{{ storage_url($benefit->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                 <span class="text-muted">Không có ảnh</span>
                                 @endif
@@ -213,7 +213,7 @@
                         <tr>
                             <td>
                                 @if($section->image)
-                                <img src="{{ asset('storage/' . $section->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img src="{{ storage_url($section->image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                 <span class="text-muted">Không có ảnh</span>
                                 @endif

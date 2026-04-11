@@ -53,7 +53,7 @@
                         <label class="form-label">Hình ảnh thumbnail</label>
                         @if($post->image)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($post->image) }}" alt="{{ $post->title }}" style="max-width: 300px; border-radius: 10px;">
                         </div>
                         @endif
                         <input type="file" name="image" class="form-control" accept="image/*">

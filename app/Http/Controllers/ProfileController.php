@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Services\UploadService;
 
 class ProfileController extends Controller
 {
@@ -39,10 +40,8 @@ class ProfileController extends Controller
 
         foreach (['id_card_image', 'id_card_back_image', 'id_card_selfie_image', 'business_license_image'] as $field) {
             if ($request->hasFile($field)) {
-                if ($user->$field) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->$field);
-                }
-                $user->$field = $request->file($field)->store('owner-docs', 'public');
+                UploadService::delete($user->$field);
+                $user->$field = UploadService::upload($request->file($field), 'owner-docs');
             }
         }
 

@@ -8,7 +8,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="owners-hero" style="background-image: url('{{ App\Models\SiteSetting::get('owner_banner') ? asset('storage/' . App\Models\SiteSetting::get('owner_banner')) : '' }}');">
+<section class="owners-hero" style="background-image: url('{{ App\Models\SiteSetting::get('owner_banner') ? storage_url(App\Models\SiteSetting::get('owner_banner')) : '' }}');">
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1>{{ App\Models\SiteSetting::get('owners_title') ?: 'Dành Cho Chủ Sân' }}</h1>
@@ -33,7 +33,7 @@
             <div class="benefit-card">
                 @if($benefit->image)
                 <div class="benefit-icon">
-                    <img src="{{ asset('storage/' . $benefit->image) }}" alt="{{ $benefit->title }}">
+                    <img src="{{ storage_url($benefit->image) }}" alt="{{ $benefit->title }}">
                 </div>
                 @endif
                 <h3>{{ $benefit->title }}</h3>
@@ -56,7 +56,7 @@
             </div>
             @if($section->image)
             <div class="content-image">
-                <img src="{{ asset('storage/' . $section->image) }}" alt="{{ $section->title }}">
+                <img src="{{ storage_url($section->image) }}" alt="{{ $section->title }}">
             </div>
             @endif
         </div>

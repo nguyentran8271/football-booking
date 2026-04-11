@@ -18,7 +18,7 @@
 
     @if(!empty($bannerArray))
         @foreach($bannerArray as $index => $banner)
-        <img src="{{ asset('storage/' . $banner) }}"
+        <img src="{{ storage_url($banner) }}"
              alt="Hero Banner {{ $index + 1 }}"
              class="hero-slide {{ $index === 0 ? 'active' : '' }}"
              data-slide="{{ $index }}">
@@ -184,7 +184,7 @@
             @foreach($tournaments as $tournament)
             <div class="tournament-card-home">
                 @if($tournament->banner)
-                <img src="{{ asset('storage/' . $tournament->banner) }}" alt="{{ $tournament->name }}" class="tournament-banner-home">
+                <img src="{{ storage_url($tournament->banner) }}" alt="{{ $tournament->name }}" class="tournament-banner-home">
                 @else
                 <div class="tournament-banner-home tournament-banner-default"></div>
                 @endif

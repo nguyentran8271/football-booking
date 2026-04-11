@@ -10,7 +10,7 @@
 @section('content')
 <section class="hero" style="height: 400px;@if(!$fieldsBanner) background: linear-gradient(135deg, #28a745 0%, #1a5c2e 100%);@endif">
     @if($fieldsBanner)
-        <img src="{{ asset('storage/' . $fieldsBanner) }}" alt="Đặt sân" class="hero-slide active">
+        <img src="{{ storage_url($fieldsBanner) }}" alt="Đặt sân" class="hero-slide active">
     @endif
     <div class="hero-content">
         <h1>{{ $fieldsTitle }}</h1>
@@ -213,7 +213,7 @@
                 @foreach($tournaments as $tournament)
                 <div class="field-card">
                     @if($tournament->banner)
-                    <img src="{{ asset('storage/' . $tournament->banner) }}" alt="{{ $tournament->name }}" class="field-image">
+                    <img src="{{ storage_url($tournament->banner) }}" alt="{{ $tournament->name }}" class="field-image">
                     @else
                     <div class="field-image" style="background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);"></div>
                     @endif

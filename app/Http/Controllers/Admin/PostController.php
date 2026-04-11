@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -30,7 +30,7 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('posts', 'public');
+            $validated['image'] = UploadService::upload($request->file('image'), 'posts');
         }
 
         Post::create($validated);
@@ -56,10 +56,8 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            $validated['image'] = $request->file('image')->store('posts', 'public');
+            UploadService::delete($post->image);
+            $validated['image'] = UploadService::upload($request->file('image'), 'posts');
         }
 
         $post->update($validated);
@@ -70,9 +68,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
+        UploadService::delete($post->image);
         $post->delete();
         return back()->with('success', 'Đã xóa bài viết.');
     }
@@ -80,7 +76,8 @@ class PostController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate(['file' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096']);
-        $path = $request->file('file')->store('posts/content', 'public');
-        return response()->json(['location' => asset('storage/' . $path)]);
+        $url = UploadService::upload($request->file('file'), 'posts/content');
+        $displayUrl = UploadService::url($url) ?? $url;
+        return response()->json(['location' => $displayUrl]);
     }
 }

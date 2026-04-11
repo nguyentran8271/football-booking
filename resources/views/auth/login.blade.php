@@ -9,11 +9,11 @@
 
 @section('content')
 <div class="auth-page" @php $loginBg = App\Models\SiteSetting::get('login_background'); @endphp
-    @if($loginBg) style="background-image: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('{{ asset('storage/' . $loginBg) }}'); background-size: cover; background-position: center;" @endif>
+    @if($loginBg) style="background-image: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('{{ storage_url($loginBg) }}'); background-size: cover; background-position: center;" @endif>
     <div class="auth-card">
         <div class="auth-logo">
             @php $loginLogo = App\Models\SiteSetting::get('login_logo') ?? App\Models\SiteSetting::get('logo'); @endphp
-            <img src="{{ $loginLogo ? asset('storage/' . $loginLogo) : asset('images/football-logo.png') }}" alt="Logo">
+            <img src="{{ $loginLogo ? storage_url($loginLogo) : asset('images/football-logo.png') }}" alt="Logo">
         </div>
 
         <h1 class="card-title">Đăng Nhập</h1>

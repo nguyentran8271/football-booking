@@ -1,7 +1,7 @@
 <a href="{{ route('posts.show', $post->id) }}" style="text-decoration:none; color:inherit; display:block;">
     <div class="post-item">
         @if($post->image)
-        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="post-thumb">
+        <img src="{{ storage_url($post->image) }}" alt="{{ $post->title }}" class="post-thumb">
         @endif
         <div class="post-info">
             <h4 class="post-item-title">{{ $post->title }}</h4>

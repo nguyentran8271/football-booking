@@ -169,7 +169,7 @@
     <div class="container">
         <div class="tournament-header">
             @if($tournament->banner)
-            <img src="{{ asset('storage/' . $tournament->banner) }}" alt="{{ $tournament->name }}" class="tournament-banner-large">
+            <img src="{{ storage_url($tournament->banner) }}" alt="{{ $tournament->name }}" class="tournament-banner-large">
             @else
             <div class="tournament-banner-large"></div>
             @endif
@@ -242,7 +242,7 @@
                 <div class="team-card {{ $team->status }}">
                     <div class="team-header">
                         @if($team->logo)
-                        <img src="{{ asset('storage/' . $team->logo) }}" alt="{{ $team->team_name }}" class="team-logo">
+                        <img src="{{ storage_url($team->logo) }}" alt="{{ $team->team_name }}" class="team-logo">
                         @else
                         <div class="team-logo" style="display: flex; align-items: center; justify-content: center; font-size: 24px;">⚽</div>
                         @endif
