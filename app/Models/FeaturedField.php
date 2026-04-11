@@ -22,4 +22,12 @@ class FeaturedField extends Model
         'price' => 'float',
         'order' => 'integer'
     ];
+
+    public function getImageUrlAttribute(): string
+    {
+        if (!$this->image) return asset('images/default-field.jpg');
+        if (str_starts_with($this->image, 'http')) return $this->image;
+        if (str_starts_with($this->image, 'images/')) return asset($this->image);
+        return asset('storage/' . $this->image);
+    }
 }
