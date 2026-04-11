@@ -67,13 +67,15 @@ class HomeContentController extends Controller
             'value' => 'required|string|max:255',
         ]);
 
-        $data = $request->all();
         $maxOrder = HomeStat::max('order') ?? -1;
-        $data['order'] = $maxOrder + 1;
 
-        HomeStat::create($data);
+        HomeStat::create([
+            'title' => $request->title,
+            'value' => $request->value,
+            'order' => $maxOrder + 1,
+        ]);
 
-        return redirect()->back()->with('success', 'Số liệu đã được thêm thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function updateStat(Request $request, $id)
@@ -84,12 +86,12 @@ class HomeContentController extends Controller
         ]);
 
         $stat = HomeStat::findOrFail($id);
-        $data = $request->all();
-        $data['order'] = $request->input('order', $stat->order);
+        $stat->update([
+            'title' => $request->title,
+            'value' => $request->value,
+        ]);
 
-        $stat->update($data);
-
-        return redirect()->back()->with('success', 'Số liệu đã được cập nhật thành công!');
+        return response()->json(['success' => true]);
     }
 
     public function deleteStat($id)
