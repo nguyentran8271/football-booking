@@ -95,8 +95,61 @@
         <!-- Form đánh giá trải nghiệm web -->
         @auth
         @if($hasWebReviewed)
-        <div style="margin-bottom: 30px; padding: 15px 20px; background: #e8f5e9; border-radius: 10px; color: #2e7d32; text-align: center;">
-            Bạn đã gửi đánh giá trải nghiệm. Cảm ơn bạn!
+        <div style="margin-bottom: 30px; padding: 20px; background: #e8f5e9; border-radius: 10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <strong style="color:#2e7d32;">Đánh giá trải nghiệm của bạn</strong>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <button onclick="document.getElementById('edit-web-review').style.display='block'; document.getElementById('web-review-display').style.display='none';" class="btn btn-secondary" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;">Sửa</button>
+                    <form action="{{ route('reviews.destroy', $userWebReview->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Xóa đánh giá này?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;">Xóa</button>
+                    </form>
+                </div>
+            </div>
+            <div id="web-review-display">
+                <span style="color:#ffc107;">@for($i=0;$i<$userWebReview->rating;$i++)⭐@endfor</span>
+                @if($userWebReview->comment)<p style="color:#555; margin-top:8px;">{{ $userWebReview->comment }}</p>@endif
+            </div>
+            <form id="edit-web-review" action="{{ route('reviews.update', $userWebReview->id) }}" method="POST" style="display:none; margin-top:15px;">
+                @csrf
+                @method('PUT')
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 6px;">Đánh giá tổng thể</label>
+                    <select name="rating" class="form-control" required style="max-width: 300px;">
+                        @for($i=5;$i>=1;$i--)
+                        <option value="{{ $i }}" {{ $userWebReview->rating == $i ? 'selected' : '' }}>
+                            {{ str_repeat('⭐', $i) }} {{ ['','Rất kém','Kém','Trung bình','Tốt','Xuất sắc'][$i] }}
+                        </option>
+                        @endfor
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                    @foreach([
+                        ['field_quality_rating', 'Giao diện & Thiết kế'],
+                        ['lighting_rating', 'Tính năng đặt sân'],
+                        ['hygiene_rating', 'Tốc độ tải trang'],
+                        ['staff_rating', 'Hỗ trợ khách hàng'],
+                        ['price_rating', 'Dễ sử dụng'],
+                    ] as [$field, $label])
+                    <div>
+                        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">{{ $label }}</label>
+                        <select name="{{ $field }}" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            @for($i=5;$i>=1;$i--)
+                            <option value="{{ $i }}" {{ $userWebReview->$field == $i ? 'selected' : '' }}>{{ $i }} sao</option>
+                            @endfor
+                        </select>
+                    </div>
+                    @endforeach
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 6px;">Nhận xét</label>
+                    <textarea name="comment" class="form-control" rows="3">{{ $userWebReview->comment }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <button type="button" onclick="document.getElementById('edit-web-review').style.display='none'; document.getElementById('web-review-display').style.display='block';" class="btn btn-secondary">Hủy</button>
+            </form>
         </div>
         @else
         <div class="card" style="margin-bottom: 40px; padding: 30px;">
@@ -366,8 +419,11 @@ function markHelpful(reviewId, button) {
     .then(data => {
         if (data.success) {
             button.querySelector('.helpful-count').textContent = data.helpful_count;
-            button.disabled = true;
-            button.style.opacity = '0.6';
+            if (data.liked) {
+                button.classList.add('liked');
+            } else {
+                button.classList.remove('liked');
+            }
         }
     })
     .catch(error => console.error('Error:', error));

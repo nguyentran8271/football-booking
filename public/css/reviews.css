@@ -468,6 +468,12 @@
     border-color: #28a745;
 }
 
+.btn-helpful.liked {
+    background: #28a745;
+    color: #fff;
+    border-color: #28a745;
+}
+
 .btn-helpful:disabled {
     cursor: not-allowed;
 }

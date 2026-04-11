@@ -9,9 +9,18 @@ use Illuminate\Support\Facades\Storage;
 
 class FieldController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $fields = Field::with('owner')->paginate(20);
+        $query = Field::with('owner');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('owner', function ($q) use ($request) {
+                      $q->where('name', 'like', '%' . $request->search . '%');
+                  });
+        }
+
+        $fields = $query->paginate(20)->withQueryString();
         return view('admin.fields.index', compact('fields'));
     }
 

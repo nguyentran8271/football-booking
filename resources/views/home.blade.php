@@ -130,9 +130,7 @@
             @if($customFeaturedFields->count() > 0)
                 @foreach($customFeaturedFields as $field)
                 <div class="field-card">
-                    <img src="{{ $field->image ? asset('storage/' . $field->image) : asset('images/default-field.jpg') }}"
-                         alt="{{ $field->title }}"
-                         class="field-image">
+                    <img src="{{ $field->image_url }}"
                     <div class="field-info">
                         <h3 class="field-name">{{ $field->title }}</h3>
                         <p class="field-address">📍 {{ $field->description }}</p>
@@ -149,7 +147,7 @@
             @else
                 @foreach($featuredFields as $field)
                 <div class="field-card">
-                    <img src="{{ $field->image ? asset('storage/' . $field->image) : asset('images/default-field.jpg') }}"
+                    <img src="{{ $field->image_url }}"
                          alt="{{ $field->name }}"
                          class="field-image">
                     <div class="field-info">

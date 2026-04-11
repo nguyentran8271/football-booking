@@ -74,6 +74,5 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('owner.dashboard', compact('stats', 'recentBookings', 'revenueChart', 'notifications', 'dateFrom', 'dateTo'));
-    }
+        return view('owner.dashboard', compact('stats', 'recentBookings', 'revenueChart', 'notifications', 'dateFrom', 'dateTo'));    }
 }

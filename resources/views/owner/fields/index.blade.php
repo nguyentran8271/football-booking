@@ -158,7 +158,7 @@
                     @foreach($fields as $field)
                     <tr>
                         <td>
-                            <img src="{{ $field->image ? asset('storage/' . $field->image) : asset('images/default-field.jpg') }}"
+                            <img src="{{ $field->image_url }}"
                                  alt="{{ $field->name }}"
                                  class="field-image-thumb">
                         </td>

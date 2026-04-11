@@ -5,13 +5,24 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <h1 style="margin-bottom: 30px;">Quản Lý Users</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Quản Lý Users</h1>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+        </div>
 
         @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @if($users->count() > 0)
+        <form method="GET" action="{{ route('admin.users.index') }}" style="display:flex; gap:12px; margin-bottom:24px;">
+            <input type="text" name="search" value="{{ request('search') }}"
+                placeholder="Tìm theo tên, email hoặc SĐT..."
+                class="form-control" style="max-width:320px;">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            @if(request('search'))
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Xóa bộ lọc</a>
+            @endif
+        </form>
         <div class="card">
             <table class="table">
                 <thead>
@@ -55,11 +66,6 @@
         <div class="pagination">
             {{ $users->links() }}
         </div>
-        @else
-        <div class="card">
-            <p style="text-align: center; padding: 40px;">Chưa có user nào.</p>
-        </div>
-        @endif
     </div>
 </section>
 @endsection

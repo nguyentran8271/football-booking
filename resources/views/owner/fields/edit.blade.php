@@ -134,7 +134,7 @@ textarea.form-control {
                     @if($field->image)
                     <div style="margin-bottom: 10px;">
                         <p style="color: #666; margin-bottom: 10px;">Hình ảnh hiện tại:</p>
-                        <img src="{{ asset('storage/' . $field->image) }}" alt="{{ $field->name }}" class="current-image">
+                        <img src="{{ $field->image_url }}" alt="{{ $field->name }}" class="current-image">
                     </div>
                     @endif
                     <input type="file" name="image" class="form-control" accept="image/*">

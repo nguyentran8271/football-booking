@@ -5,11 +5,24 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <h1 style="margin-bottom: 30px;">Quản Lý Chủ Sân</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Quản Lý Chủ Sân</h1>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+        </div>
 
         @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
         @endif
+
+        <form method="GET" action="{{ route('admin.owners.index') }}" style="display:flex; gap:12px; margin-bottom:24px;">
+            <input type="text" name="search" value="{{ request('search') }}"
+                placeholder="Tìm theo tên, email hoặc SĐT..."
+                class="form-control" style="max-width:320px;">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            @if(request('search'))
+                <a href="{{ route('admin.owners.index') }}" class="btn btn-secondary">Xóa bộ lọc</a>
+            @endif
+        </form>
 
         @if($pendingRequests->count() > 0)
         <div class="card" style="margin-bottom: 30px; border-left: 4px solid #f0ad4e;">

@@ -5,11 +5,24 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <h1 style="margin-bottom: 30px;">Quản Lý Tất Cả Sân</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Quản Lý Tất Cả Sân</h1>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+        </div>
 
         @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
         @endif
+
+        <form method="GET" action="{{ route('admin.fields.index') }}" style="display:flex; gap:12px; margin-bottom:24px;">
+            <input type="text" name="search" value="{{ request('search') }}"
+                placeholder="Tìm theo tên sân hoặc chủ sân..."
+                class="form-control" style="max-width:320px;">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            @if(request('search'))
+                <a href="{{ route('admin.fields.index') }}" class="btn btn-secondary">Xóa bộ lọc</a>
+            @endif
+        </form>
 
         @if($fields->count() > 0)
         <div class="card">
@@ -33,13 +46,13 @@
                         <td>{{ Str::limit($field->address, 50) }}</td>
                         <td>{{ number_format($field->price_per_hour) }}đ</td>
                         <td>
-                            <div style="display: flex; gap: 5px;">
-                                <a href="{{ route('fields.show', $field->id) }}" class="btn btn-secondary" target="_blank">Xem</a>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                <a href="{{ route('fields.show', $field->id) }}" class="btn btn-secondary" target="_blank" style="padding:5px 14px; font-size:13px; height:34px; line-height:24px; display:inline-block;">Xem</a>
                                 <form action="{{ route('admin.fields.destroy', $field->id) }}" method="POST"
-                                      onsubmit="return confirm('Bạn có chắc muốn xóa sân này?')">
+                                      onsubmit="return confirm('Bạn có chắc muốn xóa sân này?')" style="margin:0;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                    <button type="submit" class="btn btn-danger" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;">Xóa</button>
                                 </form>
                             </div>
                         </td>

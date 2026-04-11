@@ -10,11 +10,13 @@ class OwnerRequestController extends Controller
     {
         $request->validate([
             'note'                   => 'nullable|string|max:1000',
-            'tax_number'             => 'nullable|regex:/^\d{10,13}$/',
+            'tax_number'             => 'nullable|regex:/^\d{10,13}$/|unique:users,tax_number',
             'id_card_image'          => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'id_card_back_image'     => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'id_card_selfie_image'   => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'business_license_image' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
+        ], [
+            'tax_number.unique' => 'Mã số thuế này đã được sử dụng bởi tài khoản khác.',
         ]);
 
         $user = auth()->user();

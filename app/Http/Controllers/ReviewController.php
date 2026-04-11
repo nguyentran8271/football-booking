@@ -66,9 +66,13 @@ class ReviewController extends Controller
             ? Review::where('user_id', auth()->id())->whereNull('field_id')->exists()
             : false;
 
+        $userWebReview = auth()->check()
+            ? Review::where('user_id', auth()->id())->whereNull('field_id')->first()
+            : null;
+
         return view('reviews.index', compact(
             'reviews', 'totalReviews', 'averageRating',
-            'ratingDistribution', 'satisfactionRate', 'detailedRatings', 'hasWebReviewed'
+            'ratingDistribution', 'satisfactionRate', 'detailedRatings', 'hasWebReviewed', 'userWebReview'
         ));
     }
 
@@ -135,14 +139,54 @@ class ReviewController extends Controller
         return back()->with('success', 'Cảm ơn bạn đã đánh giá!');
     }
 
+    public function update(Request $request, $id)
+    {
+        $review = Review::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
+        $validated = $request->validate([
+            'rating'               => 'required|integer|min:1|max:5',
+            'comment'              => 'nullable|string|max:1000',
+            'field_quality_rating' => 'nullable|numeric|min:1|max:5',
+            'lighting_rating'      => 'nullable|numeric|min:1|max:5',
+            'hygiene_rating'       => 'nullable|numeric|min:1|max:5',
+            'staff_rating'         => 'nullable|numeric|min:1|max:5',
+            'price_rating'         => 'nullable|numeric|min:1|max:5',
+        ]);
+
+        $review->update($validated);
+
+        return back()->with('success', 'Đã cập nhật đánh giá.');
+    }
+
+    public function destroy($id)
+    {
+        $review = Review::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $review->delete();
+
+        return back()->with('success', 'Đã xóa đánh giá.');
+    }
+
     public function markHelpful($id)
     {
         $review = Review::findOrFail($id);
-        $review->increment('helpful_count');
+
+        $likedKey = 'review_liked_' . $id;
+        $sessionLiked = session($likedKey, false);
+
+        if ($sessionLiked) {
+            $review->decrement('helpful_count');
+            session()->forget($likedKey);
+            $liked = false;
+        } else {
+            $review->increment('helpful_count');
+            session([$likedKey => true]);
+            $liked = true;
+        }
 
         return response()->json([
             'success' => true,
-            'helpful_count' => $review->helpful_count
+            'helpful_count' => $review->fresh()->helpful_count,
+            'liked' => $liked,
         ]);
     }
 }

@@ -54,6 +54,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Gửi đánh giá
     Route::post('/danh-gia', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::put('/danh-gia/{id}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/danh-gia/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // Đăng ký làm chủ sân
     Route::post('/dang-ky-chu-san', [\App\Http\Controllers\OwnerRequestController::class, 'store'])->name('owner-request.store');
@@ -84,6 +86,10 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
 // Routes cho Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/reviews/mark-read', function() {
+        \App\Models\Review::whereNull('field_id')->where('is_read', false)->update(['is_read' => true]);
+        return back();
+    })->name('admin.reviews.mark-read');
 
     // Quản lý users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
@@ -155,3 +161,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 require __DIR__.'/auth.php';
+
+Route::middleware(['auth'])->group(function () { Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit'); Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update'); });

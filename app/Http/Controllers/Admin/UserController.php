@@ -43,15 +43,35 @@ class UserController extends Controller
         return view('admin.users.owner-show', compact('owner', 'fields', 'filteredRevenue', 'tournaments', 'recentBookings', 'filterType', 'filterYear', 'filterMonth'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('role', 'user')->paginate(20);
+        $query = User::where('role', 'user');
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%')
+                  ->orWhere('phone', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $users = $query->paginate(20)->withQueryString();
         return view('admin.users.index', compact('users'));
     }
 
-    public function owners()
+    public function owners(Request $request)
     {
-        $owners = User::where('role', 'owner')->withCount('fields')->paginate(20);
+        $query = User::where('role', 'owner')->withCount('fields');
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%')
+                  ->orWhere('phone', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $owners = $query->paginate(20)->withQueryString();
         $pendingRequests = User::where('owner_request', 'pending')->get();
         return view('admin.users.owners', compact('owners', 'pendingRequests'));
     }

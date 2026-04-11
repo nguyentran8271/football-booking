@@ -8,7 +8,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
             <!-- Field Image -->
             <div>
-                <img src="{{ $field->image ? asset('storage/' . $field->image) : asset('images/default-field.jpg') }}"
+                <img src="{{ $field->image_url }}"
                      alt="{{ $field->name }}"
                      style="width: 100%; border-radius: 10px;">
             </div>
@@ -65,8 +65,43 @@
             @auth
             <!-- Review Form -->
             @if($hasReviewed)
-            <div style="margin-bottom: 30px; padding: 15px 20px; background: #e8f5e9; border-radius: 10px; color: #2e7d32;">
-                ✅ Bạn đã đánh giá sân này rồi.
+            @php $userReview = $field->reviews->where('user_id', auth()->id())->first(); @endphp
+            <div style="margin-bottom: 30px; padding: 20px; background: #e8f5e9; border-radius: 10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <strong style="color:#2e7d32;">Đánh giá của bạn</strong>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <button onclick="document.getElementById('edit-review-form').style.display='block'; this.parentElement.parentElement.parentElement.querySelector('.review-display').style.display='none';" class="btn btn-secondary" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;">Sửa</button>
+                        <form action="{{ route('reviews.destroy', $userReview->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Xóa đánh giá này?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" style="padding:5px 14px; font-size:13px; height:34px; line-height:1;">Xóa</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="review-display">
+                    <span style="color:#ffc107;">@for($i=0;$i<$userReview->rating;$i++)⭐@endfor</span>
+                    @if($userReview->comment)<p style="color:#555; margin-top:8px;">{{ $userReview->comment }}</p>@endif
+                </div>
+                <form id="edit-review-form" action="{{ route('reviews.update', $userReview->id) }}" method="POST" style="display:none; margin-top:10px;">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <label class="form-label">Đánh giá</label>
+                        <select name="rating" class="form-control" required>
+                            @for($i=5;$i>=1;$i--)
+                            <option value="{{ $i }}" {{ $userReview->rating == $i ? 'selected' : '' }}>
+                                {{ str_repeat('⭐', $i) }} {{ ['','Rất kém','Kém','Trung bình','Tốt','Xuất sắc'][$i] }}
+                            </option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nhận xét</label>
+                        <textarea name="comment" class="form-control" rows="3">{{ $userReview->comment }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <button type="button" onclick="document.getElementById('edit-review-form').style.display='none'; this.closest('.review-display') || document.querySelector('.review-display').style.display='block';" class="btn btn-secondary">Hủy</button>
+                </form>
             </div>
             @elseif($hasBooked)
             <form action="{{ route('reviews.store') }}" method="POST" style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">

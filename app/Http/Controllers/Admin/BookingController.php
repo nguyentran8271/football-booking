@@ -11,12 +11,23 @@ class BookingController extends Controller
     /**
      * Danh sách tất cả booking
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with(['user', 'field'])
+        $query = Booking::with(['user', 'field'])
             ->orderBy('date', 'desc')
-            ->orderBy('start_time', 'desc')
-            ->paginate(20);
+            ->orderBy('shift', 'asc');
+
+        if ($request->filled('field_name')) {
+            $query->whereHas('field', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->field_name . '%');
+            });
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
+        }
+
+        $bookings = $query->paginate(20)->withQueryString();
 
         return view('admin.bookings.index', compact('bookings'));
     }

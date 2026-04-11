@@ -31,7 +31,7 @@ class FieldController extends Controller
             'description'    => 'nullable|string',
             'hotline'        => 'nullable|string|regex:/^[0-9]{10}$/',
             'status'         => 'required|in:active,inactive',
-            'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ], [
             'hotline.regex'          => 'Số điện thoại phải có đúng 10 chữ số.',
             'province.required'      => 'Vui lòng chọn tỉnh/thành phố.',
@@ -68,7 +68,7 @@ class FieldController extends Controller
             'description'    => 'nullable|string',
             'hotline'        => 'nullable|string|regex:/^[0-9]{10}$/',
             'status'         => 'required|in:active,inactive',
-            'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ], [
             'hotline.regex' => 'Số điện thoại phải có đúng 10 chữ số.',
         ]);

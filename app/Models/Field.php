@@ -50,4 +50,18 @@ class Field extends Model
     {
         return $this->reviews()->avg('rating') ?? 0;
     }
+
+    /**
+     * Lấy URL ảnh đúng cho cả public/images và storage
+     */
+    public function getImageUrlAttribute(): string
+    {
+        if (!$this->image) {
+            return asset('images/default-field.jpg');
+        }
+        if (str_starts_with($this->image, 'images/')) {
+            return asset($this->image);
+        }
+        return asset('storage/' . $this->image);
+    }
 }

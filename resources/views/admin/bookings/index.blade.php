@@ -5,11 +5,27 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <h1 style="margin-bottom: 30px;">Quản Lý Tất Cả Booking</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Quản Lý Tất Cả Booking</h1>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+        </div>
 
         @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
         @endif
+
+        {{-- Search Form --}}
+        <form method="GET" action="{{ route('admin.bookings.index') }}" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+            <input type="text" name="field_name" value="{{ request('field_name') }}"
+                placeholder="Tìm theo tên sân..."
+                class="form-control" style="max-width: 260px;">
+            <input type="date" name="date" value="{{ request('date') }}"
+                class="form-control" style="max-width: 200px;">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            @if(request('field_name') || request('date'))
+                <a href="{{ route('admin.bookings.index') }}" class="btn btn-secondary">Xóa bộ lọc</a>
+            @endif
+        </form>
 
         @if($bookings->count() > 0)
         <div class="card">
@@ -20,7 +36,7 @@
                         <th>Khách hàng</th>
                         <th>Sân</th>
                         <th>Ngày</th>
-                        <th>Giờ</th>
+                        <th>Ca</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
                         <th>Thao tác</th>
@@ -33,7 +49,7 @@
                         <td>{{ $booking->user->name }}</td>
                         <td>{{ $booking->field->name }}</td>
                         <td>{{ $booking->date->format('d/m/Y') }}</td>
-                        <td>{{ $booking->start_time }} - {{ $booking->end_time }}</td>
+                        <td>{{ $booking->shift_label }}</td>
                         <td>{{ number_format($booking->total_price) }}đ</td>
                         <td>
                             @if($booking->status === 'pending')

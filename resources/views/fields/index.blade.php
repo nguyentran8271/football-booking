@@ -140,7 +140,7 @@
         <div class="fields-grid">
             @foreach($fields as $field)
             <div class="field-card">
-                <img src="{{ $field->image ? asset('storage/' . $field->image) : asset('images/default-field.jpg') }}"
+                <img src="{{ $field->image_url }}"
                      alt="{{ $field->name }}"
                      class="field-image">
                 <div class="field-info">

@@ -142,7 +142,7 @@ textarea.form-control {
                     <label class="form-label">Địa chỉ chi tiết <span class="required">*</span></label>
                     <input type="text" name="address_detail" class="form-control" value="{{ old('address_detail') }}"
                            placeholder="VD: Số 123, Đường Nguyễn Văn A" required>
-                    <small style="color: #666;">💡 Nhập số nhà, tên đường cụ thể</small>
+                    <small style="color: #666;">Nhập số nhà, tên đường cụ thể</small>
                 </div>
 
                 <div class="form-group">

@@ -190,7 +190,7 @@
             <a href="{{ route('owner.tournaments.index') }}" class="btn {{ request()->routeIs('owner.tournaments.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý giải đấu</a>
         </div>
 
-        <!-- Thông báo -->
+        <!-- Thông báo booking -->
         @if($notifications->count() > 0)
         <div class="dashboard-section">
             <h2>🔔 Thông báo mới ({{ $notifications->count() }})</h2>

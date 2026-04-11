@@ -285,7 +285,7 @@
                         <div class="card" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa;">
                             @if($field->image)
                             <div style="margin-bottom: 10px;">
-                                <img src="{{ asset('storage/' . $field->image) }}" alt="{{ $field->title }}" style="max-width: 200px; border-radius: 10px;">
+                                <img src="{{ $field->image_url }}" alt="{{ $field->title }}" style="max-width: 200px; border-radius: 10px;">
                             </div>
                             @endif
                             <div class="form-group">
