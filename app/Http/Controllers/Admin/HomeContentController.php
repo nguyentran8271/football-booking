@@ -67,6 +67,7 @@ class HomeContentController extends Controller
 
         HomeStat::create([
             'title' => $request->title,
+            'label' => $request->title,
             'value' => $request->value,
             'order' => $maxOrder + 1,
         ]);

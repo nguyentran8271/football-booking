@@ -11,6 +11,7 @@ class HomeStat extends Model
 
     protected $fillable = [
         'title',
+        'label',
         'value',
         'order'
     ];
