@@ -148,16 +148,17 @@
         display: none;
         flex-direction: column;
         gap: 0;
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: 0;
         left: 0;
-        right: 0;
-        width: 100%;
+        width: 100vw;
         background: #2e7d32;
-        z-index: 999;
-        padding: 10px 0;
+        z-index: 998;
+        padding: 70px 0 20px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 100vh;
     }
 
     .nav-menu.open {
@@ -178,11 +179,12 @@
         border-bottom: none;
     }
 
-    .auth-buttons { display: none; }
+    .auth-buttons { display: none !important; }
     .mobile-only { display: block !important; }
 
-    .header { position: relative; }
+    .header { position: relative; z-index: 999; }
     .header-content { position: relative; }
+    .mobile-menu-toggle { z-index: 1000; position: relative; }
 }
 
 .mobile-only { display: none; }
