@@ -15,7 +15,10 @@ class UploadService
         if (config('app.env') === 'production') {
             $result = \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::upload(
                 $file->getRealPath(),
-                ['folder' => 'football-booking/' . $folder]
+                [
+                    'folder'  => 'football-booking/' . $folder,
+                    'quality' => 100,
+                ]
             );
             return $result->getSecurePath();
         }
