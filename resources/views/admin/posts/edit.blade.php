@@ -15,7 +15,10 @@
 <section class="section">
     <div class="container">
         <div style="max-width: 900px; margin: 0 auto;">
-            <h1 style="margin-bottom: 30px;">Sửa Bài Viết</h1>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+                <h1>Sửa Bài Viết</h1>
+                <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">← Quay lại</a>
+            </div>
 
             @if($errors->any())
             <div class="alert alert-danger">

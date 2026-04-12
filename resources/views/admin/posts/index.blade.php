@@ -7,7 +7,10 @@
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
             <h1>Quản Lý Bài Viết</h1>
-            <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Thêm bài viết</a>
+            <div style="display:flex; gap:10px;">
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
+                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Thêm bài viết</a>
+            </div>
         </div>
 
         @if(session('success'))
