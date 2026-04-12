@@ -131,6 +131,8 @@
                 @foreach($customFeaturedFields as $field)
                 <div class="field-card">
                     <img src="{{ $field->image_url }}"
+                         alt="{{ $field->title }}"
+                         class="field-image">
                     <div class="field-info">
                         <h3 class="field-name">{{ $field->title }}</h3>
                         <p class="field-address">📍 {{ $field->description }}</p>
