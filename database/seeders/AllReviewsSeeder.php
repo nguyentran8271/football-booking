@@ -44,12 +44,13 @@ class AllReviewsSeeder extends Seeder
 
         $count = 0;
 
-        // Review cho từng sân
+        // Review cho từng sân - tăng lên 15-20 review/sân
         foreach ($fields as $field) {
-            $numReviews = rand(3, 6);
+            $numReviews = rand(15, 20);
             $usedUsers = [];
+            $allUsers = User::where('role', 'user')->get();
             for ($i = 0; $i < $numReviews; $i++) {
-                $user = $users->random();
+                $user = $allUsers->random();
                 if (in_array($user->id, $usedUsers)) continue;
                 $usedUsers[] = $user->id;
                 $rating = rand(3, 5);
