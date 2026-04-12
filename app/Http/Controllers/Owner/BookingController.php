@@ -40,7 +40,7 @@ class BookingController extends Controller
             return back()->with('error', 'Không thể xác nhận booking đã qua ngày đặt sân.');
         }
 
-        $booking->update(['status' => 'approved']);
+        $booking->update(['status' => 'approved', 'user_notified' => false]);
 
         return back()->with('success', 'Đã xác nhận đặt sân thành công!');
     }
@@ -54,7 +54,7 @@ class BookingController extends Controller
             abort(403, 'Bạn không có quyền thao tác booking này');
         }
 
-        $booking->update(['status' => 'cancelled']);
+        $booking->update(['status' => 'cancelled', 'user_notified' => false]);
 
         return back()->with('success', 'Đã hủy đặt sân!');
     }

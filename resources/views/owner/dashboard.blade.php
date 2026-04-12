@@ -233,10 +233,15 @@
         <div class="dashboard-section">
             <h2>🔔 Thông báo mới ({{ $notifications->count() }})</h2>
             @foreach($notifications as $booking)
-            <div class="notification-item">
+            <div class="notification-item" id="notif-{{ $booking->id }}">
                 <strong>Đặt sân mới từ {{ $booking->user->name }}</strong>
-                <p>Sân: {{ $booking->field->name }} - {{ $booking->date }} - Ca {{ $booking->shift }} ({{ $booking->start_time }} - {{ $booking->end_time }})</p>
-                <a href="{{ route('owner.bookings.index') }}" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                <p>Sân: {{ $booking->field->name }} - {{ $booking->date->format('d/m/Y') }} - Ca {{ $booking->shift }} ({{ $booking->start_time }} - {{ $booking->end_time }})</p>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a href="{{ route('owner.bookings.index') }}" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                    @if($booking->date->isPast())
+                    <button onclick="expireBooking({{ $booking->id }})" class="btn btn-sm btn-secondary" style="font-size:12px;">Xác nhận hết hạn</button>
+                    @endif
+                </div>
             </div>
             @endforeach
         </div>
@@ -421,6 +426,17 @@ function markAllRead() {
     fetch('/owner/bookings-mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
     fetch('/owner/reviews-mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
     setTimeout(() => location.reload(), 300);
+}
+function expireBooking(id) {
+    if(!confirm('Xác nhận booking này đã hết hạn?')) return;
+    fetch('/owner/bookings/' + id + '/expire', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}})
+        .then(r => r.json())
+        .then(d => {
+            if(d.success) {
+                var el = document.getElementById('notif-' + id);
+                if(el) el.remove();
+            }
+        });
 }
 document.addEventListener('click', function(e) {
     const bell = document.getElementById('bell-btn');

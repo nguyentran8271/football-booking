@@ -18,6 +18,7 @@ class Booking extends Model
         'total_price',
         'status',
         'is_read',
+        'user_notified',
     ];
 
     protected $casts = [

@@ -54,6 +54,52 @@
 
             <div class="auth-buttons">
                 @auth
+                    @php
+                        $userUnread = 0;
+                        $userNotifications = collect();
+                        if(auth()->user()->role === 'user') {
+                            try {
+                                $userUnread = \App\Models\Booking::where('user_id', auth()->id())
+                                    ->where('user_notified', false)
+                                    ->whereIn('status', ['approved', 'cancelled'])
+                                    ->count();
+                                $userNotifications = \App\Models\Booking::where('user_id', auth()->id())
+                                    ->where('user_notified', false)
+                                    ->whereIn('status', ['approved', 'cancelled'])
+                                    ->with('field')
+                                    ->orderBy('updated_at', 'desc')
+                                    ->limit(10)
+                                    ->get();
+                            } catch(\Exception $e) {}
+                        }
+                    @endphp
+                    @if(auth()->user()->role === 'user')
+                    <div style="position:relative;display:inline-block;margin-right:8px;">
+                        <button id="user-bell-btn" onclick="toggleUserBell()" style="background:none;border:none;cursor:pointer;padding:6px;position:relative;font-size:20px;">
+                            🔔
+                            @if($userUnread > 0)
+                            <span style="position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">{{ $userUnread > 9 ? '9+' : $userUnread }}</span>
+                            @endif
+                        </button>
+                        <div id="user-bell-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:300px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1001;overflow:hidden;max-height:350px;overflow-y:auto;">
+                            <div style="padding:10px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+                                <strong style="font-size:13px;">Thông báo</strong>
+                                @if($userUnread > 0)
+                                <button onclick="markUserRead()" style="background:none;border:none;color:#28a745;font-size:11px;cursor:pointer;">Đã đọc</button>
+                                @endif
+                            </div>
+                            @forelse($userNotifications as $b)
+                            <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->status === 'approved' ? '#f0fff4' : '#fff5f5' }};">
+                                <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}</div>
+                                <div style="font-size:11px;color:#666;">{{ $b->field->name ?? '' }} - {{ $b->date->format('d/m/Y') }}</div>
+                                <div style="font-size:10px;color:#999;">{{ $b->updated_at->diffForHumans() }}</div>
+                            </div>
+                            @empty
+                            <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>
+                            @endforelse
+                        </div>
+                    </div>
+                    @endif
                     <div class="user-dropdown" style="position:relative; display:inline-block;">
                         <button class="user-avatar-btn" onclick="toggleUserMenu()" style="background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:8px; transition:background 0.2s;" onmouseenter="this.style.background='rgba(0,0,0,0.05)'" onmouseleave="this.style.background='none'">
                             <div style="width:36px; height:36px; border-radius:50%; background:#28a745; display:flex; align-items:center; justify-content:center; color:white; font-weight:600; font-size:15px;">
@@ -97,11 +143,24 @@ function toggleUserMenu() {
     var menu = document.getElementById('user-menu');
     menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 }
+function toggleUserBell() {
+    var d = document.getElementById('user-bell-dropdown');
+    d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+function markUserRead() {
+    fetch('/notifications/mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content}})
+        .then(() => location.reload());
+}
 document.addEventListener('click', function(e) {
     var dropdown = document.querySelector('.user-dropdown');
     if (dropdown && !dropdown.contains(e.target)) {
         var menu = document.getElementById('user-menu');
         if (menu) menu.style.display = 'none';
+    }
+    var bellBtn = document.getElementById('user-bell-btn');
+    var bellDrop = document.getElementById('user-bell-dropdown');
+    if (bellBtn && bellDrop && !bellBtn.contains(e.target) && !bellDrop.contains(e.target)) {
+        bellDrop.style.display = 'none';
     }
 });
 function toggleMobileMenu() {
