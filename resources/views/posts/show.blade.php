@@ -11,6 +11,7 @@
 .post-content .ql-align-justify { text-align: justify; }
 .post-content img { max-width: 100%; height: auto; border-radius: 8px; display: block; }
 .post-content .ql-align-center img { margin: 0 auto; }
+.post-content.ql-editor { background: transparent !important; padding: 0 !important; border: none !important; }
 </style>
 @endpush
 
