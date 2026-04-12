@@ -418,8 +418,8 @@ function toggleBell() {
     d.style.display = d.style.display === 'none' ? 'block' : 'none';
 }
 function markAllRead() {
-    fetch('{{ route("owner.bookings.mark-read") }}', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
-    fetch('{{ route("owner.reviews.mark-read") }}', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
+    fetch('/owner/bookings-mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
+    fetch('/owner/reviews-mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
     setTimeout(() => location.reload(), 300);
 }
 document.addEventListener('click', function(e) {
