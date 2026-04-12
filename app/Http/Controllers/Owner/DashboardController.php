@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    // Owner Dashboard
     public function index(\Illuminate\Http\Request $request)
     {
         $owner = auth()->user();
@@ -119,4 +120,5 @@ class DashboardController extends Controller
         }
 
         return view('owner.dashboard', compact('stats', 'recentBookings', 'revenueChart', 'notifications', 'dateFrom', 'dateTo', 'unreadBookings', 'unreadReviews', 'allNotifications'));
+    }
 }
