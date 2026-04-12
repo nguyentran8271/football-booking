@@ -109,7 +109,10 @@
     <div class="container">
         <div class="tournaments-header">
             <h1>Quản lý giải đấu</h1>
-            <a href="{{ route('owner.tournaments.create') }}" class="btn btn-primary">Tạo giải đấu mới</a>
+            <div style="display:flex; gap:10px;">
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
+                <a href="{{ route('owner.tournaments.create') }}" class="btn btn-primary">Tạo giải đấu mới</a>
+            </div>
         </div>
 
         @if(session('success'))

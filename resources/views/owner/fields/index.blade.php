@@ -134,7 +134,10 @@
     <div class="container">
         <div class="header-section">
             <h1>Quản Lý Sân</h1>
-            <a href="{{ route('owner.fields.create') }}" class="btn btn-primary">Thêm sân mới</a>
+            <div style="display:flex; gap:10px;">
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
+                <a href="{{ route('owner.fields.create') }}" class="btn btn-primary">Thêm sân mới</a>
+            </div>
         </div>
 
         @if(session('success'))
