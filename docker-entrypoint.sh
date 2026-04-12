@@ -15,6 +15,17 @@ php artisan tinker --execute="if(\App\Models\User::where('role','user')->count()
 # Seed reviews nếu chưa có
 php artisan tinker --execute="if(\App\Models\Review::count() < 10) { \Artisan::call('db:seed', ['--class' => 'AllReviewsSeeder', '--force' => true]); echo 'Reviews seeded'; } else { echo 'Reviews exist'; }"
 
+# Seed bookings cho chủ sân mẫu nếu chưa có
+php artisan tinker --execute="
+\$owner = \App\Models\User::where('email','owner@gmail.com')->first();
+if(\$owner) {
+    \$fieldIds = \$owner->fields->pluck('id')->toArray();
+    if(\$fieldIds && \App\Models\Booking::whereIn('field_id',\$fieldIds)->count() < 10) {
+        \Artisan::call('db:seed', ['--class' => 'SampleOwnerBookingsSeeder', '--force' => true]);
+        echo 'Owner bookings seeded';
+    } else { echo 'Owner bookings exist'; }
+} else { echo 'Owner not found'; }"
+
 # Clear and rebuild caches
 php artisan config:clear
 php artisan config:cache
