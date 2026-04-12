@@ -267,7 +267,7 @@ function toggleAdminBell() {
     d.style.display = d.style.display === 'none' ? 'block' : 'none';
 }
 function markAdminRead() {
-    fetch('{{ route("admin.reviews.mark-read") }}', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
+    fetch('/admin/reviews/mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
     setTimeout(() => location.reload(), 300);
 }
 document.addEventListener('click', function(e) {
