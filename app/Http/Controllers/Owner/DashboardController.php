@@ -85,30 +85,38 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        $unreadBookings = Booking::whereIn('field_id', $fieldIds)
-            ->where('status', 'pending')
-            ->where('is_read', false)
-            ->count();
+        $unreadBookings = 0;
+        $unreadReviews = 0;
+        $allNotifications = ['bookings' => collect(), 'reviews' => collect()];
 
-        $unreadReviews = \App\Models\Review::whereIn('field_id', $fieldIds)
-            ->where('is_read', false)
-            ->count();
-
-        $allNotifications = [
-            'bookings' => Booking::whereIn('field_id', $fieldIds)
+        try {
+            $unreadBookings = Booking::whereIn('field_id', $fieldIds)
                 ->where('status', 'pending')
                 ->where('is_read', false)
-                ->with(['field', 'user'])
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get(),
-            'reviews' => \App\Models\Review::whereIn('field_id', $fieldIds)
+                ->count();
+
+            $unreadReviews = \App\Models\Review::whereIn('field_id', $fieldIds)
                 ->where('is_read', false)
-                ->with(['user', 'field'])
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get(),
-        ];
+                ->count();
+
+            $allNotifications = [
+                'bookings' => Booking::whereIn('field_id', $fieldIds)
+                    ->where('status', 'pending')
+                    ->where('is_read', false)
+                    ->with(['field', 'user'])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(10)
+                    ->get(),
+                'reviews' => \App\Models\Review::whereIn('field_id', $fieldIds)
+                    ->where('is_read', false)
+                    ->with(['user', 'field'])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(10)
+                    ->get(),
+            ];
+        } catch (\Exception $e) {
+            // Column may not exist yet
+        }
 
         return view('owner.dashboard', compact('stats', 'recentBookings', 'revenueChart', 'notifications', 'dateFrom', 'dateTo', 'unreadBookings', 'unreadReviews', 'allNotifications'));
 }

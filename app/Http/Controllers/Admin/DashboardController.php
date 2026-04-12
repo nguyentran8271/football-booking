@@ -39,24 +39,32 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        $adminUnreadReviews = \App\Models\Review::whereNull('field_id')
-            ->where('is_read', false)
-            ->count();
+        $adminUnreadReviews = 0;
+        $adminUnreadOwnerRequests = 0;
+        $adminNotifications = ['reviews' => collect(), 'owner_requests' => collect()];
 
-        $adminUnreadOwnerRequests = User::where('owner_request', 'pending')->count();
-
-        $adminNotifications = [
-            'reviews' => \App\Models\Review::whereNull('field_id')
+        try {
+            $adminUnreadReviews = \App\Models\Review::whereNull('field_id')
                 ->where('is_read', false)
-                ->with('user')
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get(),
-            'owner_requests' => User::where('owner_request', 'pending')
-                ->orderBy('updated_at', 'desc')
-                ->limit(10)
-                ->get(),
-        ];
+                ->count();
+
+            $adminUnreadOwnerRequests = User::where('owner_request', 'pending')->count();
+
+            $adminNotifications = [
+                'reviews' => \App\Models\Review::whereNull('field_id')
+                    ->where('is_read', false)
+                    ->with('user')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(10)
+                    ->get(),
+                'owner_requests' => User::where('owner_request', 'pending')
+                    ->orderBy('updated_at', 'desc')
+                    ->limit(10)
+                    ->get(),
+            ];
+        } catch (\Exception $e) {
+            // Column may not exist yet
+        }
 
         $hotFilterType = $request->get('hot_filter', 'month');
         $hotYear  = $request->get('hot_year', now()->year);
