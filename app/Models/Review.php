@@ -22,6 +22,7 @@ class Review extends Model
         'images',
         'helpful_count',
         'location',
+        'is_read',
     ];
 
     protected $casts = [

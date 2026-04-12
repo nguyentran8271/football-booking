@@ -39,6 +39,25 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        $adminUnreadReviews = \App\Models\Review::whereNull('field_id')
+            ->where('is_read', false)
+            ->count();
+
+        $adminUnreadOwnerRequests = User::where('owner_request', 'pending')->count();
+
+        $adminNotifications = [
+            'reviews' => \App\Models\Review::whereNull('field_id')
+                ->where('is_read', false)
+                ->with('user')
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get(),
+            'owner_requests' => User::where('owner_request', 'pending')
+                ->orderBy('updated_at', 'desc')
+                ->limit(10)
+                ->get(),
+        ];
+
         $hotFilterType = $request->get('hot_filter', 'month');
         $hotYear  = $request->get('hot_year', now()->year);
         $hotMonth = $request->get('hot_month', now()->month);
@@ -63,7 +82,8 @@ class DashboardController extends Controller
             'monthlyBookings', 'yearlyBookings',
             'monthlyRevenue', 'yearlyRevenue',
             'recentBookings', 'hotFields',
-            'hotFilterType', 'hotYear', 'hotMonth'
+            'hotFilterType', 'hotYear', 'hotMonth',
+            'adminUnreadReviews', 'adminUnreadOwnerRequests', 'adminNotifications'
         ));
     }
 }

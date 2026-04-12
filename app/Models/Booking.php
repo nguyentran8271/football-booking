@@ -17,6 +17,7 @@ class Booking extends Model
         'shift',
         'total_price',
         'status',
+        'is_read',
     ];
 
     protected $casts = [
