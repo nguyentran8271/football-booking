@@ -18,14 +18,39 @@
             </div>
 
             <nav>
-                <ul class="nav-menu">
+                <ul class="nav-menu" id="nav-menu">
                     <li><a href="{{ route('home') }}">Trang chủ</a></li>
                     <li><a href="{{ route('fields.index') }}">Đặt sân</a></li>
                     <li><a href="{{ route('about') }}">Giới thiệu</a></li>
                     <li><a href="{{ route('reviews.index') }}">Đánh giá</a></li>
                     <li><a href="{{ route('for-owners') }}">Dành cho chủ sân</a></li>
+                    @auth
+                    <li class="mobile-only">
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+                        @elseif(auth()->user()->isOwner())
+                            <a href="{{ route('owner.dashboard') }}">Quản lý</a>
+                        @else
+                            <a href="{{ route('bookings.history') }}">Lịch sử đặt sân</a>
+                        @endif
+                    </li>
+                    <li class="mobile-only"><a href="{{ route('profile.edit') }}">Thông tin cá nhân</a></li>
+                    <li class="mobile-only">
+                        <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                            @csrf
+                            <button type="submit" style="background:none;border:none;color:#dc3545;font-size:15px;cursor:pointer;padding:0;font-weight:500;">Đăng xuất</button>
+                        </form>
+                    </li>
+                    @else
+                    <li class="mobile-only"><a href="{{ route('login') }}">Đăng nhập</a></li>
+                    <li class="mobile-only"><a href="{{ route('register') }}">Đăng ký</a></li>
+                    @endauth
                 </ul>
             </nav>
+
+            <button class="mobile-menu-toggle" id="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
 
             <div class="auth-buttons">
                 @auth
@@ -79,4 +104,10 @@ document.addEventListener('click', function(e) {
         if (menu) menu.style.display = 'none';
     }
 });
+function toggleMobileMenu() {
+    var nav = document.getElementById('nav-menu');
+    var btn = document.getElementById('mobile-toggle');
+    nav.classList.toggle('open');
+    btn.classList.toggle('active');
+}
 </script>
