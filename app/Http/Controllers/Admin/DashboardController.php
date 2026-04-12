@@ -70,8 +70,7 @@ class DashboardController extends Controller
         $hotYear  = $request->get('hot_year', now()->year);
         $hotMonth = $request->get('hot_month', now()->month);
 
-        $hotQuery = Booking::with('field.owner')
-            ->whereIn('status', ['pending', 'approved'])
+        $hotQuery = Booking::whereIn('status', ['pending', 'approved'])
             ->selectRaw('field_id, COUNT(*) as total_bookings, SUM(total_price) as total_revenue')
             ->groupBy('field_id')
             ->orderByDesc('total_bookings')
@@ -83,7 +82,20 @@ class DashboardController extends Controller
             $hotQuery->whereYear('date', $hotYear);
         }
 
-        $hotFields = $hotQuery->get();
+        $hotFieldsRaw = $hotQuery->get();
+        $hotFieldIds = $hotFieldsRaw->pluck('field_id');
+        $hotFieldsMap = $hotFieldsRaw->keyBy('field_id');
+
+        $hotFields = \App\Models\Field::with('owner')
+            ->whereIn('id', $hotFieldIds)
+            ->get()
+            ->map(function($field) use ($hotFieldsMap) {
+                $field->total_bookings = $hotFieldsMap[$field->id]->total_bookings ?? 0;
+                $field->total_revenue = $hotFieldsMap[$field->id]->total_revenue ?? 0;
+                return $field;
+            })
+            ->sortByDesc('total_bookings')
+            ->values();
 
         return view('admin.dashboard', compact(
             'totalUsers', 'totalOwners', 'totalFields',
