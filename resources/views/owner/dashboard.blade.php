@@ -141,7 +141,7 @@
 @section('content')
 <div class="dashboard-container">
     <div class="container">
-        <h1 style="margin-bottom: 30px;">Dashboard Quản Lý Sân</h1>
+        <h1 style="margin-bottom: 30px;">Dashboard Quản Lý</h1>
 
         @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

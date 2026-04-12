@@ -45,7 +45,7 @@
                             @if(auth()->user()->isAdmin())
                                 <a href="{{ route('admin.dashboard') }}" style="display:block; padding:10px 16px; color:#333; text-decoration:none; font-size:14px;" onmouseenter="this.style.background='#f8f9fa'" onmouseleave="this.style.background='white'">Admin Dashboard</a>
                             @elseif(auth()->user()->isOwner())
-                                <a href="{{ route('owner.dashboard') }}" style="display:block; padding:10px 16px; color:#333; text-decoration:none; font-size:14px;" onmouseenter="this.style.background='#f8f9fa'" onmouseleave="this.style.background='white'">Quản lý sân</a>
+                                <a href="{{ route('owner.dashboard') }}" style="display:block; padding:10px 16px; color:#333; text-decoration:none; font-size:14px;" onmouseenter="this.style.background='#f8f9fa'" onmouseleave="this.style.background='white'">Quản lý</a>
                             @else
                                 <a href="{{ route('bookings.history') }}" style="display:block; padding:10px 16px; color:#333; text-decoration:none; font-size:14px;" onmouseenter="this.style.background='#f8f9fa'" onmouseleave="this.style.background='white'">Lịch sử đặt sân</a>
                             @endif
