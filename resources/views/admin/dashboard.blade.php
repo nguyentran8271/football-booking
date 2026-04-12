@@ -49,7 +49,7 @@
                 <h2 class="card-title" style="margin:0;">Quản lý</h2>
                 {{-- Chuông thông báo admin --}}
                 @php $adminTotalUnread = $adminUnreadReviews + $adminUnreadOwnerRequests; @endphp
-                <div style="position:relative;">
+                <div style="position:relative; z-index:100;">
                     <button id="admin-bell-btn" onclick="toggleAdminBell()" style="background:none;border:none;cursor:pointer;padding:8px;position:relative;font-size:22px;">
                         🔔
                         @if($adminTotalUnread > 0)

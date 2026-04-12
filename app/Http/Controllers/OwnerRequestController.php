@@ -11,7 +11,7 @@ class OwnerRequestController extends Controller
     {
         $request->validate([
             'note'                   => 'nullable|string|max:1000',
-            'tax_number'             => 'nullable|regex:/^\d{10,13}$/|unique:users,tax_number',
+            'tax_number'             => 'nullable|regex:/^\d{10,13}$/|unique:users,tax_number,' . auth()->id(),
             'id_card_image'          => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'id_card_back_image'     => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             'id_card_selfie_image'   => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
