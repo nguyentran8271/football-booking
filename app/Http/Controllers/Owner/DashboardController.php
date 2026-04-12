@@ -59,34 +59,23 @@ class DashboardController extends Controller
         $isPostgres = DB::connection()->getDriverName() === 'pgsql';
 
         if ($diffDays > 90) {
-            $groupBy = $isPostgres
-                ? DB::raw("TO_CHAR(date, 'YYYY-MM') as date")
-                : DB::raw("DATE_FORMAT(date, '%Y-%m') as date");
-            $groupByClause = $isPostgres
-                ? DB::raw("TO_CHAR(date, 'YYYY-MM')")
-                : DB::raw("DATE_FORMAT(date, '%Y-%m')");
+            $dateExpr = $isPostgres ? "TO_CHAR(date, 'YYYY-MM')" : "DATE_FORMAT(date, '%Y-%m')";
         } elseif ($diffDays > 60) {
-            $groupBy = $isPostgres
-                ? DB::raw("TO_CHAR(date, 'IYYY-IW') as date")
-                : DB::raw("DATE_FORMAT(date, '%x-W%v') as date");
-            $groupByClause = $isPostgres
-                ? DB::raw("TO_CHAR(date, 'IYYY-IW')")
-                : DB::raw("DATE_FORMAT(date, '%x-W%v')");
+            $dateExpr = $isPostgres ? "TO_CHAR(date, 'IYYY-IW')" : "DATE_FORMAT(date, '%x-W%v')";
         } else {
-            $groupBy = DB::raw('DATE(date) as date');
-            $groupByClause = DB::raw('DATE(date)');
+            $dateExpr = $isPostgres ? "date::date::text" : "DATE(date)";
         }
 
         $revenueChart = Booking::whereIn('field_id', $fieldIds)
             ->where('status', 'approved')
             ->whereBetween('date', [$dateFrom, $dateTo])
             ->select(
-                $groupBy,
+                DB::raw("{$dateExpr} as date"),
                 DB::raw('SUM(total_price) as total'),
                 DB::raw('COUNT(*) as count')
             )
-            ->groupBy($groupByClause)
-            ->orderBy('date')
+            ->groupBy(DB::raw($dateExpr))
+            ->orderBy(DB::raw($dateExpr))
             ->get();
 
         $notifications = Booking::whereIn('field_id', $fieldIds)
