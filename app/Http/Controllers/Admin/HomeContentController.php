@@ -34,7 +34,9 @@ class HomeContentController extends Controller
             'order'       => $maxOrder + 1,
         ]);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Card đã được thêm thành công!');
     }
 
     public function updateCard(Request $request, $id)
@@ -47,13 +49,17 @@ class HomeContentController extends Controller
         $card = HomeCard::findOrFail($id);
         $card->update(['title' => $request->title, 'description' => $request->description]);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Card đã được cập nhật thành công!');
     }
 
     public function deleteCard($id)
     {
         HomeCard::findOrFail($id)->delete();
-        return response()->json(['success' => true]);
+        return request()->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Card đã được xóa thành công!');
     }
 
     public function storeStat(Request $request)
@@ -72,7 +78,9 @@ class HomeContentController extends Controller
             'order' => $maxOrder + 1,
         ]);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Số liệu đã được thêm thành công!');
     }
 
     public function updateStat(Request $request, $id)
@@ -88,13 +96,17 @@ class HomeContentController extends Controller
             'value' => $request->value,
         ]);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Số liệu đã được cập nhật thành công!');
     }
 
     public function deleteStat($id)
     {
         HomeStat::findOrFail($id)->delete();
-        return response()->json(['success' => true]);
+        return request()->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Số liệu đã được xóa thành công!');
     }
 
     public function storeField(Request $request)
@@ -116,7 +128,9 @@ class HomeContentController extends Controller
         }
 
         FeaturedField::create($data);
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Sân nổi bật đã được thêm thành công!');
     }
 
     public function updateField(Request $request, $id)
@@ -138,7 +152,9 @@ class HomeContentController extends Controller
         }
 
         $field->update($data);
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Sân nổi bật đã được cập nhật thành công!');
     }
 
     public function deleteField($id)
@@ -146,7 +162,9 @@ class HomeContentController extends Controller
         $field = FeaturedField::findOrFail($id);
         UploadService::delete($field->image);
         $field->delete();
-        return response()->json(['success' => true]);
+        return request()->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Sân nổi bật đã được xóa thành công!');
     }
 
     public function storeAboutSection(Request $request)
@@ -167,7 +185,9 @@ class HomeContentController extends Controller
         }
 
         \App\Models\AboutSection::create($data);
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Section đã được thêm thành công!');
     }
 
     public function updateAboutSection(Request $request, $id)
@@ -200,6 +220,8 @@ class HomeContentController extends Controller
         $section = \App\Models\AboutSection::findOrFail($id);
         UploadService::delete($section->image);
         $section->delete();
-        return response()->json(['success' => true]);
+        return request()->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Section đã được xóa thành công!');
     }
 }

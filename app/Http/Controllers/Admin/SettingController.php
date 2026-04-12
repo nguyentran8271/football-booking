@@ -192,7 +192,9 @@ class SettingController extends Controller
 
         \App\Models\OwnerStat::create($validated);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã thêm stat thành công!');
     }
 
     public function updateOwnerStat(Request $request, $id)
@@ -206,7 +208,9 @@ class SettingController extends Controller
 
         $stat->update($validated);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã cập nhật stat thành công!');
     }
 
     public function deleteOwnerStat($id)
@@ -214,7 +218,9 @@ class SettingController extends Controller
         $stat = \App\Models\OwnerStat::findOrFail($id);
         UploadService::delete($stat->image);
         $stat->delete();
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã xóa stat thành công!');
     }
 
     public function storeOwnerBenefit(Request $request)
@@ -234,7 +240,9 @@ class SettingController extends Controller
 
         \App\Models\OwnerBenefit::create($validated);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã thêm benefit thành công!');
     }
 
     public function updateOwnerBenefit(Request $request, $id)
@@ -267,7 +275,9 @@ class SettingController extends Controller
 
         $benefit->delete();
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã xóa benefit thành công!');
     }
 
     public function storeOwnerStep(Request $request)
@@ -280,7 +290,9 @@ class SettingController extends Controller
 
         \App\Models\OwnerStep::create($validated);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã thêm bước thành công!');
     }
 
     public function updateOwnerStep(Request $request, $id)
@@ -295,13 +307,17 @@ class SettingController extends Controller
 
         $step->update($validated);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã cập nhật bước thành công!');
     }
 
     public function deleteOwnerStep($id)
     {
         \App\Models\OwnerStep::findOrFail($id)->delete();
-        return response()->json(['success' => true]);
+        return request()->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã xóa bước thành công!');
     }
 
     public function storeOwnerSection(Request $request)
@@ -322,7 +338,9 @@ class SettingController extends Controller
 
         \App\Models\OwnerSection::create($validated);
 
-        return response()->json(['success' => true]);
+        return $request->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã thêm section thành công!');
     }
 
     public function updateOwnerSection(Request $request, $id)
@@ -356,6 +374,8 @@ class SettingController extends Controller
 
         $section->delete();
 
-        return response()->json(['success' => true]);
+        return request()->wantsJson()
+            ? response()->json(['success' => true])
+            : back()->with('success', 'Đã xóa section thành công!');
     }
 }
