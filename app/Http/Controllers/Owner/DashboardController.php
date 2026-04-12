@@ -55,15 +55,40 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
+        $diffDays = $dateFrom->diffInDays($dateTo);
+        $isPostgres = config('database.default') === 'pgsql';
+
+        if ($diffDays > 90) {
+            // Hơn 3 tháng → group theo tháng
+            $groupBy = $isPostgres
+                ? DB::raw("TO_CHAR(date, 'YYYY-MM') as date")
+                : DB::raw("DATE_FORMAT(date, '%Y-%m') as date");
+            $groupByClause = $isPostgres
+                ? DB::raw("TO_CHAR(date, 'YYYY-MM')")
+                : DB::raw("DATE_FORMAT(date, '%Y-%m')");
+        } elseif ($diffDays > 60) {
+            // Hơn 2 tháng → group theo tuần
+            $groupBy = $isPostgres
+                ? DB::raw("TO_CHAR(date, 'IYYY-IW') as date")
+                : DB::raw("DATE_FORMAT(date, '%x-W%v') as date");
+            $groupByClause = $isPostgres
+                ? DB::raw("TO_CHAR(date, 'IYYY-IW')")
+                : DB::raw("DATE_FORMAT(date, '%x-W%v')");
+        } else {
+            // Mặc định → group theo ngày
+            $groupBy = DB::raw('DATE(date) as date');
+            $groupByClause = DB::raw('DATE(date)');
+        }
+
         $revenueChart = Booking::whereIn('field_id', $fieldIds)
             ->where('status', 'approved')
             ->whereBetween('date', [$dateFrom, $dateTo])
             ->select(
-                DB::raw('DATE(date) as date'),
+                $groupBy,
                 DB::raw('SUM(total_price) as total'),
                 DB::raw('COUNT(*) as count')
             )
-            ->groupBy('date')
+            ->groupBy($groupByClause)
             ->orderBy('date')
             ->get();
 
