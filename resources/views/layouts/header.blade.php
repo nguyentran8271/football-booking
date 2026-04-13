@@ -55,51 +55,96 @@
             <div class="auth-buttons">
                 @auth
                     @php
-                        $userUnread = 0;
-                        $userNotifications = collect();
-                        if(auth()->user()->role === 'user') {
-                            try {
-                                $userUnread = \App\Models\Booking::where('user_id', auth()->id())
+                        $bellUnread = 0;
+                        $bellRole = auth()->user()->role;
+                        $bellNotifs = [];
+                        try {
+                            if($bellRole === 'user') {
+                                $bellUnread = \App\Models\Booking::where('user_id', auth()->id())
+                                    ->where('user_notified', false)
+                                    ->whereIn('status', ['approved', 'cancelled'])->count();
+                                $bellNotifs = \App\Models\Booking::where('user_id', auth()->id())
                                     ->where('user_notified', false)
                                     ->whereIn('status', ['approved', 'cancelled'])
-                                    ->count();
-                                $userNotifications = \App\Models\Booking::where('user_id', auth()->id())
-                                    ->where('user_notified', false)
-                                    ->whereIn('status', ['approved', 'cancelled'])
-                                    ->with('field')
-                                    ->orderBy('updated_at', 'desc')
-                                    ->limit(10)
-                                    ->get();
-                            } catch(\Exception $e) {}
-                        }
+                                    ->with('field')->orderBy('updated_at','desc')->limit(10)->get();
+                            } elseif($bellRole === 'owner') {
+                                $ownerFids = auth()->user()->fields()->pluck('id');
+                                $bellUnread = \App\Models\Booking::whereIn('field_id', $ownerFids)->where('status','pending')->where('is_read',false)->count()
+                                           + \App\Models\Review::whereIn('field_id', $ownerFids)->where('is_read',false)->count();
+                                $bellNotifs = [
+                                    'bookings' => \App\Models\Booking::whereIn('field_id', $ownerFids)->where('status','pending')->where('is_read',false)->with(['field','user'])->orderBy('created_at','desc')->limit(10)->get(),
+                                    'reviews'  => \App\Models\Review::whereIn('field_id', $ownerFids)->where('is_read',false)->with(['user','field'])->orderBy('created_at','desc')->limit(10)->get(),
+                                ];
+                            } elseif($bellRole === 'admin') {
+                                $bellUnread = \App\Models\Review::whereNull('field_id')->where('is_read',false)->count()
+                                           + \App\Models\User::where('owner_request','pending')->count();
+                                $bellNotifs = [
+                                    'reviews'        => \App\Models\Review::whereNull('field_id')->where('is_read',false)->with('user')->orderBy('created_at','desc')->limit(10)->get(),
+                                    'owner_requests' => \App\Models\User::where('owner_request','pending')->orderBy('updated_at','desc')->limit(10)->get(),
+                                ];
+                            }
+                        } catch(\Exception $e) {}
                     @endphp
-                    @if(auth()->user()->role === 'user')
                     <div style="position:relative;display:inline-block;margin-right:8px;">
-                        <button id="user-bell-btn" onclick="toggleUserBell()" style="background:none;border:none;cursor:pointer;padding:6px;position:relative;font-size:20px;">
+                        <button id="bell-btn" onclick="toggleBell()" style="background:none;border:none;cursor:pointer;padding:6px;position:relative;font-size:20px;">
                             🔔
-                            @if($userUnread > 0)
-                            <span style="position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">{{ $userUnread > 9 ? '9+' : $userUnread }}</span>
+                            @if($bellUnread > 0)
+                            <span id="bell-badge" style="position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">{{ $bellUnread > 9 ? '9+' : $bellUnread }}</span>
                             @endif
                         </button>
-                        <div id="user-bell-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:300px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1001;overflow:hidden;max-height:350px;overflow-y:auto;">
-                            <div style="padding:10px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+                        <div id="bell-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:310px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1001;overflow:hidden;max-height:380px;overflow-y:auto;">
+                            <div style="padding:10px 14px;border-bottom:1px solid #eee;">
                                 <strong style="font-size:13px;">Thông báo</strong>
-                                @if($userUnread > 0)
-                                <button onclick="markUserRead()" style="background:none;border:none;color:#28a745;font-size:11px;cursor:pointer;">Đã đọc</button>
-                                @endif
                             </div>
-                            @forelse($userNotifications as $b)
-                            <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->status === 'approved' ? '#f0fff4' : '#fff5f5' }};">
-                                <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}</div>
-                                <div style="font-size:11px;color:#666;">{{ $b->field->name ?? '' }} - {{ $b->date->format('d/m/Y') }}</div>
-                                <div style="font-size:10px;color:#999;">{{ $b->updated_at->diffForHumans() }}</div>
-                            </div>
-                            @empty
-                            <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>
-                            @endforelse
+                            @if($bellRole === 'user')
+                                @forelse($bellNotifs as $b)
+                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->status === 'approved' ? '#f0fff4' : '#fff5f5' }};">
+                                    <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}</div>
+                                    <div style="font-size:11px;color:#666;">{{ $b->field->name ?? '' }} - {{ $b->date->format('d/m/Y') }}</div>
+                                    <div style="font-size:10px;color:#999;">{{ $b->updated_at->diffForHumans() }}</div>
+                                </div>
+                                @empty
+                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>
+                                @endforelse
+                            @elseif($bellRole === 'owner')
+                                @forelse($bellNotifs['bookings'] as $b)
+                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;">
+                                    <div style="font-size:12px;font-weight:600;">📅 Đặt sân mới</div>
+                                    <div style="font-size:11px;color:#666;">{{ $b->user->name ?? '' }} - {{ $b->field->name ?? '' }}</div>
+                                    <div style="font-size:10px;color:#999;">{{ $b->date->format('d/m/Y') }} Ca {{ $b->shift }} · {{ $b->created_at->diffForHumans() }}</div>
+                                </div>
+                                @empty
+                                @endforelse
+                                @forelse($bellNotifs['reviews'] as $r)
+                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#f0fff4;">
+                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá mới</div>
+                                    <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->field->name ?? '' }} {{ $r->rating }}/5</div>
+                                    <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
+                                </div>
+                                @empty
+                                @endforelse
+                                @if($bellUnread === 0)<div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>@endif
+                            @elseif($bellRole === 'admin')
+                                @forelse($bellNotifs['owner_requests'] as $u)
+                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;">
+                                    <div style="font-size:12px;font-weight:600;">👤 Đăng ký chủ sân</div>
+                                    <div style="font-size:11px;color:#666;">{{ $u->name }} ({{ $u->email }})</div>
+                                    <div style="font-size:10px;color:#999;">{{ $u->updated_at->diffForHumans() }}</div>
+                                </div>
+                                @empty
+                                @endforelse
+                                @forelse($bellNotifs['reviews'] as $r)
+                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#f0fff4;">
+                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá website mới</div>
+                                    <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->rating }}/5 sao</div>
+                                    <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
+                                </div>
+                                @empty
+                                @endforelse
+                                @if($bellUnread === 0)<div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>@endif
+                            @endif
                         </div>
                     </div>
-                    @endif
                     <div class="user-dropdown" style="position:relative; display:inline-block;">
                         <button class="user-avatar-btn" onclick="toggleUserMenu()" style="background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:8px; transition:background 0.2s;" onmouseenter="this.style.background='rgba(0,0,0,0.05)'" onmouseleave="this.style.background='none'">
                             <div style="width:36px; height:36px; border-radius:50%; background:#28a745; display:flex; align-items:center; justify-content:center; color:white; font-weight:600; font-size:15px;">
@@ -143,13 +188,26 @@ function toggleUserMenu() {
     var menu = document.getElementById('user-menu');
     menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 }
-function toggleUserBell() {
-    var d = document.getElementById('user-bell-dropdown');
-    d.style.display = d.style.display === 'none' ? 'block' : 'none';
-}
-function markUserRead() {
-    fetch('/notifications/mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content}})
-        .then(() => location.reload());
+function toggleBell() {
+    var d = document.getElementById('bell-dropdown');
+    var opening = d.style.display === 'none';
+    d.style.display = opening ? 'block' : 'none';
+    if (opening) {
+        var badge = document.getElementById('bell-badge');
+        if (badge) badge.style.display = 'none';
+        var token = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+        var opts = {method:'POST', credentials:'same-origin', headers:{'X-CSRF-TOKEN':token,'Content-Type':'application/json'}};
+        var role = '{{ auth()->check() ? auth()->user()->role : "" }}';
+        if (role === 'user') {
+            fetch('/notifications/mark-read', opts);
+        } else if (role === 'owner') {
+            fetch('/owner/bookings-mark-read', opts);
+            fetch('/owner/reviews-mark-read', opts);
+        } else if (role === 'admin') {
+            fetch('/admin/reviews/mark-read', opts);
+            fetch('/admin/owner-requests/mark-read', opts);
+        }
+    }
 }
 document.addEventListener('click', function(e) {
     var dropdown = document.querySelector('.user-dropdown');
@@ -157,8 +215,8 @@ document.addEventListener('click', function(e) {
         var menu = document.getElementById('user-menu');
         if (menu) menu.style.display = 'none';
     }
-    var bellBtn = document.getElementById('user-bell-btn');
-    var bellDrop = document.getElementById('user-bell-dropdown');
+    var bellBtn = document.getElementById('bell-btn');
+    var bellDrop = document.getElementById('bell-dropdown');
     if (bellBtn && bellDrop && !bellBtn.contains(e.target) && !bellDrop.contains(e.target)) {
         bellDrop.style.display = 'none';
     }
