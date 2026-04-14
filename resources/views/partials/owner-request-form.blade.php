@@ -1,6 +1,13 @@
 @if(session('success'))
 <p style="color:#d4edda; margin-bottom:12px; font-size:14px;">✅ {{ session('success') }}</p>
 @endif
+@if($errors->any())
+<div style="background:#f8d7da; color:#721c24; padding:10px 14px; border-radius:8px; margin-bottom:12px; font-size:13px;">
+    @foreach($errors->all() as $error)
+    <p style="margin:0 0 4px 0;">❌ {{ $error }}</p>
+    @endforeach
+</div>
+@endif
 <form action="{{ route('owner-request.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
