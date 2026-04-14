@@ -232,4 +232,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var d = document.getElementById('bell-dropdown');
     if (d) d.style.display = 'none';
 });
+// Also reset immediately
+(function() {
+    var d = document.getElementById('bell-dropdown');
+    if (d) d.style.display = 'none';
+})();
 </script>

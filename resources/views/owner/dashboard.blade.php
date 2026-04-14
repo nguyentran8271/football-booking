@@ -380,15 +380,6 @@ new Chart(ctx, {
 });
 </script>
 <script>
-function toggleBell() {
-    const d = document.getElementById('bell-dropdown');
-    d.style.display = d.style.display === 'none' ? 'block' : 'none';
-}
-function markAllRead() {
-    fetch('/owner/bookings-mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
-    fetch('/owner/reviews-mark-read', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});
-    setTimeout(() => location.reload(), 300);
-}
 function expireBooking(id) {
     if(!confirm('Xác nhận booking này đã hết hạn?')) return;
     fetch('/owner/bookings/' + id + '/expire', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}})
@@ -400,12 +391,5 @@ function expireBooking(id) {
             }
         });
 }
-document.addEventListener('click', function(e) {
-    const bell = document.getElementById('bell-btn');
-    const dropdown = document.getElementById('bell-dropdown');
-    if (bell && dropdown && !bell.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-    }
-});
 </script>
 @endpush
