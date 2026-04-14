@@ -42,6 +42,9 @@ class BookingController extends Controller
 
         $booking->update(['status' => 'approved', 'user_notified' => false]);
 
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return back()->with('success', 'Đã xác nhận đặt sân thành công!');
     }
 
@@ -56,6 +59,9 @@ class BookingController extends Controller
 
         $booking->update(['status' => 'cancelled', 'user_notified' => false]);
 
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return back()->with('success', 'Đã hủy đặt sân!');
     }
 }

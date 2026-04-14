@@ -200,6 +200,10 @@
                 <p>Sân: {{ $booking->field->name }} - {{ $booking->date->format('d/m/Y') }} - Ca {{ $booking->shift }} ({{ $booking->start_time }} - {{ $booking->end_time }})</p>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <a href="{{ route('owner.bookings.index') }}" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                    @if($booking->status === 'pending')
+                    <button onclick="confirmBooking({{ $booking->id }}, this)" class="btn btn-sm btn-success" style="font-size:12px;background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;">✅ Duyệt</button>
+                    <button onclick="cancelBooking({{ $booking->id }}, this)" class="btn btn-sm btn-danger" style="font-size:12px;background:#dc3545;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;">❌ Từ chối</button>
+                    @endif
                     @if($booking->date->isPast())
                     <button onclick="expireBooking({{ $booking->id }})" class="btn btn-sm btn-secondary" style="font-size:12px;">Xác nhận hết hạn</button>
                     @endif
@@ -380,6 +384,28 @@ new Chart(ctx, {
 });
 </script>
 <script>
+function confirmBooking(id, btn) {
+    if(!confirm('Xác nhận duyệt booking này?')) return;
+    fetch('/owner/bookings/' + id + '/confirm', {method:'PATCH', headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}', 'Accept':'application/json'}})
+        .then(r => r.json()).then(d => {
+            if(d.success) {
+                var el = document.getElementById('notif-' + id);
+                if(el) el.style.background = '#d4edda';
+                btn.parentElement.querySelectorAll('button').forEach(b => b.disabled = true);
+                btn.textContent = '✅ Đã duyệt';
+            }
+        });
+}
+function cancelBooking(id, btn) {
+    if(!confirm('Từ chối booking này?')) return;
+    fetch('/owner/bookings/' + id + '/cancel', {method:'PATCH', headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}', 'Accept':'application/json'}})
+        .then(r => r.json()).then(d => {
+            if(d.success) {
+                var el = document.getElementById('notif-' + id);
+                if(el) el.remove();
+            }
+        });
+}
 function expireBooking(id) {
     if(!confirm('Xác nhận booking này đã hết hạn?')) return;
     fetch('/owner/bookings/' + id + '/expire', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}})
