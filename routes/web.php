@@ -85,13 +85,20 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
 
     // Quản lý booking
     Route::get('/bookings', [OwnerBookingController::class, 'index'])->name('bookings.index');
-    Route::patch('/bookings/{id}/confirm', [OwnerBookingController::class, 'confirm'])->name('bookings.confirm');
-    Route::patch('/bookings/{id}/cancel', [OwnerBookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::match(['patch','post'], '/bookings/{id}/confirm', [OwnerBookingController::class, 'confirm'])->name('bookings.confirm');
+    Route::match(['patch','post'], '/bookings/{id}/cancel', [OwnerBookingController::class, 'cancel'])->name('bookings.cancel');
 
     // Quản lý giải đấu
     Route::resource('tournaments', OwnerTournamentController::class);
     Route::post('/tournaments/{tournament}/teams/{team}/approve', [OwnerTournamentController::class, 'approveTeam'])->name('tournaments.teams.approve');
     Route::post('/tournaments/{tournament}/teams/{team}/reject', [OwnerTournamentController::class, 'rejectTeam'])->name('tournaments.teams.reject');
+    Route::post('/bookings/{id}/expire', function($id) {
+        $fieldIds = auth()->user()->fields()->pluck('id');
+        $booking = \App\Models\Booking::whereIn('field_id', $fieldIds)->findOrFail($id);
+        $booking->update(['status' => 'cancelled', 'is_read' => true]);
+        return response()->json(['success' => true]);
+    })->name('bookings.expire');
+
     Route::post('/bookings-mark-read', function() {
         $fieldIds = auth()->user()->fields()->pluck('id');
         \App\Models\Booking::whereIn('field_id', $fieldIds)->where('is_read', false)->update(['is_read' => true]);
