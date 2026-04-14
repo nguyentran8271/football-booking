@@ -37,9 +37,8 @@
     <small style="{{ $hintStyle }}">Mã số thuế cá nhân hoặc doanh nghiệp (10-13 chữ số)</small>
     <input type="text" name="tax_number" id="tax_number_input" placeholder="VD: 0123456789" style="{{ $inputStyle }}"
            pattern="\d{10,13}" title="Mã số thuế phải gồm 10-13 chữ số"
-           oninput="this.value=this.value.replace(/\D/g,'').slice(0,13); validateTaxNumber(this);"
-           onblur="checkTaxDuplicate(this);">
-    <small id="tax_number_error" style="display:none; color:#e74c3c; font-size:12px; margin-top:3px;"></small>
+           oninput="this.value=this.value.replace(/\D/g,'').slice(0,13); validateTaxNumber(this);">
+    <small id="tax_number_error" style="display:none; color:#e74c3c; font-size:12px; margin-top:3px;">Mã số thuế phải gồm 10-13 chữ số</small>
 
     <label style="{{ $labelStyle }}">Ảnh giấy phép kinh doanh</label>
     <small style="{{ $hintStyle }}">Giấy phép đăng ký kinh doanh còn hiệu lực (nếu có)</small>
@@ -51,31 +50,11 @@
 function validateTaxNumber(input) {
     var err = document.getElementById('tax_number_error');
     if (input.value.length > 0 && (input.value.length < 10 || input.value.length > 13)) {
-        err.textContent = 'Mã số thuế phải gồm 10-13 chữ số';
         err.style.display = 'block';
         input.style.border = '2px solid #e74c3c';
     } else {
         err.style.display = 'none';
         input.style.border = 'none';
     }
-}
-function checkTaxDuplicate(input) {
-    var val = input.value.trim();
-    var err = document.getElementById('tax_number_error');
-    if (val.length < 10 || val.length > 13) return;
-    fetch('/check-tax-number?tax=' + val, {credentials: 'same-origin'})
-        .then(r => r.json())
-        .then(data => {
-            if (data.duplicate) {
-                err.textContent = 'Mã số thuế này đã được sử dụng bởi tài khoản khác.';
-                err.style.display = 'block';
-                input.style.border = '2px solid #e74c3c';
-                input.closest('form').querySelector('[type=submit]').disabled = true;
-            } else {
-                err.style.display = 'none';
-                input.style.border = '2px solid #28a745';
-                input.closest('form').querySelector('[type=submit]').disabled = false;
-            }
-        });
 }
 </script>
