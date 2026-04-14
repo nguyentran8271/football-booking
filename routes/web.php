@@ -42,6 +42,12 @@ Route::get('/giai-dau/{id}', [TournamentController::class, 'show'])->name('tourn
 
 // Đánh giá
 Route::get('/danh-gia', [ReviewController::class, 'index'])->name('reviews.index');
+Route::get('/check-tax-number', function() {
+    if (!auth()->check()) return response()->json(['duplicate' => false]);
+    $tax = request('tax');
+    $exists = App\Models\User::where('tax_number', $tax)->where('id', '!=', auth()->id())->whereNotNull('tax_number')->exists();
+    return response()->json(['duplicate' => $exists]);
+})->middleware('auth');
 Route::post('/reviews/{id}/helpful', [ReviewController::class, 'markHelpful'])->name('reviews.helpful');
 
 // Routes yêu cầu đăng nhập
