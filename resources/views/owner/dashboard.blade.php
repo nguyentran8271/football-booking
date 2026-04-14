@@ -393,6 +393,8 @@ function confirmBooking(id, btn) {
                 if(el) el.style.background = '#d4edda';
                 btn.parentElement.querySelectorAll('button').forEach(b => b.disabled = true);
                 btn.textContent = 'Đã duyệt';
+            } else {
+                alert(d.message || 'Không thể duyệt booking này.');
             }
         });
 }

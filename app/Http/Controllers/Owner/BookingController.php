@@ -37,6 +37,9 @@ class BookingController extends Controller
         }
 
         if (\Carbon\Carbon::parse($booking->date)->isPast()) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Không thể xác nhận booking đã qua ngày đặt sân.']);
+            }
             return back()->with('error', 'Không thể xác nhận booking đã qua ngày đặt sân.');
         }
 
