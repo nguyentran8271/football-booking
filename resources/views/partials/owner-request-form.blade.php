@@ -8,7 +8,7 @@
     @endforeach
 </div>
 @endif
-<form action="{{ route('owner-request.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('owner-request.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return checkBeforeSubmit()">
     @csrf
 
     @php
@@ -48,19 +48,22 @@
     <button type="submit" class="btn btn-cta" style="width:100%; margin-top:20px;">Gửi đơn đăng ký</button>
 </form>
 <script>
+var taxValid = true;
+
 function validateTaxNumber(input) {
     var err = document.getElementById('tax_number_error');
     if (input.value.length > 0 && (input.value.length < 10 || input.value.length > 13)) {
         err.textContent = 'Mã số thuế phải gồm 10-13 chữ số';
         err.style.display = 'block';
         input.style.border = '2px solid #e74c3c';
-        input.closest('form').querySelector('[type=submit]').disabled = true;
+        taxValid = false;
     } else {
         err.style.display = 'none';
         input.style.border = 'none';
-        input.closest('form').querySelector('[type=submit]').disabled = false;
+        taxValid = true;
     }
 }
+
 function checkTaxDuplicate(input) {
     var val = input.value.trim();
     var err = document.getElementById('tax_number_error');
@@ -72,12 +75,28 @@ function checkTaxDuplicate(input) {
                 err.textContent = 'Mã số thuế này đã được sử dụng bởi tài khoản khác.';
                 err.style.display = 'block';
                 input.style.border = '2px solid #e74c3c';
-                input.closest('form').querySelector('[type=submit]').disabled = true;
+                taxValid = false;
             } else {
                 err.style.display = 'none';
                 input.style.border = '2px solid #28a745';
-                input.closest('form').querySelector('[type=submit]').disabled = false;
+                taxValid = true;
             }
         });
+}
+
+function checkBeforeSubmit() {
+    var input = document.getElementById('tax_number_input');
+    if (!taxValid) {
+        input.focus();
+        return false;
+    }
+    var val = input.value.trim();
+    if (val.length > 0 && (val.length < 10 || val.length > 13)) {
+        document.getElementById('tax_number_error').textContent = 'Mã số thuế phải gồm 10-13 chữ số';
+        document.getElementById('tax_number_error').style.display = 'block';
+        input.focus();
+        return false;
+    }
+    return true;
 }
 </script>
