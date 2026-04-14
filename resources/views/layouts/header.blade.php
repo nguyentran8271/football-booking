@@ -76,8 +76,7 @@
                                     'reviews'  => \App\Models\Review::whereIn('field_id', $ownerFids)->where('is_read',false)->with(['user','field'])->orderBy('created_at','desc')->limit(10)->get(),
                                 ];
                             } elseif($bellRole === 'admin') {
-                                $bellUnread = \App\Models\Review::whereNull('field_id')->where('is_read',false)->count()
-                                           + \App\Models\User::where('owner_request','pending')->count();
+                                $bellUnread = \App\Models\Review::whereNull('field_id')->where('is_read',false)->count();
                                 $bellNotifs = [
                                     'reviews'        => \App\Models\Review::whereNull('field_id')->where('is_read',false)->with('user')->orderBy('created_at','desc')->limit(10)->get(),
                                     'owner_requests' => \App\Models\User::where('owner_request','pending')->orderBy('updated_at','desc')->limit(10)->get(),
@@ -205,7 +204,6 @@ function toggleBell() {
             fetch('/owner/reviews-mark-read', opts);
         } else if (role === 'admin') {
             fetch('/admin/reviews/mark-read', opts);
-            fetch('/admin/owner-requests/mark-read', opts);
         }
     }
 }
