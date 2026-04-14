@@ -86,18 +86,6 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
     Route::resource('tournaments', OwnerTournamentController::class);
     Route::post('/tournaments/{tournament}/teams/{team}/approve', [OwnerTournamentController::class, 'approveTeam'])->name('tournaments.teams.approve');
     Route::post('/tournaments/{tournament}/teams/{team}/reject', [OwnerTournamentController::class, 'rejectTeam'])->name('tournaments.teams.reject');
-
-    Route::post('/bookings-mark-read', function() {
-        \ = auth()->user()->fields()->pluck('id');
-        \App\Models\Booking::whereIn('field_id', \)->where('is_read', false)->update(['is_read' => true]);
-        return response()->json(['success' => true]);
-    })->name('bookings.mark-read');
-
-    Route::post('/reviews-mark-read', function() {
-        \ = auth()->user()->fields()->pluck('id');
-        \App\Models\Review::whereIn('field_id', \)->where('is_read', false)->update(['is_read' => true]);
-        return response()->json(['success' => true]);
-    })->name('reviews.mark-read');
 });
 
 // Routes cho Admin
@@ -105,13 +93,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::post('/reviews/mark-read', function() {
         \App\Models\Review::whereNull('field_id')->where('is_read', false)->update(['is_read' => true]);
-        return response()->json(['success' => true]);
-    })->name('reviews.mark-read');
-
-    Route::post('/owner-requests/mark-read', function() {
-        \App\Models\User::where('owner_request', 'pending')->update(['owner_request' => 'pending_read']);
-        return response()->json(['success' => true]);
-    })->name('owner-requests.mark-read');
+        return back();
+    })->name('admin.reviews.mark-read');
 
     // Quản lý users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
