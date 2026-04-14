@@ -227,4 +227,9 @@ function toggleMobileMenu() {
     nav.classList.toggle('open');
     btn.classList.toggle('active');
 }
+// Ensure bell dropdown is closed on page load
+document.addEventListener('DOMContentLoaded', function() {
+    var d = document.getElementById('bell-dropdown');
+    if (d) d.style.display = 'none';
+});
 </script>
