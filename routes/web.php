@@ -42,6 +42,10 @@ Route::get('/giai-dau/{id}', [TournamentController::class, 'show'])->name('tourn
 
 // Đánh giá
 Route::get('/danh-gia', [ReviewController::class, 'index'])->name('reviews.index');
+Route::get('/check-tax-number', function(\Illuminate\Http\Request \) {
+    \ = \App\Models\User::where('tax_number', \->tax)->where('id', '!=', auth()->id())->exists();
+    return response()->json(['duplicate' => \]);
+})->middleware('auth');
 Route::post('/reviews/{id}/helpful', [ReviewController::class, 'markHelpful'])->name('reviews.helpful');
 
 // Routes yêu cầu đăng nhập
