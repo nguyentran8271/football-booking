@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -51,6 +51,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dat-san', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/lich-su-dat-san', [BookingController::class, 'history'])->name('bookings.history');
     Route::post('/huy-dat-san/{id}', [BookingController::class, 'cancel'])->name('bookings.cancel');
+
+    Route::post('/notifications/mark-read', function() {
+        \App\Models\Booking::where('user_id', auth()->id())->where('user_notified', false)->whereIn('status', ['approved', 'cancelled'])->update(['user_notified' => true]);
+        return response()->json(['success' => true]);
+    })->name('notifications.mark-read');
 
     // Gửi đánh giá
     Route::post('/danh-gia', [ReviewController::class, 'store'])->name('reviews.store');
