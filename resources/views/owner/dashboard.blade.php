@@ -188,44 +188,6 @@
             <a href="{{ route('owner.bookings.index') }}" class="btn {{ request()->routeIs('owner.bookings.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý lịch đặt</a>
             <a href="{{ route('owner.fields.index') }}" class="btn {{ request()->routeIs('owner.fields.index') ? 'btn-primary' : 'btn-secondary' }}">Quản lý sân</a>
             <a href="{{ route('owner.tournaments.index') }}" class="btn {{ request()->routeIs('owner.tournaments.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý giải đấu</a>
-
-            {{-- Chuông thông báo --}}
-            @php $totalUnread = $unreadBookings + $unreadReviews; @endphp
-            <div style="position:relative; margin-left:auto;">
-                <button id="bell-btn" onclick="toggleBell()" style="background:none;border:none;cursor:pointer;padding:8px;position:relative;font-size:22px;">
-                    🔔
-                    @if($totalUnread > 0)
-                    <span style="position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">{{ $totalUnread > 9 ? '9+' : $totalUnread }}</span>
-                    @endif
-                </button>
-                <div id="bell-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:340px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1000;overflow:hidden;max-height:400px;overflow-y:auto;">
-                    <div style="padding:12px 16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
-                        <strong style="font-size:14px;">Thông báo</strong>
-                        @if($totalUnread > 0)
-                        <button onclick="markAllRead()" style="background:none;border:none;color:#28a745;font-size:12px;cursor:pointer;">Đánh dấu đã đọc</button>
-                        @endif
-                    </div>
-                    @forelse($allNotifications['bookings'] as $b)
-                    <div style="padding:10px 16px;border-bottom:1px solid #f0f0f0;background:#fff8f0;">
-                        <div style="font-size:13px;font-weight:600;">📅 Đặt sân mới</div>
-                        <div style="font-size:12px;color:#666;">{{ $b->user->name }} đặt {{ $b->field->name }}</div>
-                        <div style="font-size:11px;color:#999;">{{ $b->date->format('d/m/Y') }} - Ca {{ $b->shift }} · {{ $b->created_at->diffForHumans() }}</div>
-                    </div>
-                    @empty
-                    @endforelse
-                    @forelse($allNotifications['reviews'] as $r)
-                    <div style="padding:10px 16px;border-bottom:1px solid #f0f0f0;background:#f0fff4;">
-                        <div style="font-size:13px;font-weight:600;">⭐ Đánh giá mới</div>
-                        <div style="font-size:12px;color:#666;">{{ $r->user->name }} đánh giá {{ $r->field->name ?? '' }} - {{ $r->rating }}/5</div>
-                        <div style="font-size:11px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                    </div>
-                    @empty
-                    @endforelse
-                    @if($totalUnread === 0)
-                    <div style="padding:20px;text-align:center;color:#999;font-size:13px;">Không có thông báo mới</div>
-                    @endif
-                </div>
-            </div>
         </div>
 
         <!-- Thông báo booking -->
