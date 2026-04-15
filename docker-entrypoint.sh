@@ -3,6 +3,9 @@ set -e
 
 cd /var/www/html
 
+# Fix storage permissions
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+
 # Wait for DB and run migrations with retry
 for i in 1 2 3 4 5; do
     php artisan migrate --force && break || echo "Migration attempt $i failed, retrying in 5s..." && sleep 5
