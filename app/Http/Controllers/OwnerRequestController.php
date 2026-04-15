@@ -25,6 +25,9 @@ class OwnerRequestController extends Controller
         $invoice = 'OWN-' . auth()->id() . '-' . time();
         session(['owner_subscription_plan' => $plan, 'owner_subscription_invoice' => $invoice]);
 
+        // Lưu plan vào user để IPN có thể đọc
+        auth()->user()->update(['subscription_plan' => $plan]);
+
         $sepay = new \SePay\SePayClient(
             config('services.sepay.merchant_id'),
             config('services.sepay.secret_key'),

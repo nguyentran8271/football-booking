@@ -91,6 +91,30 @@ class PaymentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'No invoice'], 400);
         }
 
+        // Owner subscription invoice: OWN-{userId}-{timestamp}
+        if (str_starts_with($invoice, 'OWN-')) {
+            $parts = explode('-', $invoice);
+            $userId = $parts[1] ?? null;
+            $user = $userId ? \App\Models\User::find($userId) : null;
+
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
+            }
+
+            $plan = $user->subscription_plan;
+            $months = ['1m' => 1, '3m' => 3, '6m' => 6, '12m' => 12];
+            $expiresAt = now()->addMonths($months[$plan] ?? 1);
+
+            $user->update([
+                'owner_request' => 'pending',
+                'subscription_expires_at' => $expiresAt,
+                'subscription_invoice' => $invoice,
+            ]);
+
+            return response()->json(['status' => 'success']);
+        }
+
+        // Booking invoice: INV-{bookingId}-{timestamp}
         $booking = \App\Models\Booking::where('payment_invoice', $invoice)->first();
         if (!$booking) {
             return response()->json(['status' => 'error', 'message' => 'Booking not found'], 404);
