@@ -77,9 +77,12 @@
                                 ];
                             } elseif($bellRole === 'admin') {
                                 $bellUnread = \App\Models\Review::whereNull('field_id')->where('is_read',false)->count();
+                                $expiredCount = \App\Models\User::where('role','owner')->whereNotNull('subscription_expires_at')->where('subscription_expires_at','<',now())->count();
+                                $bellUnread += $expiredCount;
                                 $bellNotifs = [
                                     'reviews'        => \App\Models\Review::whereNull('field_id')->where('is_read',false)->with('user')->orderBy('created_at','desc')->limit(10)->get(),
                                     'owner_requests' => \App\Models\User::where('owner_request','pending')->orderBy('updated_at','desc')->limit(10)->get(),
+                                    'expired_owners' => \App\Models\User::where('role','owner')->whereNotNull('subscription_expires_at')->where('subscription_expires_at','<',now())->orderBy('subscription_expires_at','asc')->limit(5)->get(),
                                 ];
                             }
                         } catch(\Exception $e) {}
@@ -137,6 +140,13 @@
                                     <div style="font-size:12px;font-weight:600;">⭐ Đánh giá website mới</div>
                                     <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->rating }}/5 sao</div>
                                     <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
+                                </div>
+                                @empty
+                                @endforelse
+                                @forelse($bellNotifs['expired_owners'] as $u)
+                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff3cd;">
+                                    <div style="font-size:12px;font-weight:600;">⚠️ Chủ sân hết hạn</div>
+                                    <div style="font-size:11px;color:#666;">{{ $u->name }} - hết hạn {{ $u->subscription_expires_at->format('d/m/Y') }}</div>
                                 </div>
                                 @empty
                                 @endforelse

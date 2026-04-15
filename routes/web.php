@@ -76,6 +76,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Đăng ký làm chủ sân
     Route::post('/dang-ky-chu-san', [\App\Http\Controllers\OwnerRequestController::class, 'store'])->name('owner-request.store');
+    Route::get('/dang-ky-chu-san/plans', [\App\Http\Controllers\OwnerRequestController::class, 'plans'])->name('owner-request.plans');
+    Route::post('/dang-ky-chu-san/checkout', [\App\Http\Controllers\OwnerRequestController::class, 'checkout'])->name('owner-request.checkout');
+    Route::get('/dang-ky-chu-san/payment-success', [\App\Http\Controllers\OwnerRequestController::class, 'paymentSuccess'])->name('owner-request.payment-success');
+    Route::get('/dang-ky-chu-san/payment-error', [\App\Http\Controllers\OwnerRequestController::class, 'paymentError'])->name('owner-request.payment-error');
 
     // Đăng ký giải đấu
     Route::get('/giai-dau/{id}/dang-ky', [TournamentController::class, 'register'])->name('tournaments.register');

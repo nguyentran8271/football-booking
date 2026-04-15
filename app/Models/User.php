@@ -30,6 +30,9 @@ class User extends Authenticatable
         'id_card_selfie_image',
         'tax_number',
         'business_license_image',
+        'subscription_plan',
+        'subscription_expires_at',
+        'subscription_invoice',
     ];
 
     /**
@@ -50,6 +53,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'subscription_expires_at' => 'datetime',
     ];
 
     /**

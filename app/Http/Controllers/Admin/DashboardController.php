@@ -61,6 +61,12 @@ class DashboardController extends Controller
                     ->orderBy('updated_at', 'desc')
                     ->limit(10)
                     ->get(),
+                'expired_owners' => User::where('role', 'owner')
+                    ->whereNotNull('subscription_expires_at')
+                    ->where('subscription_expires_at', '<', now())
+                    ->orderBy('subscription_expires_at', 'asc')
+                    ->limit(10)
+                    ->get(),
             ];
         } catch (\Exception $e) {
             // Column may not exist yet
