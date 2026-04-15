@@ -60,7 +60,8 @@ class BookingController extends Controller
             abort(403, 'Bạn không có quyền thao tác booking này');
         }
 
-        $booking->update(['status' => 'cancelled', 'user_notified' => false]);
+        $reason = request('cancel_reason');
+        $booking->update(['status' => 'cancelled', 'user_notified' => false, 'cancel_reason' => $reason]);
 
         if (request()->wantsJson()) {
             return response()->json(['success' => true]);

@@ -220,11 +220,7 @@
                                             </form>
                                         @endif
                                     @elseif($booking->status == 'approved')
-                                        <form action="{{ route('owner.bookings.cancel', $booking->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hủy booking đã xác nhận này? Doanh thu sẽ bị trừ.')">Hủy booking</button>
-                                        </form>
+                                        <button onclick="showCancelModal({{ $booking->id }})" class="btn btn-sm btn-danger">Hủy booking</button>
                                     @else
                                         <span style="color: #999;">-</span>
                                     @endif
@@ -249,3 +245,40 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<div id="cancel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:12px;padding:24px;width:400px;max-width:90%;">
+        <h3 style="margin:0 0 16px;">Lý do hủy booking</h3>
+        <textarea id="cancel-reason-input" placeholder="Nhập lý do hủy (VD: khách yêu cầu hủy, trời mưa...)" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;min-height:80px;font-size:14px;box-sizing:border-box;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end;">
+            <button onclick="closeCancelModal()" style="padding:8px 16px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;">Hủy bỏ</button>
+            <button onclick="submitCancel()" style="padding:8px 16px;background:#dc3545;color:#fff;border:none;border-radius:6px;cursor:pointer;">Xác nhận hủy</button>
+        </div>
+    </div>
+</div>
+<script>
+var cancelBookingId = null;
+function showCancelModal(id) {
+    cancelBookingId = id;
+    document.getElementById('cancel-reason-input').value = '';
+    var m = document.getElementById('cancel-modal');
+    m.style.display = 'flex';
+}
+function closeCancelModal() {
+    document.getElementById('cancel-modal').style.display = 'none';
+    cancelBookingId = null;
+}
+function submitCancel() {
+    var reason = document.getElementById('cancel-reason-input').value.trim();
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/owner/bookings/' + cancelBookingId + '/cancel';
+    form.innerHTML = '<input type="hidden" name="_token" value="{{ csrf_token() }}">'
+        + '<input type="hidden" name="_method" value="PATCH">'
+        + '<input type="hidden" name="cancel_reason" value="' + reason.replace(/"/g, '&quot;') + '">';
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
+@endpush
