@@ -211,14 +211,20 @@
                                             <form action="{{ route('owner.bookings.confirm', $booking->id) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Xác nhận đặt sân này?')">✅ Xác nhận</button>
+                                                <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Xác nhận đặt sân này?')">Xác nhận</button>
                                             </form>
                                             <form action="{{ route('owner.bookings.cancel', $booking->id) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hủy đặt sân này?')">❌ Hủy</button>
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hủy đặt sân này?')">Hủy</button>
                                             </form>
                                         @endif
+                                    @elseif($booking->status == 'approved')
+                                        <form action="{{ route('owner.bookings.cancel', $booking->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hủy booking đã xác nhận này? Doanh thu sẽ bị trừ.')">Hủy booking</button>
+                                        </form>
                                     @else
                                         <span style="color: #999;">-</span>
                                     @endif
