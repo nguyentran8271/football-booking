@@ -133,8 +133,7 @@
                                        id="shift{{ $shiftNum }}"
                                        value="{{ $shiftNum }}"
                                        {{ in_array($shiftNum, $bookedShifts) ? 'disabled' : '' }}
-                                       {{ old('shift') == $shiftNum ? 'checked' : '' }}
-                                       required>
+                                       {{ old('shift') == $shiftNum ? 'checked' : '' }}>
                                 <label for="shift{{ $shiftNum }}" class="shift-label">
                                     <div><strong>Ca {{ $shiftNum }}</strong></div>
                                     <div class="shift-time">{{ $shiftInfo['start'] }} - {{ $shiftInfo['end'] }}</div>
@@ -207,6 +206,15 @@ function updatePaymentLabel() {
     document.getElementById('submit-btn').textContent = later ? 'Xác nhận đặt sân' : 'Tiếp tục thanh toán';
 }
 updatePaymentLabel();
+
+// Validate shift before submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    var shiftSelected = document.querySelector('input[name="shift"]:checked');
+    if (!shiftSelected) {
+        e.preventDefault();
+        alert('Vui lòng chọn ca đặt sân.');
+    }
+});
 </script>
 @endpush
 @endsection
