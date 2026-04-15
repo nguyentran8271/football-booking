@@ -3,8 +3,10 @@ set -e
 
 cd /var/www/html
 
-# Run migrations
-php artisan migrate --force
+# Wait for DB and run migrations with retry
+for i in 1 2 3 4 5; do
+    php artisan migrate --force && break || echo "Migration attempt $i failed, retrying in 5s..." && sleep 5
+done
 
 # Seed data nếu chưa có admin
 php artisan tinker --execute="if(!\App\Models\User::where('role','admin')->exists()) { \Artisan::call('db:seed', ['--force' => true]); echo 'Seeded'; } else { echo 'Already seeded'; }"
