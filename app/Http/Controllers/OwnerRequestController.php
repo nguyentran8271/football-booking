@@ -78,6 +78,8 @@ class OwnerRequestController extends Controller
     {
         return redirect()->route('for-owners')->with('error', 'Thanh toán thất bại. Vui lòng thử lại.');
     }
+
+    public function store(Request $request)
     {
         $request->validate([
             'note'                   => 'nullable|string|max:1000',
