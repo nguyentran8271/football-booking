@@ -200,6 +200,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/settings/owner-sections/{id}', [AdminSettingController::class, 'deleteOwnerSection'])->name('settings.owner-sections.delete');
 });
 
+// SePay IPN - no auth, no CSRF
+Route::post('/payment/ipn', [App\Http\Controllers\PaymentController::class, 'ipn'])->name('payment.ipn')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
 require __DIR__.'/auth.php';
 
 Route::middleware(['auth'])->group(function () { Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit'); Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update'); });

@@ -69,4 +69,39 @@ class PaymentController extends Controller
     {
         return redirect()->route('bookings.history')->with('info', 'Bạn đã hủy thanh toán.');
     }
+
+    public function ipn(Request $request)
+    {
+        \Log::info('SePay IPN received', $request->all());
+
+        // Verify signature
+        $secretKey = config('services.sepay.secret_key');
+        $data = $request->except('signature');
+        ksort($data);
+        $signString = implode('|', array_values($data)) . '|' . $secretKey;
+        $expectedSig = hash('sha256', $signString);
+
+        if ($request->signature !== $expectedSig) {
+            \Log::warning('SePay IPN invalid signature');
+            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
+        }
+
+        $invoice = $request->order_invoice_number ?? $request->orderInvoiceNumber ?? null;
+        if (!$invoice) {
+            return response()->json(['status' => 'error', 'message' => 'No invoice'], 400);
+        }
+
+        $booking = \App\Models\Booking::where('payment_invoice', $invoice)->first();
+        if (!$booking) {
+            return response()->json(['status' => 'error', 'message' => 'Booking not found'], 404);
+        }
+
+        $booking->update([
+            'status' => 'approved',
+            'payment_status' => 'paid',
+            'user_notified' => false,
+        ]);
+
+        return response()->json(['status' => 'success']);
+    }
 }
