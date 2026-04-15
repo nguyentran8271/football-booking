@@ -20,6 +20,9 @@ class Booking extends Model
         'is_read',
         'user_notified',
         'cancel_reason',
+        'payment_method',
+        'payment_status',
+        'payment_invoice',
     ];
 
     protected $casts = [

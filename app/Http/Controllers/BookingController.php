@@ -21,9 +21,10 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'field_id' => 'required|exists:fields,id',
-            'date'     => 'required|date|after_or_equal:today',
-            'shift'    => 'required|integer|between:1,8',
+            'field_id'       => 'required|exists:fields,id',
+            'date'           => 'required|date|after_or_equal:today',
+            'shift'          => 'required|integer|between:1,8',
+            'payment_method' => 'required|in:online,later',
         ], [
             'date.after_or_equal' => 'Ngày đặt phải từ hôm nay trở đi.',
             'shift.required'      => 'Vui lòng chọn ca.',
@@ -37,14 +38,20 @@ class BookingController extends Controller
         $field = Field::findOrFail($validated['field_id']);
         $totalPrice = ShiftHelper::calculatePrice($field->price_per_hour);
 
-        Booking::create([
-            'user_id'     => auth()->id(),
-            'field_id'    => $validated['field_id'],
-            'date'        => $validated['date'],
-            'shift'       => $validated['shift'],
-            'total_price' => $totalPrice,
-            'status'      => 'pending',
+        $booking = Booking::create([
+            'user_id'        => auth()->id(),
+            'field_id'       => $validated['field_id'],
+            'date'           => $validated['date'],
+            'shift'          => $validated['shift'],
+            'total_price'    => $totalPrice,
+            'status'         => 'pending',
+            'payment_method' => $validated['payment_method'],
+            'payment_status' => 'unpaid',
         ]);
+
+        if ($validated['payment_method'] === 'online') {
+            return redirect()->route('payment.checkout', $booking->id);
+        }
 
         return redirect()->route('bookings.history')->with('success', 'Đặt sân thành công! Vui lòng chờ xác nhận.');
     }

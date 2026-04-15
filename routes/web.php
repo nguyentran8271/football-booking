@@ -58,6 +58,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lich-su-dat-san', [BookingController::class, 'history'])->name('bookings.history');
     Route::post('/huy-dat-san/{id}', [BookingController::class, 'cancel'])->name('bookings.cancel');
 
+    // Payment routes
+    Route::get('/payment/{booking}/checkout', [App\Http\Controllers\PaymentController::class, 'checkout'])->name('payment.checkout');
+    Route::get('/payment/{booking}/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/{booking}/error', [App\Http\Controllers\PaymentController::class, 'error'])->name('payment.error');
+    Route::get('/payment/{booking}/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('payment.cancel');
+
     Route::post('/notifications/mark-read', function() {
         \App\Models\Booking::where('user_id', auth()->id())->where('user_notified', false)->whereIn('status', ['approved', 'cancelled'])->update(['user_notified' => true]);
         return response()->json(['success' => true]);

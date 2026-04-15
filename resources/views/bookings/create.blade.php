@@ -151,8 +151,29 @@
                         Tổng tiền: {{ number_format($field->price_per_hour * 2) }}đ
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 18px;">
-                        ✓ Xác nhận đặt sân
+                    {{-- Phương thức thanh toán --}}
+                    <div style="margin-bottom:20px;">
+                        <label style="display:block;font-weight:600;margin-bottom:10px;">Phương thức thanh toán</label>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <label style="border:2px solid #ddd;border-radius:8px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;" id="label-later">
+                                <input type="radio" name="payment_method" value="later" checked onchange="updatePaymentLabel()">
+                                <div>
+                                    <div style="font-weight:600;">Thanh toán sau</div>
+                                    <div style="font-size:12px;color:#666;">Thanh toán trực tiếp tại sân</div>
+                                </div>
+                            </label>
+                            <label style="border:2px solid #ddd;border-radius:8px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;" id="label-online">
+                                <input type="radio" name="payment_method" value="online" onchange="updatePaymentLabel()">
+                                <div>
+                                    <div style="font-weight:600;">Thanh toán online</div>
+                                    <div style="font-size:12px;color:#666;">Qua SePay - xác nhận ngay</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 18px;">
+                        Xác nhận đặt sân
                     </button>
 
                     <a href="{{ route('fields.show', $field->id) }}" class="btn btn-secondary" style="width: 100%; padding: 15px; font-size: 18px; margin-top: 10px; text-align: center; display: block; text-decoration: none;">
@@ -174,6 +195,18 @@ document.getElementById('dateInput').addEventListener('change', function() {
     // Reload trang với ngày mới
     window.location.href = `{{ route('bookings.create', $field->id) }}?date=${date}`;
 });
+</script>
+@endpush
+
+@push('scripts')
+<script>
+function updatePaymentLabel() {
+    var later = document.querySelector('input[value="later"]').checked;
+    document.getElementById('label-later').style.borderColor = later ? '#28a745' : '#ddd';
+    document.getElementById('label-online').style.borderColor = !later ? '#28a745' : '#ddd';
+    document.getElementById('submit-btn').textContent = later ? 'Xác nhận đặt sân' : 'Tiếp tục thanh toán';
+}
+updatePaymentLabel();
 </script>
 @endpush
 @endsection
