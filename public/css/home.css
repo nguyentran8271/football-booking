@@ -475,3 +475,19 @@
         height: 75px;
     }
 }
+
+/* Featured Fields - address & hotline */
+.field-address,
+.field-hotline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #6c757d;
+    margin: 6px 0;
+}
+
+.field-hotline {
+    color: #28a745;
+    font-weight: 500;
+}
