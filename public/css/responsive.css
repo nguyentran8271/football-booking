@@ -91,3 +91,30 @@
         gap: 20px !important;
     }
 }
+
+/* Tournament search form */
+.tournament-search-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+}
+
+.tournament-search-btns {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .tournament-search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .tournament-search-btns {
+        flex-direction: row;
+    }
+
+    .tournament-search-btns .btn {
+        flex: 1;
+    }
+}

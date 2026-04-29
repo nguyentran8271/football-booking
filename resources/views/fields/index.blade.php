@@ -207,14 +207,14 @@
 
             <!-- Tournament Search Form -->
             <div style="max-width: 800px; margin: 0 auto 40px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);">
-                <form method="GET" action="{{ route('fields.index') }}" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
+                <form method="GET" action="{{ route('fields.index') }}" class="tournament-search-form">
                     <div>
                         <input type="text" name="tournament_search" class="form-control" placeholder="Tìm theo tên giải đấu..." value="{{ request('tournament_search') }}" style="width: 100%; padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
                     </div>
                     <div>
                         <input type="text" name="tournament_field" class="form-control" placeholder="Tìm theo tên sân..." value="{{ request('tournament_field') }}" style="width: 100%; padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
                     </div>
-                    <div style="display: flex; gap: 10px;">
+                    <div class="tournament-search-btns">
                         <button type="submit" class="btn btn-primary" style="padding: 10px 25px; border-radius: 8px; font-weight: 500; font-size: 14px; white-space: nowrap;">Tìm kiếm</button>
                         <a href="{{ route('fields.index') }}" class="btn btn-secondary" style="padding: 10px 25px; border-radius: 8px; font-weight: 500; font-size: 14px; white-space: nowrap;">Đặt lại</a>
                     </div>

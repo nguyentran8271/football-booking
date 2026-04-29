@@ -408,6 +408,11 @@ function filterByStar(rating) {
 }
 
 function markHelpful(reviewId, button) {
+    @guest
+    window.location.href = '{{ route('login') }}';
+    return;
+    @endguest
+
     fetch(`/reviews/${reviewId}/helpful`, {
         method: 'POST',
         headers: {
