@@ -83,3 +83,11 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Field detail page - mobile */
+@media (max-width: 768px) {
+    .field-detail-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+}

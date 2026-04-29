@@ -5,7 +5,7 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
+        <div class="field-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
             <!-- Field Image -->
             <div>
                 <img src="{{ $field->image_url }}"
