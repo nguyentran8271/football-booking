@@ -17,25 +17,37 @@
             <div class="card">
                 <h1 style="margin-bottom: 20px;">{{ $field->name }}</h1>
 
-                <div style="margin-bottom: 15px;">
-                    <strong>📍 Địa chỉ:</strong> {{ $field->address }}
+                <div style="margin-bottom: 15px; display:flex; align-items:flex-start; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span><strong>Địa chỉ:</strong> {{ $field->address }}</span>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <strong>💰 Giá:</strong>
-                    <span style="color: #28a745; font-size: 24px; font-weight: bold;">
-                        {{ number_format($field->price_per_hour) }}đ/giờ
+                <div style="margin-bottom: 15px; display:flex; align-items:center; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span><strong>Giá:</strong>
+                        <span style="color: #28a745; font-size: 24px; font-weight: bold;">
+                            {{ number_format($field->price_per_hour) }}đ/giờ
+                        </span>
                     </span>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <strong>⭐ Đánh giá:</strong>
-                    {{ number_format($field->averageRating(), 1) }}
-                    ({{ $field->reviews->count() }} đánh giá)
+                <div style="margin-bottom: 15px; display:flex; align-items:center; gap:8px;">
+                    <span class="field-stars" style="display:flex;gap:2px;">
+                        @php $avg = $field->averageRating(); @endphp
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= floor($avg))
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffc107" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                            @else
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#ddd" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                            @endif
+                        @endfor
+                    </span>
+                    <span>{{ number_format($avg, 1) }} ({{ $field->reviews->count() }} đánh giá)</span>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <strong>👤 Chủ sân:</strong> {{ $field->owner->name }}
+                <div style="margin-bottom: 20px; display:flex; align-items:center; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span><strong>Chủ sân:</strong> {{ $field->owner->name }}</span>
                 </div>
 
                 @auth
