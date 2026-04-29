@@ -150,9 +150,17 @@
                         {{ $field->address }}
                     </p>
                     <div class="field-rating">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" style="display:inline-block;vertical-align:middle;margin-right:4px;margin-top:-2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        {{ number_format($field->averageRating(), 1) }}
-                        ({{ $field->reviews->count() }} đánh giá)
+                        @php $avg = $field->averageRating(); @endphp
+                        <span class="field-stars">
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= floor($avg))
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffc107" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                                @else
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ddd" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                                @endif
+                            @endfor
+                        </span>
+                        <span style="color:#6c757d;font-size:13px;">{{ number_format($avg, 1) }} ({{ $field->reviews->count() }} đánh giá)</span>
                     </div>
                     <p class="field-price">{{ number_format($field->price_per_hour) }}đ/giờ</p>
                     <a href="{{ route('fields.show', $field->id) }}" class="btn btn-primary" style="width: 100%;">
