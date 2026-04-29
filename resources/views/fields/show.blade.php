@@ -91,7 +91,15 @@
                     </div>
                 </div>
                 <div class="review-display">
-                    <span style="color:#ffc107;">@for($i=0;$i<$userReview->rating;$i++)⭐@endfor</span>
+                    <span style="display:flex;gap:2px;">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= $userReview->rating)
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="#ffc107" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                            @else
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="#ddd" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                            @endif
+                        @endfor
+                    </span>
                     @if($userReview->comment)<p style="color:#555; margin-top:8px;">{{ $userReview->comment }}</p>@endif
                 </div>
                 <form id="edit-review-form" action="{{ route('reviews.update', $userReview->id) }}" method="POST" style="display:none; margin-top:10px;">
@@ -156,8 +164,14 @@
             <div style="padding: 20px; border-bottom: 1px solid #eee;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <strong>{{ $review->user->name }}</strong>
-                    <span style="color: #ffc107;">
-                        @for($i = 0; $i < $review->rating; $i++)⭐@endfor
+                    <span style="display:flex;gap:2px;">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= $review->rating)
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="#ffc107" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                            @else
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="#ddd" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                            @endif
+                        @endfor
                     </span>
                 </div>
                 @if($review->comment)
