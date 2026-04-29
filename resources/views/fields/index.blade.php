@@ -145,9 +145,13 @@
                      class="field-image">
                 <div class="field-info">
                     <h3 class="field-name">{{ $field->name }}</h3>
-                    <p class="field-address">📍 {{ $field->address }}</p>
+                    <p class="field-address">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;color:#6c757d;flex-shrink:0;margin-top:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        {{ $field->address }}
+                    </p>
                     <div class="field-rating">
-                        ⭐ {{ number_format($field->averageRating(), 1) }}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" style="display:inline-block;vertical-align:middle;margin-right:4px;margin-top:-2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        {{ number_format($field->averageRating(), 1) }}
                         ({{ $field->reviews->count() }} đánh giá)
                     </div>
                     <p class="field-price">{{ number_format($field->price_per_hour) }}đ/giờ</p>
@@ -224,12 +228,17 @@
                             @endif
                         </span>
                         <h3 class="field-name">{{ $tournament->name }}</h3>
-                        <p class="field-address">📍 {{ $tournament->field->name }}</p>
-                        <p style="font-size: 14px; color: #666; margin: 8px 0;">
-                            📅 {{ $tournament->start_date->format('d/m/Y') }} - {{ $tournament->end_date->format('d/m/Y') }}
+                        <p class="field-address">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;color:#6c757d;flex-shrink:0;margin-top:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            {{ $tournament->field->name }}
                         </p>
-                        <p style="font-size: 14px; color: #666; margin: 8px 0;">
-                            👥 {{ $tournament->teams->where('status', 'approved')->count() }}/{{ $tournament->max_teams }} đội
+                        <p style="font-size: 14px; color: #666; margin: 8px 0; display:flex; align-items:center; gap:4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:#6c757d"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            {{ $tournament->start_date->format('d/m/Y') }} - {{ $tournament->end_date->format('d/m/Y') }}
+                        </p>
+                        <p style="font-size: 14px; color: #666; margin: 8px 0; display:flex; align-items:center; gap:4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:#6c757d"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            {{ $tournament->teams->where('status', 'approved')->count() }}/{{ $tournament->max_teams }} đội
                         </p>
                         <p class="field-price">{{ number_format($tournament->entry_fee) }}đ/đội</p>
                         <a href="{{ route('tournaments.show', $tournament->id) }}" class="btn btn-primary" style="width: 100%; background: #28a745;">

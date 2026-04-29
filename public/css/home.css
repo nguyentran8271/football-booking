@@ -476,9 +476,10 @@
     }
 }
 
-/* Featured Fields - address & hotline */
+/* Featured Fields - address, hotline & rating */
 .field-address,
-.field-hotline {
+.field-hotline,
+.field-rating {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -489,5 +490,10 @@
 
 .field-hotline {
     color: #28a745;
+    font-weight: 500;
+}
+
+.field-rating {
+    color: #f59e0b;
     font-weight: 500;
 }
