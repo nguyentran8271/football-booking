@@ -17,8 +17,8 @@
 
 .tournaments-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
     overflow: hidden;
 }
 
@@ -31,39 +31,39 @@
 }
 
 .tournament-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .tournament-banner {
     width: 100%;
-    height: 200px;
+    height: 140px;
     object-fit: cover;
     background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
 }
 
 .tournament-body {
-    padding: 20px;
+    padding: 14px;
 }
 
 .tournament-title {
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 600;
-    margin: 0 0 10px 0;
+    margin: 0 0 8px 0;
     color: #333;
 }
 
 .tournament-info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
+    gap: 5px;
+    margin-bottom: 12px;
 }
 
 .tournament-info-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 6px;
+    font-size: 13px;
     color: #666;
 }
 
