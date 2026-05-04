@@ -146,7 +146,8 @@
 
         @if($fields->count() > 0)
         <div class="fields-table-wrapper">
-            <table class="fields-table">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="fields-table" style="min-width: 600px;">
                 <thead>
                     <tr>
                         <th>Hình ảnh</th>
@@ -194,6 +195,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
 
             @if($fields->hasPages())
             <div class="pagination">

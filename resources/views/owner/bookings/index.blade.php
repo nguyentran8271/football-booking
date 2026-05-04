@@ -8,6 +8,15 @@
     padding: 30px 0;
 }
 
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
 .filter-section {
     background: white;
     padding: 20px;
@@ -128,9 +137,11 @@
 @section('content')
 <div class="bookings-container">
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div class="header-section">
             <h1>Quản Lý Lịch Đặt Sân</h1>
-            <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+            <div>
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
+            </div>
         </div>
 
         @if(session('success'))

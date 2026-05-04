@@ -188,11 +188,11 @@
         </div>
 
         <!-- Thao tác nhanh -->
-        <div class="quick-actions" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <a href="{{ route('owner.fields.create') }}" class="btn {{ request()->routeIs('owner.fields.create') ? 'btn-primary' : 'btn-secondary' }}">Thêm sân mới</a>
-            <a href="{{ route('owner.bookings.index') }}" class="btn {{ request()->routeIs('owner.bookings.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý lịch đặt</a>
-            <a href="{{ route('owner.fields.index') }}" class="btn {{ request()->routeIs('owner.fields.index') ? 'btn-primary' : 'btn-secondary' }}">Quản lý sân</a>
-            <a href="{{ route('owner.tournaments.index') }}" class="btn {{ request()->routeIs('owner.tournaments.*') ? 'btn-primary' : 'btn-secondary' }}">Quản lý giải đấu</a>
+        <div class="quick-actions" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:30px;">
+            <a href="{{ route('owner.fields.create') }}" class="btn {{ request()->routeIs('owner.fields.create') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center;">Thêm sân mới</a>
+            <a href="{{ route('owner.bookings.index') }}" class="btn {{ request()->routeIs('owner.bookings.*') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center;">Quản lý lịch đặt</a>
+            <a href="{{ route('owner.fields.index') }}" class="btn {{ request()->routeIs('owner.fields.index') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center;">Quản lý sân</a>
+            <a href="{{ route('owner.tournaments.index') }}" class="btn {{ request()->routeIs('owner.tournaments.*') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center;">Quản lý giải đấu</a>
         </div>
 
         <!-- Thông báo booking -->
