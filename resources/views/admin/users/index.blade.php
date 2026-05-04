@@ -5,9 +5,9 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <h1>Quản Lý Users</h1>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+        <div style="margin-bottom:30px;">
+            <h1 style="font-size:24px; margin-bottom:12px;">Quản Lý Users</h1>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap;">← Dashboard</a>
         </div>
 
         @if(session('success'))
@@ -24,7 +24,8 @@
             @endif
         </form>
         <div class="card">
-            <table class="table">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table" style="min-width: 600px;">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -61,6 +62,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="pagination">
