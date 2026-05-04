@@ -108,11 +108,11 @@
 @section('content')
 <div class="tournaments-container">
     <div class="container">
-        <div class="tournaments-header">
-            <h1 style="font-size:24px; white-space:nowrap;">Quản lý giải đấu</h1>
-            <div style="display:flex; gap:10px; flex-shrink:0;">
-                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap; height:38px; display:inline-flex; align-items:center;">← Dashboard</a>
-                <a href="{{ route('owner.tournaments.create') }}" class="btn btn-primary" style="white-space:nowrap; height:38px; display:inline-flex; align-items:center;">+ Tạo giải đấu mới</a>
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size:24px; margin-bottom:12px;">Quản lý giải đấu</h1>
+            <div style="display:flex; gap:10px;">
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap;">← Dashboard</a>
+                <a href="{{ route('owner.tournaments.create') }}" class="btn btn-primary" style="white-space:nowrap;">+ Tạo giải đấu mới</a>
             </div>
         </div>
 

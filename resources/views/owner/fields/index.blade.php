@@ -132,11 +132,11 @@
 @section('content')
 <div class="fields-container">
     <div class="container">
-        <div class="header-section">
-            <h1 style="font-size:24px; white-space:nowrap;">Quản Lý Sân</h1>
-            <div style="display:flex; gap:10px; flex-shrink:0;">
-                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap; height:38px; display:inline-flex; align-items:center;">← Dashboard</a>
-                <a href="{{ route('owner.fields.create') }}" class="btn btn-primary" style="white-space:nowrap; height:38px; display:inline-flex; align-items:center;">+ Thêm sân mới</a>
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size:24px; margin-bottom:12px;">Quản Lý Sân</h1>
+            <div style="display:flex; gap:10px;">
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap;">← Dashboard</a>
+                <a href="{{ route('owner.fields.create') }}" class="btn btn-primary" style="white-space:nowrap;">+ Thêm sân mới</a>
             </div>
         </div>
 

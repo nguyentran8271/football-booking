@@ -188,7 +188,7 @@
         </div>
 
         <!-- Thao tác nhanh -->
-        <div class="quick-actions" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:30px;">
+        <div class="quick-actions" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-bottom:30px;">
             <a href="{{ route('owner.fields.create') }}" class="btn {{ request()->routeIs('owner.fields.create') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center; white-space:nowrap; height:42px; display:flex; align-items:center; justify-content:center;">Thêm sân mới</a>
             <a href="{{ route('owner.bookings.index') }}" class="btn {{ request()->routeIs('owner.bookings.*') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center; white-space:nowrap; height:42px; display:flex; align-items:center; justify-content:center;">Quản lý lịch đặt</a>
             <a href="{{ route('owner.fields.index') }}" class="btn {{ request()->routeIs('owner.fields.index') ? 'btn-primary' : 'btn-secondary' }}" style="text-align:center; white-space:nowrap; height:42px; display:flex; align-items:center; justify-content:center;">Quản lý sân</a>
