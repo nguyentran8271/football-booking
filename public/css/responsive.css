@@ -171,3 +171,14 @@
         white-space: nowrap;
     }
 }
+
+/* Prevent horizontal overflow causing footer whitespace */
+body {
+    overflow-x: hidden;
+}
+
+.tournaments-container,
+.fields-container,
+.bookings-container {
+    overflow-x: hidden;
+}

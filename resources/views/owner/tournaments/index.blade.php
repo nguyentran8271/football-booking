@@ -17,8 +17,9 @@
 
 .tournaments-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
+    overflow: hidden;
 }
 
 .tournament-card {
@@ -108,10 +109,10 @@
 <div class="tournaments-container">
     <div class="container">
         <div class="tournaments-header">
-            <h1>Quản lý giải đấu</h1>
-            <div style="display:flex; gap:10px;">
-                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
-                <a href="{{ route('owner.tournaments.create') }}" class="btn btn-primary">Tạo giải đấu mới</a>
+            <h1 style="font-size:24px; white-space:nowrap;">Quản lý giải đấu</h1>
+            <div style="display:flex; gap:10px; flex-shrink:0;">
+                <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap; height:38px; display:inline-flex; align-items:center;">← Dashboard</a>
+                <a href="{{ route('owner.tournaments.create') }}" class="btn btn-primary" style="white-space:nowrap; height:38px; display:inline-flex; align-items:center;">+ Tạo giải đấu mới</a>
             </div>
         </div>
 
