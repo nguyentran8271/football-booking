@@ -85,7 +85,7 @@
                         @php $loginBg = App\Models\SiteSetting::get('login_background'); @endphp
                         @if($loginBg)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ storage_url($loginBg) }}" alt="Login Background" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($loginBg) }}" alt="Login Background" style="max-width: 300px; width: 100%; border-radius: 10px; height: auto;">
                         </div>
                         @endif
                         <input type="file" name="login_background" class="form-control" accept="image/*">
@@ -108,7 +108,7 @@
                         @php $registerBg = App\Models\SiteSetting::get('register_background'); @endphp
                         @if($registerBg)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ storage_url($registerBg) }}" alt="Register Background" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($registerBg) }}" alt="Register Background" style="max-width: 300px; width: 100%; border-radius: 10px; height: auto;">
                         </div>
                         @endif
                         <input type="file" name="register_background" class="form-control" accept="image/*">
@@ -372,7 +372,7 @@
                         @php $fieldsBanner = App\Models\SiteSetting::get('fields_banner'); @endphp
                         @if($fieldsBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ storage_url($fieldsBanner) }}" alt="Fields Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($fieldsBanner) }}" alt="Fields Banner" style="max-width: 300px; width: 100%; border-radius: 10px; height: auto;">
                         </div>
                         @endif
                         <input type="file" name="fields_banner" class="form-control" accept="image/*">
@@ -398,7 +398,7 @@
                         @php $aboutBanner = App\Models\SiteSetting::get('about_banner'); @endphp
                         @if($aboutBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ storage_url($aboutBanner) }}" alt="About Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($aboutBanner) }}" alt="About Banner" style="max-width: 300px; width: 100%; border-radius: 10px; height: auto;">
                         </div>
                         @endif
                         <input type="file" name="about_banner" class="form-control" accept="image/*">
@@ -497,7 +497,7 @@
                         @php $reviewsBanner = App\Models\SiteSetting::get('reviews_banner'); @endphp
                         @if($reviewsBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ storage_url($reviewsBanner) }}" alt="Reviews Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($reviewsBanner) }}" alt="Reviews Banner" style="max-width: 300px; width: 100%; border-radius: 10px; height: auto;">
                         </div>
                         @endif
                         <input type="file" name="reviews_banner" class="form-control" accept="image/*">
@@ -531,7 +531,7 @@
                         @php $ownerBanner = App\Models\SiteSetting::get('owner_banner'); @endphp
                         @if($ownerBanner)
                         <div style="margin-bottom: 10px;">
-                            <img src="{{ storage_url($ownerBanner) }}" alt="Owner Banner" style="max-width: 300px; border-radius: 10px;">
+                            <img src="{{ storage_url($ownerBanner) }}" alt="Owner Banner" style="max-width: 300px; width: 100%; border-radius: 10px; height: auto;">
                         </div>
                         @endif
                         <input type="file" name="owner_banner" class="form-control" accept="image/*">
