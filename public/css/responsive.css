@@ -125,3 +125,10 @@
         grid-template-columns: 1fr !important;
     }
 }
+
+/* Prevent province label from wrapping */
+.fields-search-grid .form-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
