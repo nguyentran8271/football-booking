@@ -104,6 +104,11 @@
 .status-confirmed { background: #d4edda; color: #155724; }
 .status-cancelled { background: #f8d7da; color: #721c24; }
 
+.booking-table th,
+.booking-table td {
+    white-space: nowrap;
+}
+
 .notification-item {
     padding: 20px 25px;
     border-left: 4px solid #ffc107;
@@ -241,8 +246,10 @@
                 </div>
             </div>
 
-            <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
+            <div style="overflow-x: auto;">
+                <div class="chart-container" style="min-width: 600px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -322,7 +329,8 @@ new Chart(ctx, {
                 borderColor: '#1976d2',
                 borderWidth: 1.5,
                 borderRadius: 4,
-                barThickness: 40,
+                barThickness: 'flex',
+                maxBarThickness: 40,
                 yAxisID: 'yCount',
                 order: 2,
             },

@@ -81,6 +81,11 @@
 .status-confirmed { background: #d4edda; color: #155724; }
 .status-cancelled { background: #f8d7da; color: #721c24; }
 
+.bookings-table th,
+.bookings-table td {
+    white-space: nowrap;
+}
+
 .action-buttons {
     display: flex;
     gap: 8px;
