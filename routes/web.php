@@ -32,6 +32,33 @@ Route::get('/gioi-thieu', [HomeController::class, 'about'])->name('about');
 Route::get('/chinh-sach', [HomeController::class, 'policy'])->name('policy');
 Route::get('/danh-cho-chu-san', [HomeController::class, 'forOwners'])->name('for-owners');
 
+// Temporary DB export - REMOVE AFTER USE
+Route::get('/db-export-backup-2026', function () {
+    $sql = '-- Database backup ' . now() . "\n\n";
+    $tables = \DB::select("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename");
+    foreach ($tables as $table) {
+        $tableName = $table->tablename;
+        $columns = \DB::select("SELECT column_name FROM information_schema.columns WHERE table_name = ? AND table_schema = 'public' ORDER BY ordinal_position", [$tableName]);
+        $colNames = array_map(fn($c) => '"' . $c->column_name . '"', $columns);
+        $colList = implode(', ', $colNames);
+        $rows = \DB::table($tableName)->get();
+        if ($rows->isEmpty()) continue;
+        $sql .= "\n-- $tableName\n";
+        foreach ($rows as $row) {
+            $values = array_map(function ($val) {
+                if ($val === null) return 'NULL';
+                if (is_bool($val)) return $val ? 'TRUE' : 'FALSE';
+                return "'" . str_replace("'", "''", (string)$val) . "'";
+            }, (array) $row);
+            $sql .= "INSERT INTO \"$tableName\" ($colList) VALUES (" . implode(', ', $values) . ");\n";
+        }
+    }
+    return response($sql, 200, [
+        'Content-Type' => 'text/plain',
+        'Content-Disposition' => 'attachment; filename="backup_' . date('Y-m-d') . '.sql"',
+    ]);
+});
+
 // Danh sách sân
 Route::get('/san-bong', [FieldController::class, 'index'])->name('fields.index');
 Route::get('/san-bong/{id}', [FieldController::class, 'show'])->name('fields.show');
