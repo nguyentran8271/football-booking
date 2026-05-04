@@ -1,21 +1,30 @@
 /* Admin Tabs */
 .admin-tabs {
     display: flex;
-    gap: 10px;
+    gap: 0;
     margin-bottom: 30px;
     border-bottom: 2px solid #ddd;
-    flex-wrap: wrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+}
+
+.admin-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .admin-tab {
-    padding: 12px 24px;
+    padding: 12px 20px;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     color: #666;
     border-bottom: 3px solid transparent;
     transition: all 0.3s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .admin-tab:hover {
@@ -34,4 +43,25 @@
 
 .tab-content.active {
     display: block;
+}
+
+/* Responsive tables */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive .table {
+    min-width: 480px;
+    table-layout: fixed;
+}
+
+.table-responsive .table th:first-child,
+.table-responsive .table td:first-child {
+    width: 70px;
+}
+
+.table-responsive .table td {
+    word-break: break-word;
+    vertical-align: middle;
 }
