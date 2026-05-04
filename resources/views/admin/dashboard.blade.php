@@ -88,7 +88,8 @@
                 <div style="position: relative; height: 300px; margin-bottom: 25px;">
                     <canvas id="hotFieldsChart"></canvas>
                 </div>
-                <table class="table">
+                <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <table class="table" style="min-width: 500px;">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -110,6 +111,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             @endif
         </div>
 
@@ -117,7 +119,8 @@
         <div class="card">
             <h2 class="card-title">Booking gần đây</h2>
             @if($recentBookings->count() > 0)
-            <table class="table">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table" style="min-width: 550px;">
                 <thead>
                     <tr>
                         <th>Khách hàng</th>
@@ -134,8 +137,8 @@
                         <td>{{ $booking->user->name }}</td>
                         <td>{{ $booking->field->name }}</td>
                         <td>{{ $booking->date->format('d/m/Y') }}</td>
-                        <td>{{ $booking->start_time }} - {{ $booking->end_time }}</td>
-                        <td>{{ number_format($booking->total_price) }}đ</td>
+                        <td style="white-space:nowrap;">{{ $booking->start_time }} - {{ $booking->end_time }}</td>
+                        <td style="white-space:nowrap;">{{ number_format($booking->total_price) }}đ</td>
                         <td>
                             @if($booking->status === 'pending')
                                 <span class="badge badge-warning">Chờ duyệt</span>
@@ -149,6 +152,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
             @else
             <p style="text-align: center; padding: 20px;">Chưa có booking nào.</p>
             @endif
