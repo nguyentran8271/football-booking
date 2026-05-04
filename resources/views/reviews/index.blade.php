@@ -266,13 +266,6 @@
                             <option value="helpful" {{ request('sort') == 'helpful' ? 'selected' : '' }}>Hữu ích nhất</option>
                         </select>
                     </div>
-
-                    <div class="filter-group">
-                        <label>
-                            <input type="checkbox" name="with_images" value="1" {{ request('with_images') ? 'checked' : '' }} onchange="this.form.submit()">
-                            Có hình ảnh
-                        </label>
-                    </div>
                 </div>
             </form>
         </div>
