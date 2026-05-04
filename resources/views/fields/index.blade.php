@@ -23,7 +23,7 @@
         <!-- Search Form -->
         <div class="card">
             <form action="{{ route('fields.index') }}" method="GET" id="searchForm">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div class="fields-search-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label">Tỉnh/Thành phố</label>
                         <select name="province" id="provinceSelect" class="form-control">

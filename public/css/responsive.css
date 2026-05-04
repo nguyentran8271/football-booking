@@ -118,3 +118,10 @@
         flex: 1;
     }
 }
+
+/* Fields search form - province/ward selects */
+@media (max-width: 768px) {
+    .fields-search-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
