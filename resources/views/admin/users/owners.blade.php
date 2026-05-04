@@ -5,9 +5,9 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <h1>Quản Lý Chủ Sân</h1>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">← Quay lại Dashboard</a>
+        <div style="margin-bottom:30px;">
+            <h1 style="font-size:24px; margin-bottom:12px;">Quản Lý Chủ Sân</h1>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary" style="white-space:nowrap;">← Dashboard</a>
         </div>
 
         @if(session('success'))
@@ -30,7 +30,8 @@
                 <h2 style="margin:0; font-size:18px;">Đơn đăng ký chờ duyệt</h2>
                 <span style="background:#f0ad4e; color:#fff; border-radius:20px; padding:2px 10px; font-size:13px; font-weight:600;">{{ $pendingRequests->count() }}</span>
             </div>
-            <table class="table">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table" style="min-width: 700px;">
                 <thead>
                     <tr>
                         <th>Tên</th>
@@ -95,13 +96,15 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
         @endif
 
         @if($owners->count() > 0)
         <div class="card">
             <h2 style="font-size:18px; margin-bottom:16px;">Danh sách chủ sân</h2>
-            <table class="table">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table" style="min-width: 700px;">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -167,6 +170,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div style="margin-top: 20px;">
