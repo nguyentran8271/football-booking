@@ -150,24 +150,20 @@
             </div>
 
             @if($bookings->hasPages())
-            <div style="padding: 20px; display: flex; justify-content: center;">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    @if($bookings->onFirstPage())
-                        <span style="padding: 8px 12px; color: #999;">« Trước</span>
-                    @else
-                        <a href="{{ $bookings->previousPageUrl() }}" style="padding: 8px 12px; background: white; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #333;">« Trước</a>
-                    @endif
+            <div style="padding: 16px 20px; display: flex; justify-content: center; align-items: center; gap: 6px; border-top: 1px solid #eee;">
+                @if($bookings->onFirstPage())
+                    <span style="padding: 7px 14px; color: #ccc; border: 1px solid #eee; border-radius: 6px; font-size: 14px;">‹</span>
+                @else
+                    <a href="{{ $bookings->previousPageUrl() }}" style="padding: 7px 14px; background: white; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333; font-size: 14px;">‹</a>
+                @endif
 
-                    <span style="padding: 8px 12px;">
-                        Trang {{ $bookings->currentPage() }} / {{ $bookings->lastPage() }}
-                    </span>
+                <span style="padding: 7px 14px; font-size: 14px; color: #555;">{{ $bookings->currentPage() }} / {{ $bookings->lastPage() }}</span>
 
-                    @if($bookings->hasMorePages())
-                        <a href="{{ $bookings->nextPageUrl() }}" style="padding: 8px 12px; background: white; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #333;">Sau »</a>
-                    @else
-                        <span style="padding: 8px 12px; color: #999;">Sau »</span>
-                    @endif
-                </div>
+                @if($bookings->hasMorePages())
+                    <a href="{{ $bookings->nextPageUrl() }}" style="padding: 7px 14px; background: white; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333; font-size: 14px;">›</a>
+                @else
+                    <span style="padding: 7px 14px; color: #ccc; border: 1px solid #eee; border-radius: 6px; font-size: 14px;">›</span>
+                @endif
             </div>
             @endif
         </div>
