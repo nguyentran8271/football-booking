@@ -94,8 +94,7 @@
 
         @if($bookings->count() > 0)
         <div class="bookings-table-wrapper">
-            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-            <table class="bookings-table" style="min-width: 600px;">
+            <table class="bookings-table">
                 <thead>
                     <tr>
                         <th>Sân</th>
@@ -147,7 +146,6 @@
                     @endforeach
                 </tbody>
             </table>
-            </div>
 
             @if($bookings->hasPages())
             <div style="padding: 20px; display: flex; justify-content: center;">

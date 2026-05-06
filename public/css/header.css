@@ -179,34 +179,8 @@
         border-bottom: none;
     }
 
-    .auth-buttons { display: flex !important; gap: 4px; align-items: center; order: 2; flex-shrink: 0; }
-    .auth-buttons > a.btn { display: none !important; }
-    .auth-buttons .btn { min-width: unset !important; width: auto !important; }
-    .logo { order: 1; flex: 1; }
-    .mobile-menu-toggle { order: 3; }
-    nav { order: 4; }
+    .auth-buttons { display: none !important; }
     .mobile-only { display: block !important; }
-
-    /* Fix logout button alignment in mobile menu */
-    .nav-menu li .mobile-logout-form {
-        margin: 0;
-        padding: 8px 16px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .nav-menu li .mobile-logout-form button {
-        display: block !important;
-        width: 100% !important;
-        padding: 12px 20px !important;
-        background: #2e7d32 !important;
-        border: none !important;
-        border-radius: 0 !important;
-        color: #fff !important;
-        font-size: 15px !important;
-        cursor: pointer !important;
-        text-align: left !important;
-        font-weight: 500 !important;
-    }
 
     .header { position: relative; z-index: 999; }
     .header-content { position: relative; }
@@ -214,20 +188,3 @@
 }
 
 .mobile-only { display: none; }
-
-@media (max-width: 768px) {
-    /* Hide username text on mobile, keep avatar + bell */
-    .user-avatar-btn span,
-    .user-avatar-btn svg {
-        display: none;
-    }
-
-    .user-avatar-btn {
-        padding: 4px !important;
-    }
-
-    #bell-dropdown {
-        right: -60px !important;
-        width: 280px !important;
-    }
-}
