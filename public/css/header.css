@@ -197,14 +197,16 @@
         display: block;
         width: 100%;
         padding: 12px 20px;
-        background: none;
-        border: none;
-        color: #ffcdd2 !important;
+        background: #2e7d32;
+        border: 2px solid #fff;
+        border-radius: 6px;
+        color: #fff !important;
         font-size: 15px;
         cursor: pointer;
         text-align: left;
         font-weight: 500;
-        border-bottom: none !important;
+        margin: 8px 16px;
+        width: calc(100% - 32px);
     }
 
     .header { position: relative; z-index: 999; }
