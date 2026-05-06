@@ -36,9 +36,9 @@
                     </li>
                     <li class="mobile-only"><a href="{{ route('profile.edit') }}">Thông tin cá nhân</a></li>
                     <li class="mobile-only">
-                        <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                        <form action="{{ route('logout') }}" method="POST" class="mobile-logout-form">
                             @csrf
-                            <button type="submit" style="background:none;border:none;color:#ffcdd2;font-size:15px;cursor:pointer;padding:12px 20px;width:100%;text-align:left;font-weight:500;border-top:1px solid rgba(255,255,255,0.1);">Đăng xuất</button>
+                            <button type="submit">Đăng xuất</button>
                         </form>
                     </li>
                     @else

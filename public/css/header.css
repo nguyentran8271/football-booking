@@ -179,10 +179,33 @@
         border-bottom: none;
     }
 
-    .auth-buttons { display: flex !important; gap: 4px; align-items: center; order: 2; }
-    .auth-buttons > a.btn { display: none !important; } /* hide login/register buttons on mobile */
+    .auth-buttons { display: flex !important; gap: 4px; align-items: center; order: 2; flex-shrink: 0; }
+    .auth-buttons > a.btn { display: none !important; }
     .auth-buttons .btn { min-width: unset !important; width: auto !important; }
+    .logo { order: 1; }
+    .mobile-menu-toggle { order: 3; }
+    nav { order: 4; }
     .mobile-only { display: block !important; }
+
+    /* Fix logout button alignment in mobile menu */
+    .nav-menu li .mobile-logout-form {
+        margin: 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-menu li .mobile-logout-form button {
+        display: block;
+        width: 100%;
+        padding: 12px 20px;
+        background: none;
+        border: none;
+        color: #ffcdd2 !important;
+        font-size: 15px;
+        cursor: pointer;
+        text-align: left;
+        font-weight: 500;
+        border-bottom: none !important;
+    }
 
     .header { position: relative; z-index: 999; }
     .header-content { position: relative; }
