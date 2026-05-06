@@ -179,7 +179,9 @@
         border-bottom: none;
     }
 
-    .auth-buttons { display: none !important; }
+    .auth-buttons { display: flex !important; gap: 4px; align-items: center; order: 2; }
+    .auth-buttons > a.btn { display: none !important; } /* hide login/register buttons on mobile */
+    .auth-buttons .btn { min-width: unset !important; width: auto !important; }
     .mobile-only { display: block !important; }
 
     .header { position: relative; z-index: 999; }
@@ -188,3 +190,20 @@
 }
 
 .mobile-only { display: none; }
+
+@media (max-width: 768px) {
+    /* Hide username text on mobile, keep avatar + bell */
+    .user-avatar-btn span,
+    .user-avatar-btn svg {
+        display: none;
+    }
+
+    .user-avatar-btn {
+        padding: 4px !important;
+    }
+
+    #bell-dropdown {
+        right: -60px !important;
+        width: 280px !important;
+    }
+}
