@@ -64,9 +64,23 @@ class TournamentController extends Controller
         $validated = $request->validate([
             'team_name' => 'required|string|max:255',
             'captain_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => [
+                'required',
+                'digits:10',
+                function ($attribute, $value, $fail) use ($tournament) {
+                    $exists = TournamentTeam::where('tournament_id', $tournament->id)
+                        ->where('phone', $value)
+                        ->exists();
+                    if ($exists) {
+                        $fail('Số điện thoại này đã được dùng để đăng ký giải đấu.');
+                    }
+                },
+            ],
             'players_list' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ], [
+            'phone.digits' => 'Số điện thoại phải đúng 10 chữ số.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
         ]);
 
         $validated['tournament_id'] = $tournament->id;

@@ -180,8 +180,13 @@ textarea.form-control {
 
                     <div class="form-group">
                         <label class="form-label">Số điện thoại <span class="required">*</span></label>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone') }}"
-                               placeholder="VD: 0123456789" maxlength="20" required>
+                        <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}"
+                               placeholder="VD: 0123456789"
+                               pattern="[0-9]{10}"
+                               maxlength="10"
+                               oninput="this.value=this.value.replace(/[^0-9]/,'')"
+                               required>
+                        <div class="form-help">Nhập đúng 10 chữ số, không trùng với đội đã đăng ký</div>
                     </div>
 
                     <div class="form-group">
