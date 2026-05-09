@@ -71,15 +71,16 @@ class ShiftHelper
      */
     public static function isShiftBookable($date, $shift)
     {
-        $today = now()->toDateString();
-        if ($date !== $today) {
-            return true; // Ngày tương lai luôn cho đặt
+        $today = now('Asia/Ho_Chi_Minh')->toDateString();
+        $dateStr = \Carbon\Carbon::parse($date)->format('Y-m-d');
+        if ($dateStr !== $today) {
+            return true;
         }
 
         $shiftInfo = self::getShiftInfo($shift);
         if (!$shiftInfo) return false;
 
-        $shiftStart = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $shiftInfo['start']);
-        return now() < $shiftStart;
+        $shiftStart = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dateStr . ' ' . $shiftInfo['start'], 'Asia/Ho_Chi_Minh');
+        return now('Asia/Ho_Chi_Minh') < $shiftStart;
     }
 }

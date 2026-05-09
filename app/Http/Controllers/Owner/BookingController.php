@@ -39,7 +39,8 @@ class BookingController extends Controller
         // Chỉ từ chối nếu ca đó đã kết thúc (không chỉ check ngày)
         $shiftEnd = \App\Helpers\ShiftHelper::getShiftEndTime($booking->shift);
         if ($shiftEnd) {
-            $shiftEndTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $booking->date . ' ' . $shiftEnd, 'Asia/Ho_Chi_Minh');
+            $dateStr = \Carbon\Carbon::parse($booking->date)->format('Y-m-d');
+            $shiftEndTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $dateStr . ' ' . $shiftEnd, 'Asia/Ho_Chi_Minh');
             if (now('Asia/Ho_Chi_Minh')->gt($shiftEndTime)) {
                 if (request()->wantsJson()) {
                     return response()->json(['success' => false, 'message' => 'Ca này đã kết thúc, không thể xác nhận.']);
