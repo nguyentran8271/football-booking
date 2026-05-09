@@ -318,18 +318,41 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(function() {});
     }
 
-    // Override toggleBell to use cached items
+    // Override toggleBell to use cached items and poll immediately on open
     var _origToggleBell = window.toggleBell;
     window.toggleBell = function() {
         _origToggleBell();
         var drop = document.getElementById('bell-dropdown');
-        if (drop && drop.style.display !== 'none' && window._bellItems) {
-            renderItems(window._bellItems);
+        if (drop && drop.style.display !== 'none') {
+            // Poll immediately when opening
+            fetch('/api/notifications/poll', {credentials: 'same-origin'})
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    window._bellItems = data.items;
+                    renderItems(data.items);
+                    // Update badge
+                    var badge = document.getElementById('bell-badge');
+                    if (data.unread > 0) {
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.id = 'bell-badge';
+                            badge.style.cssText = 'position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;';
+                            document.getElementById('bell-btn').appendChild(badge);
+                        }
+                        badge.textContent = data.unread > 9 ? '9+' : data.unread;
+                        badge.style.display = 'flex';
+                    } else if (badge) {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(function() {
+                    if (window._bellItems) renderItems(window._bellItems);
+                });
         }
     };
 
     pollNotifications();
-    setInterval(pollNotifications, 30000);
+    setInterval(pollNotifications, 15000);
 })();
 @endauth
 </script>
