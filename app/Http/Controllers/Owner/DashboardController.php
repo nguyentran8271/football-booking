@@ -83,7 +83,7 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->with(['field', 'user'])
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         $unreadBookings = 0;

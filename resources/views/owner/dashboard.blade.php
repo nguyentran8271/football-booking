@@ -199,7 +199,7 @@
         @if($notifications->count() > 0)
         <div class="dashboard-section">
             <h2>🔔 Thông báo mới ({{ $notifications->count() }})</h2>
-            @foreach($notifications as $booking)
+            @foreach($notifications->take(3) as $booking)
             <div class="notification-item" id="notif-{{ $booking->id }}">
                 <strong>Đặt sân mới từ {{ $booking->user->name }}</strong>
                 <p>Sân: {{ $booking->field->name }} - {{ $booking->date->format('d/m/Y') }} - Ca {{ $booking->shift }} ({{ $booking->start_time }} - {{ $booking->end_time }})</p>
@@ -215,6 +215,25 @@
                 </div>
             </div>
             @endforeach
+
+            @if($notifications->count() > 3)
+            <div id="notif-more" style="display:none;">
+                @foreach($notifications->skip(3) as $booking)
+                <div class="notification-item" id="notif-{{ $booking->id }}">
+                    <strong>Đặt sân mới từ {{ $booking->user->name }}</strong>
+                    <p>Sân: {{ $booking->field->name }} - {{ $booking->date->format('d/m/Y') }} - Ca {{ $booking->shift }} ({{ $booking->start_time }} - {{ $booking->end_time }})</p>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <a href="{{ route('owner.bookings.index') }}" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                        @if($booking->status === 'pending')
+                        <button onclick="confirmBooking({{ $booking->id }}, this)" class="btn btn-sm btn-success" style="font-size:12px;background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;">Duyệt</button>
+                        <button onclick="cancelBooking({{ $booking->id }}, this)" class="btn btn-sm btn-danger" style="font-size:12px;background:#dc3545;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;">Từ chối</button>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <button onclick="document.getElementById('notif-more').style.display='block';this.style.display='none';" class="btn btn-secondary" style="margin-top:8px;font-size:13px;">Xem thêm {{ $notifications->count() - 3 }} thông báo</button>
+            @endif
         </div>
         @endif
 
