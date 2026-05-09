@@ -228,7 +228,11 @@
         padding: 4px !important;
     }
     #bell-dropdown {
-        right: -40px !important;
-        width: 280px !important;
+        position: fixed !important;
+        right: 10px !important;
+        left: auto !important;
+        top: 70px !important;
+        width: calc(100vw - 20px) !important;
+        max-width: 320px !important;
     }
 }
