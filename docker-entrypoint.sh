@@ -12,7 +12,6 @@ php artisan storage:link 2>/dev/null || true
 php artisan config:clear 2>/dev/null || true
 php artisan route:clear 2>/dev/null || true
 php artisan view:clear 2>/dev/null || true
-php artisan route:cache 2>/dev/null || true
 
 # Run migrations in background (don't block Apache startup)
 (
