@@ -36,11 +36,16 @@ class BookingController extends Controller
             abort(403, 'Bạn không có quyền thao tác booking này');
         }
 
-        if (\Carbon\Carbon::parse($booking->date)->isPast()) {
-            if (request()->wantsJson()) {
-                return response()->json(['success' => false, 'message' => 'Không thể xác nhận booking đã qua ngày đặt sân.']);
+        // Chỉ từ chối nếu ca đó đã kết thúc (không chỉ check ngày)
+        $shiftEnd = \App\Helpers\ShiftHelper::getShiftEndTime($booking->shift);
+        if ($shiftEnd) {
+            $shiftEndTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $booking->date . ' ' . $shiftEnd, 'Asia/Ho_Chi_Minh');
+            if (now('Asia/Ho_Chi_Minh')->gt($shiftEndTime)) {
+                if (request()->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Ca này đã kết thúc, không thể xác nhận.']);
+                }
+                return back()->with('error', 'Ca này đã kết thúc, không thể xác nhận.');
             }
-            return back()->with('error', 'Không thể xác nhận booking đã qua ngày đặt sân.');
         }
 
         $booking->update(['status' => 'approved', 'user_notified' => false]);
