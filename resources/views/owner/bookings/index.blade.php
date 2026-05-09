@@ -169,9 +169,9 @@
                 <input type="date" name="date" value="{{ request('date') }}">
             </div>
 
-            <div class="filter-group">
-                <button type="submit" class="btn btn-primary">Lọc</button>
-                <a href="{{ route('owner.bookings.index') }}" class="btn btn-secondary">Reset</a>
+            <div class="filter-group" style="display:flex; gap:8px; align-items:stretch;">
+                <button type="submit" class="btn btn-primary" style="height:42px; padding:0 20px; display:flex; align-items:center; justify-content:center;">Lọc</button>
+                <a href="{{ route('owner.bookings.index') }}" class="btn btn-secondary" style="height:42px; padding:0 20px; display:flex; align-items:center; justify-content:center;">Reset</a>
             </div>
         </form>
 
