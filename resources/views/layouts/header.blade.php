@@ -204,7 +204,19 @@ function toggleBell() {
     var d = document.getElementById('bell-dropdown');
     var opening = d.style.display === 'none';
     d.style.display = opening ? 'block' : 'none';
-    // Không mark-read khi mở - để polling tự cập nhật
+    if (opening) {
+        // Poll ngay khi mở để lấy data mới nhất
+        if (window._pollNotifications) window._pollNotifications();
+        // Mark-read sau 1s (sau khi đã hiển thị)
+        setTimeout(function() {
+            var token = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+            var opts = {method:'POST', credentials:'same-origin', headers:{'X-CSRF-TOKEN':token,'Content-Type':'application/json'}};
+            var role = '{{ auth()->check() ? auth()->user()->role : "" }}';
+            if (role === 'user') fetch('/notifications/mark-read', opts);
+            else if (role === 'owner') { fetch('/owner/bookings-mark-read', opts); fetch('/owner/reviews-mark-read', opts); }
+            else if (role === 'admin') fetch('/admin/reviews/mark-read', opts);
+        }, 1000);
+    }
 }
 document.addEventListener('click', function(e) {
     var dropdown = document.querySelector('.user-dropdown');
@@ -308,39 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(function(e) { /* silent fail */ });
     }
 
-    // Override toggleBell to use cached items and poll immediately on open
-    var _origToggleBell = window.toggleBell;
-    window.toggleBell = function() {
-        _origToggleBell();
-        var drop = document.getElementById('bell-dropdown');
-        if (drop && drop.style.display !== 'none') {
-            // Poll immediately when opening
-            fetch('/api/notifications/poll', {credentials: 'same-origin'})
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    window._bellItems = data.items;
-                    renderItems(data.items);
-                    // Update badge
-                    var badge = document.getElementById('bell-badge');
-                    if (data.unread > 0) {
-                        if (!badge) {
-                            badge = document.createElement('span');
-                            badge.id = 'bell-badge';
-                            badge.style.cssText = 'position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;';
-                            document.getElementById('bell-btn').appendChild(badge);
-                        }
-                        badge.textContent = data.unread > 9 ? '9+' : data.unread;
-                        badge.style.display = 'flex';
-                    } else if (badge) {
-                        badge.style.display = 'none';
-                    }
-                })
-                .catch(function() {
-                    if (window._bellItems) renderItems(window._bellItems);
-                });
-        }
-    };
-
+    window._pollNotifications = pollNotifications;
     pollNotifications();
     setInterval(pollNotifications, 15000);
 })();
