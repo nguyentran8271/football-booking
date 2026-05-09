@@ -64,4 +64,22 @@ class ShiftHelper
     {
         return $pricePerHour * 2; // Mỗi ca 2 tiếng
     }
+
+    /**
+     * Kiểm tra ca có thể đặt không (dựa trên thời gian thực)
+     * Nếu là hôm nay, giờ hiện tại phải trước giờ bắt đầu ca
+     */
+    public static function isShiftBookable($date, $shift)
+    {
+        $today = now()->toDateString();
+        if ($date !== $today) {
+            return true; // Ngày tương lai luôn cho đặt
+        }
+
+        $shiftInfo = self::getShiftInfo($shift);
+        if (!$shiftInfo) return false;
+
+        $shiftStart = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $shiftInfo['start']);
+        return now() < $shiftStart;
+    }
 }

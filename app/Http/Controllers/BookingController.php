@@ -35,6 +35,12 @@ class BookingController extends Controller
             return back()->withErrors(['error' => 'Ca này đã được đặt. Vui lòng chọn ca khác.'])->withInput();
         }
 
+        // Check nếu đặt hôm nay, ca phải chưa bắt đầu
+        if (!ShiftHelper::isShiftBookable($validated['date'], $validated['shift'])) {
+            $shiftInfo = ShiftHelper::getShiftInfo($validated['shift']);
+            return back()->withErrors(['error' => 'Ca ' . $validated['shift'] . ' (' . $shiftInfo['start'] . ') đã qua. Vui lòng chọn ca khác.'])->withInput();
+        }
+
         $field = Field::findOrFail($validated['field_id']);
         $totalPrice = ShiftHelper::calculatePrice($field->price_per_hour);
 
