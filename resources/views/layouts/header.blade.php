@@ -262,4 +262,74 @@ document.addEventListener('DOMContentLoaded', function() {
     var d = document.getElementById('bell-dropdown');
     if (d) d.style.display = 'none';
 })();
+
+@auth
+// Realtime notification polling every 30s
+(function() {
+    function renderItems(items) {
+        var drop = document.getElementById('bell-dropdown');
+        if (!drop) return;
+        var header = drop.querySelector('div:first-child');
+        // Remove old items
+        while (drop.children.length > 1) drop.removeChild(drop.lastChild);
+        if (!items || items.length === 0) {
+            var empty = document.createElement('div');
+            empty.style.cssText = 'padding:16px;text-align:center;color:#999;font-size:12px;';
+            empty.textContent = 'Không có thông báo';
+            drop.appendChild(empty);
+            return;
+        }
+        items.forEach(function(item) {
+            var a = document.createElement('a');
+            a.href = item.url;
+            a.style.cssText = 'display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:' + item.bg + ';text-decoration:none;color:inherit;';
+            a.innerHTML = '<div style="font-size:12px;font-weight:600;">' + item.icon + ' ' + item.title + (item.is_read ? ' · Đã đọc' : '') + '</div>'
+                + '<div style="font-size:11px;color:#666;">' + item.body + '</div>'
+                + '<div style="font-size:10px;color:#999;">' + item.time + '</div>';
+            drop.appendChild(a);
+        });
+    }
+
+    function pollNotifications() {
+        fetch('/api/notifications/poll', {credentials: 'same-origin'})
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var badge = document.getElementById('bell-badge');
+                if (data.unread > 0) {
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.id = 'bell-badge';
+                        badge.style.cssText = 'position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;';
+                        document.getElementById('bell-btn').appendChild(badge);
+                    }
+                    badge.textContent = data.unread > 9 ? '9+' : data.unread;
+                    badge.style.display = 'flex';
+                } else if (badge) {
+                    badge.style.display = 'none';
+                }
+                // Update dropdown if open
+                var drop = document.getElementById('bell-dropdown');
+                if (drop && drop.style.display !== 'none') {
+                    renderItems(data.items);
+                }
+                // Store for when dropdown opens
+                window._bellItems = data.items;
+            })
+            .catch(function() {});
+    }
+
+    // Override toggleBell to use cached items
+    var _origToggleBell = window.toggleBell;
+    window.toggleBell = function() {
+        _origToggleBell();
+        var drop = document.getElementById('bell-dropdown');
+        if (drop && drop.style.display !== 'none' && window._bellItems) {
+            renderItems(window._bellItems);
+        }
+    };
+
+    pollNotifications();
+    setInterval(pollNotifications, 30000);
+})();
+@endauth
 </script>
