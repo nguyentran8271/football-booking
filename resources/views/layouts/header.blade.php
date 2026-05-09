@@ -204,21 +204,7 @@ function toggleBell() {
     var d = document.getElementById('bell-dropdown');
     var opening = d.style.display === 'none';
     d.style.display = opening ? 'block' : 'none';
-    if (opening) {
-        var badge = document.getElementById('bell-badge');
-        if (badge) badge.style.display = 'none';
-        var token = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
-        var opts = {method:'POST', credentials:'same-origin', headers:{'X-CSRF-TOKEN':token,'Content-Type':'application/json'}};
-        var role = '{{ auth()->check() ? auth()->user()->role : "" }}';
-        if (role === 'user') {
-            fetch('/notifications/mark-read', opts);
-        } else if (role === 'owner') {
-            fetch('/owner/bookings-mark-read', opts);
-            fetch('/owner/reviews-mark-read', opts);
-        } else if (role === 'admin') {
-            fetch('/admin/reviews/mark-read', opts);
-        }
-    }
+    // Không mark-read khi mở - để polling tự cập nhật
 }
 document.addEventListener('click', function(e) {
     var dropdown = document.querySelector('.user-dropdown');
