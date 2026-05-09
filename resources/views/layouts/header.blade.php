@@ -289,8 +289,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function pollNotifications() {
-        fetch('/api/notifications/poll', {credentials: 'same-origin'})
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timeout = controller ? setTimeout(function() { controller.abort(); }, 8000) : null;
+        fetch('/api/notifications/poll', {
+            credentials: 'same-origin',
+            signal: controller ? controller.signal : undefined
+        })
             .then(function(r) {
+                if (timeout) clearTimeout(timeout);
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
@@ -309,15 +315,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (badge) {
                     badge.style.display = 'none';
                 }
-                // Update dropdown if open
                 var drop = document.getElementById('bell-dropdown');
                 if (drop && drop.style.display !== 'none') {
                     renderItems(data.items);
                 }
-                // Store for when dropdown opens
                 window._bellItems = data.items;
             })
-            .catch(function(e) { /* silent fail */ });
+            .catch(function(e) {
+                if (timeout) clearTimeout(timeout);
+            });
     }
 
     window._pollNotifications = pollNotifications;
