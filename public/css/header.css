@@ -179,7 +179,7 @@
         border-bottom: none;
     }
 
-    /* Mobile: show bell & avatar, hide login/register buttons */
+    /* Mobile: show bell & avatar, hide login/register buttons - v2 */
     .auth-buttons {
         display: flex !important;
         gap: 4px !important;
