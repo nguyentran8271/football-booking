@@ -277,7 +277,8 @@ document.addEventListener('DOMContentLoaded', function() {
             drop.appendChild(empty);
             return;
         }
-        items.forEach(function(item) {
+        items.forEach(function(item, idx) {
+            if (idx >= 3) return; // max 3 items
             var a = document.createElement('a');
             a.href = item.url;
             a.style.cssText = 'display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:' + item.bg + ';text-decoration:none;color:inherit;';
