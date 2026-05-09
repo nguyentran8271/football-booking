@@ -93,68 +93,13 @@
                             <span id="bell-badge" style="position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">{{ $bellUnread > 9 ? '9+' : $bellUnread }}</span>
                             @endif
                         </button>
-                        <div id="bell-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:310px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1001;overflow:hidden;max-height:380px;overflow-y:auto;">
+                        <div id="bell-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:310px;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1001;overflow:hidden;max-height:380px;overflow-y:auto;" onscroll="bellOnScroll(this)">
                             <div style="padding:10px 14px;border-bottom:1px solid #eee;">
                                 <strong style="font-size:13px;">Thông báo</strong>
                             </div>
-                            @if($bellRole === 'user')
-                                @forelse($bellNotifs as $b)
-                                <a href="{{ route('bookings.history') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->user_notified ? '#fafafa' : ($b->status === 'approved' ? '#f0fff4' : '#fff5f5') }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}{{ $b->user_notified ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $b->field->name ?? '' }} - {{ $b->date->format('d/m/Y') }}</div>
-                                    <div style="font-size:10px;color:#999;">{{ $b->updated_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
-                                @endforelse
-                            @elseif($bellRole === 'owner')
-                                @forelse($bellNotifs['bookings'] as $b)
-                                <a href="{{ route('owner.bookings.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->is_read ? '#fafafa' : '#fff8f0' }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">📅 Đặt sân mới{{ $b->is_read ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $b->user->name ?? '' }} - {{ $b->field->name ?? '' }}</div>
-                                    <div style="font-size:10px;color:#999;">{{ $b->date->format('d/m/Y') }} Ca {{ $b->shift }} · {{ $b->created_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @forelse($bellNotifs['reviews'] as $r)
-                                <a href="{{ route('owner.dashboard') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $r->is_read ? '#fafafa' : '#f0fff4' }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá mới{{ $r->is_read ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->field->name ?? '' }} {{ $r->rating }}/5</div>
-                                    <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @if($bellNotifs['bookings']->isEmpty() && $bellNotifs['reviews']->isEmpty())
-                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
-                                @endif
-                            @elseif($bellRole === 'admin')
-                                @forelse($bellNotifs['owner_requests'] as $u)
-                                <a href="{{ route('admin.owners.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">👤 Đăng ký chủ sân</div>
-                                    <div style="font-size:11px;color:#666;">{{ $u->name }} ({{ $u->email }})</div>
-                                    <div style="font-size:10px;color:#999;">{{ $u->updated_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @forelse($bellNotifs['reviews'] as $r)
-                                <a href="{{ route('reviews.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $r->is_read ? '#fafafa' : '#f0fff4' }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá website mới{{ $r->is_read ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->rating }}/5 sao</div>
-                                    <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @forelse($bellNotifs['expired_owners'] as $u)
-                                <a href="{{ route('admin.owners.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff3cd;text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">⚠️ Chủ sân hết hạn</div>
-                                    <div style="font-size:11px;color:#666;">{{ $u->name }} - hết hạn {{ $u->subscription_expires_at->format('d/m/Y') }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @if($bellNotifs['owner_requests']->isEmpty() && $bellNotifs['reviews']->isEmpty() && $bellNotifs['expired_owners']->isEmpty())
-                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
-                                @endif
-                            @endif
+                            <div id="bell-items-container">
+                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Đang tải...</div>
+                            </div>
                         </div>
                     </div>
                     <div class="user-dropdown" style="position:relative; display:inline-block;">
@@ -205,21 +150,69 @@ function toggleBell() {
     var opening = d.style.display === 'none';
     d.style.display = opening ? 'block' : 'none';
     if (opening) {
-        var badge = document.getElementById('bell-badge');
-        if (badge) badge.style.display = 'none';
-        var token = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
-        var opts = {method:'POST', credentials:'same-origin', headers:{'X-CSRF-TOKEN':token,'Content-Type':'application/json'}};
-        var role = '{{ auth()->check() ? auth()->user()->role : "" }}';
-        if (role === 'user') {
-            fetch('/notifications/mark-read', opts);
-        } else if (role === 'owner') {
-            fetch('/owner/bookings-mark-read', opts);
-            fetch('/owner/reviews-mark-read', opts);
-        } else if (role === 'admin') {
-            fetch('/admin/reviews/mark-read', opts);
-        }
+        window._bellOffset = 0;
+        window._bellHasMore = false;
+        window._bellLoading = false;
+        loadBellItems(0, true);
+        setTimeout(function() {
+            var token = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+            var opts = {method:'POST', credentials:'same-origin', headers:{'X-CSRF-TOKEN':token,'Content-Type':'application/json'}};
+            var role = '{{ auth()->check() ? auth()->user()->role : "" }}';
+            if (role === 'user') fetch('/notifications/mark-read', opts);
+            else if (role === 'owner') { fetch('/owner/bookings-mark-read', opts); fetch('/owner/reviews-mark-read', opts); }
+            else if (role === 'admin') fetch('/admin/reviews/mark-read', opts);
+        }, 1000);
     }
 }
+
+function loadBellItems(offset, reset) {
+    if (window._bellLoading) return;
+    window._bellLoading = true;
+    var container = document.getElementById('bell-items-container');
+    if (reset) container.innerHTML = '<div style="padding:12px;text-align:center;color:#999;font-size:12px;">Đang tải...</div>';
+    fetch('/api/notifications/poll?offset=' + offset, {credentials: 'same-origin'})
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            window._bellLoading = false;
+            window._bellHasMore = data.hasMore;
+            window._bellOffset = data.nextOffset;
+            var badge = document.getElementById('bell-badge');
+            if (data.unread > 0) {
+                if (!badge) { badge = document.createElement('span'); badge.id = 'bell-badge'; badge.style.cssText = 'position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;'; var btn = document.getElementById('bell-btn'); if (btn) btn.appendChild(badge); }
+                badge.textContent = data.unread > 9 ? '9+' : data.unread;
+                badge.style.display = 'flex';
+            } else if (badge) { badge.style.display = 'none'; }
+            if (reset) container.innerHTML = '';
+            if (!data.items || data.items.length === 0) { if (reset) container.innerHTML = '<div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>'; return; }
+            data.items.forEach(function(item) {
+                var a = document.createElement('a'); a.href = item.url;
+                a.style.cssText = 'display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:' + item.bg + ';text-decoration:none;color:inherit;';
+                a.innerHTML = '<div style="font-size:12px;font-weight:600;">' + item.icon + ' ' + item.title + (item.is_read ? ' · Đã đọc' : '') + '</div><div style="font-size:11px;color:#666;">' + item.body + '</div><div style="font-size:10px;color:#999;">' + item.time + '</div>';
+                container.appendChild(a);
+            });
+            if (data.hasMore) { var lm = document.createElement('div'); lm.id = 'bell-load-more'; lm.style.cssText = 'padding:10px;text-align:center;color:#28a745;font-size:12px;cursor:pointer;'; lm.textContent = 'Xem thêm...'; lm.onclick = function() { lm.remove(); loadBellItems(window._bellOffset, false); }; container.appendChild(lm); }
+        })
+        .catch(function() { window._bellLoading = false; });
+}
+
+function bellOnScroll(el) {
+    if (window._bellHasMore && !window._bellLoading && el.scrollTop + el.clientHeight >= el.scrollHeight - 30) {
+        var lm = document.getElementById('bell-load-more'); if (lm) lm.remove();
+        loadBellItems(window._bellOffset, false);
+    }
+}
+
+setInterval(function() {
+    fetch('/api/notifications/poll?offset=0', {credentials: 'same-origin'})
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var badge = document.getElementById('bell-badge');
+            if (data.unread > 0) {
+                if (!badge) { badge = document.createElement('span'); badge.id = 'bell-badge'; badge.style.cssText = 'position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;'; var btn = document.getElementById('bell-btn'); if (btn) btn.appendChild(badge); }
+                badge.textContent = data.unread > 9 ? '9+' : data.unread; badge.style.display = 'flex';
+            } else if (badge) { badge.style.display = 'none'; }
+        }).catch(function() {});
+}, 15000);
 document.addEventListener('click', function(e) {
     var dropdown = document.querySelector('.user-dropdown');
     if (dropdown && !dropdown.contains(e.target)) {
