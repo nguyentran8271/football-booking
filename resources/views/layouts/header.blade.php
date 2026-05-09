@@ -64,7 +64,6 @@
                                     ->where('user_notified', false)
                                     ->whereIn('status', ['approved', 'cancelled'])->count();
                                 $bellNotifs = \App\Models\Booking::where('user_id', auth()->id())
-                                    ->where('user_notified', false)
                                     ->whereIn('status', ['approved', 'cancelled'])
                                     ->with('field')->orderBy('updated_at','desc')->limit(10)->get();
                             } elseif($bellRole === 'owner') {
@@ -72,15 +71,15 @@
                                 $bellUnread = \App\Models\Booking::whereIn('field_id', $ownerFids)->where('status','pending')->where('is_read',false)->count()
                                            + \App\Models\Review::whereIn('field_id', $ownerFids)->where('is_read',false)->count();
                                 $bellNotifs = [
-                                    'bookings' => \App\Models\Booking::whereIn('field_id', $ownerFids)->where('status','pending')->where('is_read',false)->with(['field','user'])->orderBy('created_at','desc')->limit(10)->get(),
-                                    'reviews'  => \App\Models\Review::whereIn('field_id', $ownerFids)->where('is_read',false)->with(['user','field'])->orderBy('created_at','desc')->limit(10)->get(),
+                                    'bookings' => \App\Models\Booking::whereIn('field_id', $ownerFids)->where('status','pending')->with(['field','user'])->orderBy('created_at','desc')->limit(10)->get(),
+                                    'reviews'  => \App\Models\Review::whereIn('field_id', $ownerFids)->with(['user','field'])->orderBy('created_at','desc')->limit(10)->get(),
                                 ];
                             } elseif($bellRole === 'admin') {
                                 $bellUnread = \App\Models\Review::whereNull('field_id')->where('is_read',false)->count();
                                 $expiredCount = \App\Models\User::where('role','owner')->whereNotNull('subscription_expires_at')->where('subscription_expires_at','<',now())->count();
                                 $bellUnread += $expiredCount;
                                 $bellNotifs = [
-                                    'reviews'        => \App\Models\Review::whereNull('field_id')->where('is_read',false)->with('user')->orderBy('created_at','desc')->limit(10)->get(),
+                                    'reviews'        => \App\Models\Review::whereNull('field_id')->with('user')->orderBy('created_at','desc')->limit(10)->get(),
                                     'owner_requests' => \App\Models\User::where('owner_request','pending')->orderBy('updated_at','desc')->limit(10)->get(),
                                     'expired_owners' => \App\Models\User::where('role','owner')->whereNotNull('subscription_expires_at')->where('subscription_expires_at','<',now())->orderBy('subscription_expires_at','asc')->limit(5)->get(),
                                 ];
@@ -100,57 +99,61 @@
                             </div>
                             @if($bellRole === 'user')
                                 @forelse($bellNotifs as $b)
-                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->status === 'approved' ? '#f0fff4' : '#fff5f5' }};">
-                                    <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}</div>
+                                <a href="{{ route('bookings.history') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->user_notified ? '#fafafa' : ($b->status === 'approved' ? '#f0fff4' : '#fff5f5') }};text-decoration:none;color:inherit;">
+                                    <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}{{ $b->user_notified ? ' · Đã đọc' : '' }}</div>
                                     <div style="font-size:11px;color:#666;">{{ $b->field->name ?? '' }} - {{ $b->date->format('d/m/Y') }}</div>
                                     <div style="font-size:10px;color:#999;">{{ $b->updated_at->diffForHumans() }}</div>
-                                </div>
+                                </a>
                                 @empty
-                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>
+                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
                                 @endforelse
                             @elseif($bellRole === 'owner')
                                 @forelse($bellNotifs['bookings'] as $b)
-                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;">
-                                    <div style="font-size:12px;font-weight:600;">📅 Đặt sân mới</div>
+                                <a href="{{ route('owner.bookings.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->is_read ? '#fafafa' : '#fff8f0' }};text-decoration:none;color:inherit;">
+                                    <div style="font-size:12px;font-weight:600;">📅 Đặt sân mới{{ $b->is_read ? ' · Đã đọc' : '' }}</div>
                                     <div style="font-size:11px;color:#666;">{{ $b->user->name ?? '' }} - {{ $b->field->name ?? '' }}</div>
                                     <div style="font-size:10px;color:#999;">{{ $b->date->format('d/m/Y') }} Ca {{ $b->shift }} · {{ $b->created_at->diffForHumans() }}</div>
-                                </div>
+                                </a>
                                 @empty
                                 @endforelse
                                 @forelse($bellNotifs['reviews'] as $r)
-                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#f0fff4;">
-                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá mới</div>
+                                <a href="{{ route('owner.dashboard') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $r->is_read ? '#fafafa' : '#f0fff4' }};text-decoration:none;color:inherit;">
+                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá mới{{ $r->is_read ? ' · Đã đọc' : '' }}</div>
                                     <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->field->name ?? '' }} {{ $r->rating }}/5</div>
                                     <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                                </div>
+                                </a>
                                 @empty
                                 @endforelse
-                                @if($bellUnread === 0)<div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>@endif
+                                @if($bellNotifs['bookings']->isEmpty() && $bellNotifs['reviews']->isEmpty())
+                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
+                                @endif
                             @elseif($bellRole === 'admin')
                                 @forelse($bellNotifs['owner_requests'] as $u)
-                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;">
+                                <a href="{{ route('admin.owners.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;text-decoration:none;color:inherit;">
                                     <div style="font-size:12px;font-weight:600;">👤 Đăng ký chủ sân</div>
                                     <div style="font-size:11px;color:#666;">{{ $u->name }} ({{ $u->email }})</div>
                                     <div style="font-size:10px;color:#999;">{{ $u->updated_at->diffForHumans() }}</div>
-                                </div>
+                                </a>
                                 @empty
                                 @endforelse
                                 @forelse($bellNotifs['reviews'] as $r)
-                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#f0fff4;">
-                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá website mới</div>
+                                <a href="{{ route('reviews.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $r->is_read ? '#fafafa' : '#f0fff4' }};text-decoration:none;color:inherit;">
+                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá website mới{{ $r->is_read ? ' · Đã đọc' : '' }}</div>
                                     <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->rating }}/5 sao</div>
                                     <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                                </div>
+                                </a>
                                 @empty
                                 @endforelse
                                 @forelse($bellNotifs['expired_owners'] as $u)
-                                <div style="padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff3cd;">
+                                <a href="{{ route('admin.owners.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff3cd;text-decoration:none;color:inherit;">
                                     <div style="font-size:12px;font-weight:600;">⚠️ Chủ sân hết hạn</div>
                                     <div style="font-size:11px;color:#666;">{{ $u->name }} - hết hạn {{ $u->subscription_expires_at->format('d/m/Y') }}</div>
-                                </div>
+                                </a>
                                 @empty
                                 @endforelse
-                                @if($bellUnread === 0)<div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo mới</div>@endif
+                                @if($bellNotifs['owner_requests']->isEmpty() && $bellNotifs['reviews']->isEmpty() && $bellNotifs['expired_owners']->isEmpty())
+                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
+                                @endif
                             @endif
                         </div>
                     </div>
