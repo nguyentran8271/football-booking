@@ -133,6 +133,7 @@
                             @if($booking->status === 'pending')
                             <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST" style="display: inline;">
                                 @csrf
+                                @method('PATCH')
                                 <button type="submit" class="btn btn-sm btn-danger"
                                         onclick="return confirm('Hủy đặt sân này?')">
                                     Hủy
