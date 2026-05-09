@@ -179,7 +179,20 @@
         border-bottom: none;
     }
 
-    .auth-buttons { display: none !important; }
+    /* Mobile: show bell & avatar, hide login/register buttons */
+    .auth-buttons {
+        display: flex !important;
+        gap: 4px !important;
+        align-items: center !important;
+    }
+    .auth-buttons > a.btn-outline,
+    .auth-buttons > a.btn-primary {
+        display: none !important;
+    }
+    .auth-buttons .btn {
+        min-width: unset !important;
+        width: auto !important;
+    }
     .mobile-only { display: block !important; }
 
     /* Fix logout button to match other nav items */
@@ -198,10 +211,24 @@
         line-height: normal !important;
         margin: 0 !important;
     }
-
     .header { position: relative; z-index: 999; }
     .header-content { position: relative; }
     .mobile-menu-toggle { z-index: 1000; position: relative; }
 }
 
 .mobile-only { display: none; }
+
+@media (max-width: 768px) {
+    /* Hide username text on mobile, keep avatar circle + bell */
+    .user-avatar-btn span,
+    .user-avatar-btn svg {
+        display: none !important;
+    }
+    .user-avatar-btn {
+        padding: 4px !important;
+    }
+    #bell-dropdown {
+        right: -40px !important;
+        width: 280px !important;
+    }
+}
