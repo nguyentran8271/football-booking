@@ -52,7 +52,7 @@
                 <span></span><span></span><span></span>
             </button>
 
-            <div class="auth-buttons">
+            <div class="auth-buttons" id="auth-buttons-mobile">
                 @auth
                     @php
                         $bellUnread = 0;
@@ -239,6 +239,20 @@ function toggleMobileMenu() {
 document.addEventListener('DOMContentLoaded', function() {
     var d = document.getElementById('bell-dropdown');
     if (d) d.style.display = 'none';
+
+    // Force show auth-buttons on mobile
+    if (window.innerWidth <= 768) {
+        var ab = document.getElementById('auth-buttons-mobile');
+        if (ab) {
+            ab.style.display = 'flex';
+            ab.style.gap = '4px';
+            ab.style.alignItems = 'center';
+            // Hide login/register links
+            ab.querySelectorAll('a.btn').forEach(function(el) {
+                el.style.display = 'none';
+            });
+        }
+    }
 });
 // Also reset immediately
 (function() {
