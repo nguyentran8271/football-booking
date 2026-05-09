@@ -97,63 +97,33 @@
                             <div style="padding:10px 14px;border-bottom:1px solid #eee;">
                                 <strong style="font-size:13px;">Thông báo</strong>
                             </div>
-                            @if($bellRole === 'user')
-                                @forelse($bellNotifs as $b)
-                                <a href="{{ route('bookings.history') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->user_notified ? '#fafafa' : ($b->status === 'approved' ? '#f0fff4' : '#fff5f5') }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">{{ $b->status === 'approved' ? '✅ Booking được duyệt' : '❌ Booking bị từ chối' }}{{ $b->user_notified ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $b->field->name ?? '' }} - {{ $b->date->format('d/m/Y') }}</div>
-                                    <div style="font-size:10px;color:#999;">{{ $b->updated_at->diffForHumans() }}</div>
+                            @php
+                                $bellItems = collect();
+                                if($bellRole === 'user') {
+                                    foreach($bellNotifs as $b) $bellItems->push(['icon'=>$b->status==='approved'?'✅':'❌','title'=>$b->status==='approved'?'Booking được duyệt':'Booking bị từ chối','body'=>($b->field->name??'').' - '.$b->date->format('d/m/Y'),'time'=>$b->updated_at->diffForHumans(),'url'=>route('bookings.history'),'is_read'=>(bool)$b->user_notified,'bg'=>$b->user_notified?'#fafafa':($b->status==='approved'?'#f0fff4':'#fff5f5')]);
+                                } elseif($bellRole === 'owner') {
+                                    foreach($bellNotifs['bookings'] as $b) $bellItems->push(['icon'=>'📅','title'=>'Đặt sân mới','body'=>($b->user->name??'').' - '.($b->field->name??''),'time'=>$b->created_at->diffForHumans(),'url'=>route('owner.bookings.index'),'is_read'=>(bool)$b->is_read,'bg'=>$b->is_read?'#fafafa':'#fff8f0']);
+                                    foreach($bellNotifs['reviews'] as $r) $bellItems->push(['icon'=>'⭐','title'=>'Đánh giá mới','body'=>($r->user->name??'').' - '.($r->field->name??'').' '.$r->rating.'/5','time'=>$r->created_at->diffForHumans(),'url'=>route('owner.dashboard'),'is_read'=>(bool)$r->is_read,'bg'=>$r->is_read?'#fafafa':'#f0fff4']);
+                                } elseif($bellRole === 'admin') {
+                                    foreach($bellNotifs['owner_requests'] as $u) $bellItems->push(['icon'=>'👤','title'=>'Đăng ký chủ sân','body'=>$u->name.' ('.$u->email.')','time'=>$u->updated_at->diffForHumans(),'url'=>route('admin.owners.index'),'is_read'=>false,'bg'=>'#fff8f0']);
+                                    foreach($bellNotifs['reviews'] as $r) $bellItems->push(['icon'=>'⭐','title'=>'Đánh giá website mới','body'=>($r->user->name??'').' - '.$r->rating.'/5','time'=>$r->created_at->diffForHumans(),'url'=>route('reviews.index'),'is_read'=>(bool)$r->is_read,'bg'=>$r->is_read?'#fafafa':'#f0fff4']);
+                                    foreach($bellNotifs['expired_owners'] as $u) $bellItems->push(['icon'=>'⚠️','title'=>'Chủ sân hết hạn','body'=>$u->name.' - hết hạn '.$u->subscription_expires_at->format('d/m/Y'),'time'=>'','url'=>route('admin.owners.index'),'is_read'=>false,'bg'=>'#fff3cd']);
+                                }
+                                $totalBellItems = $bellItems->count();
+                            @endphp
+                            <div id="bell-items-list">
+                            @forelse($bellItems->take(3) as $item)
+                                <a href="{{ $item['url'] }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $item['bg'] }};text-decoration:none;color:inherit;">
+                                    <div style="font-size:12px;font-weight:600;">{{ $item['icon'] }} {{ $item['title'] }}{{ $item['is_read'] ? ' · Đã đọc' : '' }}</div>
+                                    <div style="font-size:11px;color:#666;">{{ $item['body'] }}</div>
+                                    @if($item['time'])<div style="font-size:10px;color:#999;">{{ $item['time'] }}</div>@endif
                                 </a>
-                                @empty
+                            @empty
                                 <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
-                                @endforelse
-                            @elseif($bellRole === 'owner')
-                                @forelse($bellNotifs['bookings'] as $b)
-                                <a href="{{ route('owner.bookings.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $b->is_read ? '#fafafa' : '#fff8f0' }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">📅 Đặt sân mới{{ $b->is_read ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $b->user->name ?? '' }} - {{ $b->field->name ?? '' }}</div>
-                                    <div style="font-size:10px;color:#999;">{{ $b->date->format('d/m/Y') }} Ca {{ $b->shift }} · {{ $b->created_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @forelse($bellNotifs['reviews'] as $r)
-                                <a href="{{ route('owner.dashboard') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $r->is_read ? '#fafafa' : '#f0fff4' }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá mới{{ $r->is_read ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->field->name ?? '' }} {{ $r->rating }}/5</div>
-                                    <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @if($bellNotifs['bookings']->isEmpty() && $bellNotifs['reviews']->isEmpty())
-                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
-                                @endif
-                            @elseif($bellRole === 'admin')
-                                @forelse($bellNotifs['owner_requests'] as $u)
-                                <a href="{{ route('admin.owners.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff8f0;text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">👤 Đăng ký chủ sân</div>
-                                    <div style="font-size:11px;color:#666;">{{ $u->name }} ({{ $u->email }})</div>
-                                    <div style="font-size:10px;color:#999;">{{ $u->updated_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @forelse($bellNotifs['reviews'] as $r)
-                                <a href="{{ route('reviews.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:{{ $r->is_read ? '#fafafa' : '#f0fff4' }};text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">⭐ Đánh giá website mới{{ $r->is_read ? ' · Đã đọc' : '' }}</div>
-                                    <div style="font-size:11px;color:#666;">{{ $r->user->name ?? '' }} - {{ $r->rating }}/5 sao</div>
-                                    <div style="font-size:10px;color:#999;">{{ $r->created_at->diffForHumans() }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @forelse($bellNotifs['expired_owners'] as $u)
-                                <a href="{{ route('admin.owners.index') }}" style="display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:#fff3cd;text-decoration:none;color:inherit;">
-                                    <div style="font-size:12px;font-weight:600;">⚠️ Chủ sân hết hạn</div>
-                                    <div style="font-size:11px;color:#666;">{{ $u->name }} - hết hạn {{ $u->subscription_expires_at->format('d/m/Y') }}</div>
-                                </a>
-                                @empty
-                                @endforelse
-                                @if($bellNotifs['owner_requests']->isEmpty() && $bellNotifs['reviews']->isEmpty() && $bellNotifs['expired_owners']->isEmpty())
-                                <div style="padding:16px;text-align:center;color:#999;font-size:12px;">Không có thông báo</div>
-                                @endif
+                            @endforelse
+                            </div>
+                            @if($totalBellItems > 3)
+                            <div id="bell-load-more-btn" onclick="bellLoadMore(this, 3)" style="padding:10px;text-align:center;color:#28a745;font-size:12px;cursor:pointer;border-top:1px solid #eee;">Xem thêm ({{ $totalBellItems - 3 }})</div>
                             @endif
                         </div>
                     </div>
@@ -219,6 +189,31 @@ function toggleBell() {
             fetch('/admin/reviews/mark-read', opts);
         }
     }
+}
+
+function bellLoadMore(btn, offset) {
+    btn.textContent = 'Đang tải...';
+    fetch('/api/notifications/more?offset=' + offset, {credentials: 'same-origin'})
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var list = document.getElementById('bell-items-list');
+            data.items.forEach(function(item) {
+                var a = document.createElement('a');
+                a.href = item.url;
+                a.style.cssText = 'display:block;padding:10px 14px;border-bottom:1px solid #f0f0f0;background:' + item.bg + ';text-decoration:none;color:inherit;';
+                a.innerHTML = '<div style="font-size:12px;font-weight:600;">' + item.icon + ' ' + item.title + (item.is_read ? ' · Đã đọc' : '') + '</div>'
+                    + '<div style="font-size:11px;color:#666;">' + item.body + '</div>'
+                    + (item.time ? '<div style="font-size:10px;color:#999;">' + item.time + '</div>' : '');
+                list.appendChild(a);
+            });
+            if (data.hasMore) {
+                btn.textContent = 'Xem thêm';
+                btn.onclick = function() { bellLoadMore(btn, data.nextOffset); };
+            } else {
+                btn.remove();
+            }
+        })
+        .catch(function() { btn.textContent = 'Xem thêm'; });
 }
 document.addEventListener('click', function(e) {
     var dropdown = document.querySelector('.user-dropdown');
