@@ -292,7 +292,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function pollNotifications() {
         fetch('/api/notifications/poll', {credentials: 'same-origin'})
-            .then(function(r) { return r.json(); })
+            .then(function(r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
             .then(function(data) {
                 var badge = document.getElementById('bell-badge');
                 if (data.unread > 0) {
@@ -300,7 +303,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         badge = document.createElement('span');
                         badge.id = 'bell-badge';
                         badge.style.cssText = 'position:absolute;top:0;right:0;background:#dc3545;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;';
-                        document.getElementById('bell-btn').appendChild(badge);
+                        var btn = document.getElementById('bell-btn');
+                        if (btn) btn.appendChild(badge);
                     }
                     badge.textContent = data.unread > 9 ? '9+' : data.unread;
                     badge.style.display = 'flex';
@@ -315,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Store for when dropdown opens
                 window._bellItems = data.items;
             })
-            .catch(function() {});
+            .catch(function(e) { /* silent fail */ });
     }
 
     // Override toggleBell to use cached items and poll immediately on open
