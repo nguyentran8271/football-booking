@@ -1,0 +1,49 @@
+@extends('layouts.app')
+@section('title', 'Quên mật khẩu')
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+<link rel="stylesheet" href="{{ asset('css/falling-effect.css') }}">
+@endpush
+
+@section('content')
+<div class="auth-page" @php $bg = App\Models\SiteSetting::get('login_background'); @endphp
+    @if($bg) style="background-image:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url('{{ storage_url($bg) }}');background-size:cover;background-position:center;" @endif>
+    <div class="auth-card">
+        <div class="auth-logo">
+            @php $logo = App\Models\SiteSetting::get('login_logo') ?? App\Models\SiteSetting::get('logo'); @endphp
+            <img src="{{ $logo ? storage_url($logo) : asset('images/football-logo.png') }}" alt="Logo">
+        </div>
+
+        <h1 class="card-title">Quên Mật Khẩu</h1>
+
+        <div class="forgot-steps">
+            <div class="step active">1</div><div class="step-line"></div>
+            <div class="step">2</div><div class="step-line"></div>
+            <div class="step">3</div><div class="step-line"></div>
+            <div class="step">4</div>
+        </div>
+        <p class="step-desc">Nhập tên tài khoản của bạn</p>
+
+        @if($errors->any())
+        <div class="alert alert-danger">@foreach($errors->all() as $e)<p>{{ $e }}</p>@endforeach</div>
+        @endif
+
+        <form action="{{ route('password.step1.post') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label class="form-label">Tên tài khoản *</label>
+                <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Nhập tên đã đăng ký" required autofocus>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">Tiếp theo →</button>
+        </form>
+
+        <div style="text-align:center;margin-top:20px;">
+            <a href="{{ route('login') }}" style="color:#28a745;">← Quay lại đăng nhập</a>
+        </div>
+    </div>
+</div>
+@endsection
+@push('scripts')
+<script>document.getElementById('falling-canvas').style.display='block';</script>
+<script src="{{ asset('js/falling-effect.js') }}"></script>
+@endpush

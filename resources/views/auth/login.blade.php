@@ -37,6 +37,9 @@
             <div class="form-group">
                 <label class="form-label">Mật khẩu *</label>
                 <input type="password" name="password" class="form-control" required>
+                <div style="text-align:right; margin-top:6px;">
+                    <a href="{{ route('password.step1') }}" style="color:#28a745; font-size:13px;">Quên mật khẩu?</a>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">

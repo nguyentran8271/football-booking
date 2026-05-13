@@ -37,4 +37,8 @@ return [
         'env' => env('SEPAY_ENV', 'sandbox'),
     ],
 
+    'resend' => [
+        'key' => env('RESEND_API_KEY'),
+    ],
+
 ];

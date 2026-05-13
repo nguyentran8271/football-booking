@@ -35,3 +35,38 @@
     margin-bottom: 30px;
     font-size: 28px;
 }
+
+/* Forgot Password Steps */
+.forgot-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+.forgot-steps .step {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+.forgot-steps .step.active { background: #28a745; color: #fff; }
+.forgot-steps .step.done   { background: #28a745; color: #fff; }
+.forgot-steps .step-line   { flex: 1; height: 3px; background: #e0e0e0; max-width: 50px; }
+.forgot-steps .step-line.active { background: #28a745; }
+.step-desc { text-align: center; color: #666; font-size: 14px; margin-bottom: 20px; }
+.btn-link-green {
+    background: none;
+    border: none;
+    color: #28a745;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    padding: 0;
+}
