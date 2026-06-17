@@ -24,19 +24,10 @@
 
     {{-- Flash messages --}}
     @if(session('success') || session('error') || session('info') || session('warning'))
-    <div id="flash-toast" style="
-        position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-        z-index: 9999; padding: 14px 24px; border-radius: 8px;
-        font-size: 15px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        text-align: center; min-width: 280px; max-width: 500px;
-        @if(session('success')) background:#d4edda; color:#155724;
-        @elseif(session('error')) background:#f8d7da; color:#721c24;
-        @elseif(session('info')) background:#d1ecf1; color:#0c5460;
-        @else background:#fff3cd; color:#856404; @endif
-    ">
+    <div id="flash-toast" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;padding:12px 24px;border-radius:6px;background:#fff;color:#333;font-size:15px;box-shadow:0 2px 12px rgba(0,0,0,0.15);text-align:center;min-width:260px;max-width:480px;">
         {{ session('success') ?? session('error') ?? session('info') ?? session('warning') }}
     </div>
-    <script>setTimeout(function(){ var t=document.getElementById('flash-toast'); if(t){t.style.transition='opacity .5s';t.style.opacity=0;setTimeout(function(){t.remove()},500);} }, 4000);</script>
+    <script>setTimeout(function(){var t=document.getElementById('flash-toast');if(t){t.style.transition='opacity .4s';t.style.opacity=0;setTimeout(function(){t.remove()},400);}},4000);</script>
     @endif
 
     <main>
