@@ -103,8 +103,8 @@
                         @foreach($hotFields as $i => $item)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $item->field->name ?? 'N/A' }}</td>
-                            <td>{{ $item->field->owner->name ?? 'N/A' }}</td>
+                            <td>{{ $item->name ?? 'N/A' }}</td>
+                            <td>{{ $item->owner->name ?? 'N/A' }}</td>
                             <td><span style="background:#fff3cd;color:#856404;padding:4px 12px;border-radius:20px;font-weight:600;">{{ $item->total_bookings }} lượt</span></td>
                             <td>{{ number_format($item->total_revenue) }}đ</td>
                         </tr>
@@ -165,7 +165,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 @if($hotFields->isNotEmpty())
-const hotData = JSON.parse('{!! addslashes(json_encode($hotFields->map(fn($i) => ["name" => $i->field->name ?? "N/A", "bookings" => $i->total_bookings, "revenue" => (float)$i->total_revenue]))) !!}');
+const hotData = JSON.parse('{!! addslashes(json_encode($hotFields->map(fn($i) => ["name" => $i->name ?? "N/A", "bookings" => $i->total_bookings, "revenue" => (float)$i->total_revenue]))) !!}');
 
 new Chart(document.getElementById('hotFieldsChart').getContext('2d'), {
     data: {
