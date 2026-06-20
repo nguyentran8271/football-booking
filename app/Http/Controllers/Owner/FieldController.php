@@ -12,7 +12,7 @@ class FieldController extends Controller
 {
     public function index()
     {
-        $fields = auth()->user()->fields()->paginate(10);
+        $fields = auth()->user()->fields()->orderBy('created_at', 'desc')->paginate(10);
         return view('owner.fields.index', compact('fields'));
     }
 

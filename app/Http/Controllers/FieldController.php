@@ -11,7 +11,8 @@ class FieldController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Field::with('owner', 'reviews.user');
+        $query = Field::with('owner', 'reviews.user')
+            ->orderBy('created_at', 'desc');
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
