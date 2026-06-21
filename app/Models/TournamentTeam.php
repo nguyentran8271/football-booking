@@ -11,6 +11,7 @@ class TournamentTeam extends Model
 
     protected $fillable = [
         'tournament_id',
+        'user_id',
         'team_name',
         'captain_name',
         'phone',

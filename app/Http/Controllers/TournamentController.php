@@ -37,7 +37,15 @@ class TournamentController extends Controller
 
         $canRegister = $this->canRegister($tournament);
 
-        return view('tournaments.show', compact('tournament', 'canRegister'));
+        $alreadyRegistered = false;
+        if (auth()->check()) {
+            $alreadyRegistered = TournamentTeam::where('tournament_id', $tournament->id)
+                ->where('user_id', auth()->id())
+                ->whereIn('status', ['pending', 'approved'])
+                ->exists();
+        }
+
+        return view('tournaments.show', compact('tournament', 'canRegister', 'alreadyRegistered'));
     }
 
     public function register($id)
@@ -47,6 +55,16 @@ class TournamentController extends Controller
         if (!$this->canRegister($tournament)) {
             return redirect()->route('tournaments.show', $id)
                 ->with('error', 'Không thể đăng ký giải đấu này.');
+        }
+
+        $alreadyRegistered = TournamentTeam::where('tournament_id', $id)
+            ->where('user_id', auth()->id())
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
+
+        if ($alreadyRegistered) {
+            return redirect()->route('tournaments.show', $id)
+                ->with('info', 'Bạn đã đăng ký giải đấu này. Vui lòng chờ chủ sân duyệt.');
         }
 
         return view('tournaments.register', compact('tournament'));
@@ -59,6 +77,16 @@ class TournamentController extends Controller
         if (!$this->canRegister($tournament)) {
             return redirect()->route('tournaments.show', $id)
                 ->with('error', 'Không thể đăng ký giải đấu này.');
+        }
+
+        $alreadyRegistered = TournamentTeam::where('tournament_id', $id)
+            ->where('user_id', auth()->id())
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
+
+        if ($alreadyRegistered) {
+            return redirect()->route('tournaments.show', $id)
+                ->with('info', 'Bạn đã đăng ký giải đấu này. Vui lòng chờ chủ sân duyệt.');
         }
 
         $validated = $request->validate([
@@ -87,6 +115,7 @@ class TournamentController extends Controller
         ]);
 
         $validated['tournament_id']  = $tournament->id;
+        $validated['user_id']        = auth()->id();
         $validated['status']         = 'pending';
         $validated['payment_status'] = 'unpaid';
 

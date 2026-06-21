@@ -265,7 +265,11 @@
 
                 <div class="tournament-actions">
                     @auth
-                        @if($canRegister)
+                        @if($alreadyRegistered)
+                        <div style="padding: 15px 25px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; color: #856404; font-weight: 500;">
+                            ✅ Bạn đã đăng ký giải đấu này. Vui lòng chờ chủ sân duyệt.
+                        </div>
+                        @elseif($canRegister)
                         <a href="{{ route('tournaments.register', $tournament->id) }}" class="btn-register">Đăng ký tham gia</a>
                         @else
                         <button class="btn-register" disabled>Không thể đăng ký</button>

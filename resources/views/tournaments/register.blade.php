@@ -211,7 +211,7 @@ textarea.form-control {
                                     onchange="highlightPayment()"
                                     required>
                                 <span>
-                                    <strong>💵 Thanh toán trực tiếp</strong><br>
+                                    <strong>Thanh toán trực tiếp</strong><br>
                                     <small style="color:#666;">Nộp tiền trực tiếp tại sân</small>
                                 </span>
                             </label>
@@ -220,7 +220,7 @@ textarea.form-control {
                                     {{ old('payment_method') === 'sepay' ? 'checked' : '' }}
                                     onchange="highlightPayment()">
                                 <span>
-                                    <strong>💳 Thanh toán SePay</strong><br>
+                                    <strong>Thanh toán SePay</strong><br>
                                     <small style="color:#666;">Chuyển khoản trực tuyến</small>
                                 </span>
                             </label>
