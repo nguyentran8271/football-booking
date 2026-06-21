@@ -17,6 +17,9 @@ class TournamentTeam extends Model
         'logo',
         'players_list',
         'status',
+        'payment_method',
+        'payment_status',
+        'payment_invoice',
     ];
 
     public function tournament()

@@ -91,6 +91,20 @@ class PaymentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'No invoice'], 400);
         }
 
+        // Tournament team invoice: TRN-{teamId}-{timestamp}
+        if (str_starts_with($invoice, 'TRN-')) {
+            $parts = explode('-', $invoice);
+            $teamId = $parts[1] ?? null;
+            $team = $teamId ? \App\Models\TournamentTeam::find($teamId) : null;
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found'], 404);
+            }
+
+            $team->update(['payment_status' => 'paid']);
+            return response()->json(['status' => 'success']);
+        }
+
         // Owner subscription invoice: OWN-{userId}-{timestamp}
         if (str_starts_with($invoice, 'OWN-')) {
             $parts = explode('-', $invoice);

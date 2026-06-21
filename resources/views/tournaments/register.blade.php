@@ -190,8 +190,8 @@ textarea.form-control {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Danh sách cầu thủ</label>
-                        <textarea name="players_list" class="form-control"
+                        <label class="form-label">Danh sách cầu thủ <span class="required">*</span></label>
+                        <textarea name="players_list" class="form-control" required
                                   placeholder="Nhập danh sách cầu thủ (mỗi người một dòng)&#10;VD:&#10;1. Nguyễn Văn A&#10;2. Trần Văn B&#10;3. Lê Văn C">{{ old('players_list') }}</textarea>
                         <div class="form-help">Nhập tên các cầu thủ trong đội ({{ $tournament->players_per_team }} người)</div>
                     </div>
@@ -200,6 +200,31 @@ textarea.form-control {
                         <label class="form-label">Logo đội</label>
                         <input type="file" name="logo" class="form-control" accept="image/*">
                         <div class="form-help">Định dạng: JPG, PNG. Tối đa 2MB</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phương thức thanh toán <span class="required">*</span></label>
+                        <div style="display: flex; gap: 15px; margin-top: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 14px 20px; border: 2px solid #ddd; border-radius: 8px; flex: 1; transition: all 0.2s;" id="label-direct">
+                                <input type="radio" name="payment_method" value="direct"
+                                    {{ old('payment_method', 'direct') === 'direct' ? 'checked' : '' }}
+                                    onchange="highlightPayment()"
+                                    required>
+                                <span>
+                                    <strong>💵 Thanh toán trực tiếp</strong><br>
+                                    <small style="color:#666;">Nộp tiền trực tiếp tại sân</small>
+                                </span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 14px 20px; border: 2px solid #ddd; border-radius: 8px; flex: 1; transition: all 0.2s;" id="label-sepay">
+                                <input type="radio" name="payment_method" value="sepay"
+                                    {{ old('payment_method') === 'sepay' ? 'checked' : '' }}
+                                    onchange="highlightPayment()">
+                                <span>
+                                    <strong>💳 Thanh toán SePay</strong><br>
+                                    <small style="color:#666;">Chuyển khoản trực tuyến</small>
+                                </span>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="form-actions">
@@ -211,4 +236,16 @@ textarea.form-control {
         </div>
     </div>
 </div>
+
+<script>
+function highlightPayment() {
+    const direct = document.querySelector('input[value="direct"]');
+    const sepay  = document.querySelector('input[value="sepay"]');
+    document.getElementById('label-direct').style.borderColor = direct.checked ? '#28a745' : '#ddd';
+    document.getElementById('label-direct').style.background  = direct.checked ? '#f0fff4' : 'white';
+    document.getElementById('label-sepay').style.borderColor  = sepay.checked  ? '#28a745' : '#ddd';
+    document.getElementById('label-sepay').style.background   = sepay.checked  ? '#f0fff4' : 'white';
+}
+document.addEventListener('DOMContentLoaded', highlightPayment);
+</script>
 @endsection
