@@ -44,7 +44,9 @@ class ForgotPasswordController extends Controller
         $sent = $this->sendOtpEmail($user->email, $user->name, $otp);
 
         if (!$sent) {
-            return back()->withErrors(['email' => 'Không thể gửi email. Vui lòng thử lại sau.'])->withInput();
+            $errorDetail = session('mail_error', 'Không rõ nguyên nhân');
+            session()->forget('mail_error');
+            return back()->withErrors(['email' => 'Lỗi gửi mail: ' . $errorDetail])->withInput();
         }
 
         session(['reset_email' => $user->email, 'reset_user_id' => $user->id]);
@@ -158,6 +160,7 @@ class ForgotPasswordController extends Controller
             return true;
         } catch (\Exception $e) {
             \Log::error('Mail gửi OTP thất bại: ' . $e->getMessage());
+            session(['mail_error' => $e->getMessage()]);
             return false;
         }
     }
