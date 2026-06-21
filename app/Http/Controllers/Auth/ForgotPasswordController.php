@@ -153,11 +153,23 @@ class ForgotPasswordController extends Controller
     private function sendOtpEmail(string $toEmail, string $toName, string $otp): bool
     {
         try {
-            Mail::html($this->buildOtpHtml($toName, $otp), function ($message) use ($toEmail, $toName) {
-                $message->to($toEmail, $toName)
-                        ->subject('Mã xác nhận đặt lại mật khẩu - Đặt Sân Bóng');
-            });
-            return true;
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'Authorization' => 'Bearer ' . config('services.resend.key'),
+                'Content-Type'  => 'application/json',
+            ])->post('https://api.resend.com/emails', [
+                'from'    => config('services.resend.from', 'Đặt Sân Bóng <onboarding@resend.dev>'),
+                'to'      => [$toEmail],
+                'subject' => 'Mã xác nhận đặt lại mật khẩu - Đặt Sân Bóng',
+                'html'    => $this->buildOtpHtml($toName, $otp),
+            ]);
+
+            if ($response->successful()) {
+                return true;
+            }
+
+            \Log::error('Resend API lỗi: ' . $response->body());
+            session(['mail_error' => $response->json('message', $response->body())]);
+            return false;
         } catch (\Exception $e) {
             \Log::error('Mail gửi OTP thất bại: ' . $e->getMessage());
             session(['mail_error' => $e->getMessage()]);
