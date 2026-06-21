@@ -19,10 +19,9 @@
         <div class="forgot-steps">
             <div class="step active">1</div><div class="step-line"></div>
             <div class="step">2</div><div class="step-line"></div>
-            <div class="step">3</div><div class="step-line"></div>
-            <div class="step">4</div>
+            <div class="step">3</div>
         </div>
-        <p class="step-desc">Nhập tên tài khoản của bạn</p>
+        <p class="step-desc">Nhập email đã đăng ký để nhận mã xác nhận</p>
 
         @if($errors->any())
         <div class="alert alert-danger">@foreach($errors->all() as $e)<p>{{ $e }}</p>@endforeach</div>
@@ -31,10 +30,11 @@
         <form action="{{ route('password.step1.post') }}" method="POST">
             @csrf
             <div class="form-group">
-                <label class="form-label">Tên tài khoản *</label>
-                <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Nhập tên đã đăng ký" required autofocus>
+                <label class="form-label">Email *</label>
+                <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="Nhập email đã đăng ký" required autofocus>
+                <small style="color:#666;">Mã OTP 6 số sẽ được gửi đến email này</small>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">Tiếp theo →</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">Gửi mã OTP →</button>
         </form>
 
         <div style="text-align:center;margin-top:20px;">

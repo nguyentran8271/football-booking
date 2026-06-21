@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 class ForgotPasswordController extends Controller
 {
-    // Bước 1: Nhập tên tài khoản
+    // Bước 1: Nhập email và gửi OTP
     public function showStep1()
     {
         return view('auth.forgot-password.step1');
@@ -19,41 +19,15 @@ class ForgotPasswordController extends Controller
 
     public function postStep1(Request $request)
     {
-        $request->validate(['name' => 'required|string'], [
-            'name.required' => 'Vui lòng nhập tên tài khoản.',
-        ]);
-
-        $user = User::where('name', $request->name)->first();
-
-        if (!$user) {
-            return back()->withErrors(['name' => 'Không tìm thấy tài khoản với tên này.'])->withInput();
-        }
-
-        session(['reset_name' => $request->name, 'reset_user_id' => $user->id]);
-
-        return redirect()->route('password.step2');
-    }
-
-    // Bước 2: Nhập email và gửi OTP
-    public function showStep2()
-    {
-        if (!session('reset_user_id')) return redirect()->route('password.step1');
-        return view('auth.forgot-password.step2');
-    }
-
-    public function postStep2(Request $request)
-    {
-        if (!session('reset_user_id')) return redirect()->route('password.step1');
-
         $request->validate(['email' => 'required|email'], [
             'email.required' => 'Vui lòng nhập email.',
             'email.email'    => 'Email không hợp lệ.',
         ]);
 
-        $user = User::find(session('reset_user_id'));
+        $user = User::where('email', $request->email)->first();
 
-        if (!$user || $user->email !== $request->email) {
-            return back()->withErrors(['email' => 'Email không khớp với tài khoản này.'])->withInput();
+        if (!$user) {
+            return back()->withErrors(['email' => 'Không tìm thấy tài khoản với email này.'])->withInput();
         }
 
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -73,19 +47,19 @@ class ForgotPasswordController extends Controller
             return back()->withErrors(['email' => 'Không thể gửi email. Vui lòng thử lại sau.'])->withInput();
         }
 
-        session(['reset_email' => $user->email]);
+        session(['reset_email' => $user->email, 'reset_user_id' => $user->id]);
 
-        return redirect()->route('password.step3')->with('success', 'Mã OTP đã được gửi đến email của bạn.');
+        return redirect()->route('password.step2')->with('success', 'Mã OTP đã được gửi đến email của bạn.');
     }
 
-    // Bước 3: Nhập mã OTP
-    public function showStep3()
+    // Bước 2: Nhập mã OTP
+    public function showStep2()
     {
         if (!session('reset_email')) return redirect()->route('password.step1');
-        return view('auth.forgot-password.step3');
+        return view('auth.forgot-password.step2');
     }
 
-    public function postStep3(Request $request)
+    public function postStep2(Request $request)
     {
         if (!session('reset_email')) return redirect()->route('password.step1');
 
@@ -110,17 +84,17 @@ class ForgotPasswordController extends Controller
 
         session(['reset_verified' => true]);
 
-        return redirect()->route('password.step4');
+        return redirect()->route('password.step3');
     }
 
-    // Bước 4: Đặt lại mật khẩu
-    public function showStep4()
+    // Bước 3: Đặt lại mật khẩu
+    public function showStep3()
     {
         if (!session('reset_verified') || !session('reset_email')) return redirect()->route('password.step1');
-        return view('auth.forgot-password.step4');
+        return view('auth.forgot-password.step3');
     }
 
-    public function postStep4(Request $request)
+    public function postStep3(Request $request)
     {
         if (!session('reset_verified') || !session('reset_email')) return redirect()->route('password.step1');
 
@@ -141,7 +115,7 @@ class ForgotPasswordController extends Controller
         $user->save();
 
         DB::table('password_reset_otps')->where('email', $user->email)->delete();
-        session()->forget(['reset_name', 'reset_user_id', 'reset_email', 'reset_verified']);
+        session()->forget(['reset_user_id', 'reset_email', 'reset_verified']);
 
         return redirect()->route('login')->with('success', 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập.');
     }
@@ -174,7 +148,6 @@ class ForgotPasswordController extends Controller
         return back()->with('success', 'Đã gửi lại mã OTP mới.');
     }
 
-    // Gửi email OTP qua Gmail SMTP
     private function sendOtpEmail(string $toEmail, string $toName, string $otp): bool
     {
         try {
