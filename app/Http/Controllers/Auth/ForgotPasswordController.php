@@ -184,6 +184,7 @@ class ForgotPasswordController extends Controller
             });
             return true;
         } catch (\Exception $e) {
+            \Log::error('Mail gửi OTP thất bại: ' . $e->getMessage());
             return false;
         }
     }
