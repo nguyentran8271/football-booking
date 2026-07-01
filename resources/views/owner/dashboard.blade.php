@@ -224,6 +224,17 @@
 
             <form method="GET" action="{{ route('owner.dashboard') }}" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
                 <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Sân</label>
+                    <select name="field_id" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; height: 38px; min-width: 180px;">
+                        <option value="">-- Tất cả sân --</option>
+                        @foreach($ownerFields as $field)
+                            <option value="{{ $field->id }}" {{ $selectedFieldId == $field->id ? 'selected' : '' }}>
+                                {{ $field->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Từ ngày</label>
                     <input type="date" name="date_from" value="{{ request('date_from', $dateFrom->format('Y-m-d')) }}" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;">
                 </div>
@@ -234,6 +245,12 @@
                 <button type="submit" class="btn btn-primary" style="height: 38px; padding: 0 20px;">Lọc</button>
                 <a href="{{ route('owner.dashboard') }}" class="btn btn-secondary" style="height: 38px; padding: 0 20px; display: inline-flex; align-items: center;">Reset</a>
             </form>
+
+            @if($selectedFieldId)
+            <div style="background: #fff8e1; border-left: 4px solid #ffc107; padding: 10px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; color: #555;">
+                Đang xem: <strong style="color: #333;">{{ $ownerFields->firstWhere('id', $selectedFieldId)->name ?? '' }}</strong>
+            </div>
+            @endif
 
             <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
                 <div style="background: #e8f5e9; padding: 15px 25px; border-radius: 8px; border-left: 4px solid #28a745;">

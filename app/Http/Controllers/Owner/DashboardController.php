@@ -67,7 +67,13 @@ class DashboardController extends Controller
             $dateExpr = $isPostgres ? "date::date::text" : "DATE(date)";
         }
 
-        $revenueChart = Booking::whereIn('field_id', $fieldIds)
+        // Filter by specific field if requested
+        $selectedFieldId = $request->field_id ? (int) $request->field_id : null;
+        $chartFieldIds = ($selectedFieldId && $fieldIds->contains($selectedFieldId))
+            ? collect([$selectedFieldId])
+            : $fieldIds;
+
+        $revenueChart = Booking::whereIn('field_id', $chartFieldIds)
             ->where('status', 'approved')
             ->whereBetween('date', [$dateFrom, $dateTo])
             ->select(
@@ -78,6 +84,20 @@ class DashboardController extends Controller
             ->groupBy(DB::raw($dateExpr))
             ->orderBy(DB::raw($dateExpr))
             ->get();
+
+        // Stats for selected field
+        if ($selectedFieldId && $fieldIds->contains($selectedFieldId)) {
+            $stats['revenue_range'] = Booking::where('field_id', $selectedFieldId)
+                ->whereBetween('date', [$dateFrom, $dateTo])
+                ->where('status', 'approved')
+                ->sum('total_price');
+            $stats['bookings_range'] = Booking::where('field_id', $selectedFieldId)
+                ->whereBetween('date', [$dateFrom, $dateTo])
+                ->whereIn('status', ['pending', 'approved'])
+                ->count();
+        }
+
+        $ownerFields = Field::where('owner_id', $owner->id)->orderBy('name')->get();
 
         $notifications = Booking::whereIn('field_id', $fieldIds)
             ->where('status', 'pending')
@@ -119,6 +139,6 @@ class DashboardController extends Controller
             // Column may not exist yet
         }
 
-        return view('owner.dashboard', compact('stats', 'recentBookings', 'revenueChart', 'notifications', 'dateFrom', 'dateTo', 'unreadBookings', 'unreadReviews', 'allNotifications'));
+        return view('owner.dashboard', compact('stats', 'recentBookings', 'revenueChart', 'notifications', 'dateFrom', 'dateTo', 'unreadBookings', 'unreadReviews', 'allNotifications', 'ownerFields', 'selectedFieldId'));
     }
 }
